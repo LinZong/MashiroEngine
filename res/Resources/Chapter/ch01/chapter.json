@@ -1,0 +1,20 @@
+{
+    "ChapterNo": 1,
+    "ChapterName": "测试用的第一个章节",
+    "Branch": [
+        {
+            "BranchTag":1,
+            "BranchName": "测试用的第1个Branch第一个章节",
+            "Sections": [
+                "./res/Resources/Chapter/ch01/Sections/01.json"
+            ]
+        },
+        {
+            "BranchTag":2,
+            "BranchName": "测试用的第2个Branch第一个章节",
+            "Sections": [
+                "./res/Resources/Chapter/ch01/Sections/01.json"
+            ]
+        }
+    ]
+}

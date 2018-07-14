@@ -1,0 +1,15 @@
+{
+    "Resolution": [
+        1280,
+        720
+    ],
+    "Path": {
+        "Root": "./res/Resources",
+        "Resources": {
+            "Chapter": "Chapter",
+            "Character": "Character",
+            "Theme": "Theme"
+        },
+        "Savedata":"./res/Savedata"
+    }
+}

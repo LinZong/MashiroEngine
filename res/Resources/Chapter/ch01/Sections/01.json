@@ -1,0 +1,58 @@
+{
+    "Header": {
+        "SectionNo": 1,
+        "SectionName": "苏希烔巨佬教我做人",
+        "CustomScripts":"./Resources/Chapter/ch01/Scripts/test1.js"
+    },
+    "PreloadResources": {
+        "Scene": null,
+        "BGM": null,
+        "Character": null
+    },
+    "TextNodes": [
+        {
+            "ExecuteFunction": [
+                {
+                    "Name": "CreateAndBindButton",
+                    "Parameter": [
+                        300,
+                        400
+                    ],
+                    "ExecuteTime": 1000
+                },
+                {
+                    "Name": "CreateAndBindButton",
+                    "Parameter": [
+                        1,
+                        2
+                    ],
+                    "ExecuteTime": 0
+                }
+            ],
+            "TextProperty": {
+                "CharacterName": "郑泽明",
+                "Text": "苏希烔巨佬太牛批",
+                "TextMode": "new"
+            },
+            "Event": {
+                "ElementChange": {
+                    "ChangeTachie": "Object"
+                }
+            }
+        },
+        {
+            "TextProperty": {
+            "CharacterName": "郑泽明",
+            "Text": ",没人比他更牛批",
+            "TextMode": "append"
+            }
+        },
+        {
+            "TextProperty": {
+            "CharacterName": "郑泽明",
+            "Text": ",苏希帅烔天下第一牛批",
+            "TextMode": "append"
+            }
+        }
+    ]
+}

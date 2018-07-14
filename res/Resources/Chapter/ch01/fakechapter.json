@@ -1,0 +1,24 @@
+{
+    "Branch":[
+        {
+            "Name":"苏希烔",
+            "ChapterInfo":{
+                "ChapterNo":1,
+                "ChapterName":"测试用的第1个Branch第一个章节",
+                "Sections":[
+                    "./Resources/Chapter/ch01/Sections/01.json"
+                ]
+            }
+        },
+        {
+            "Name":"郑泽明",
+            "ChapterInfo":{
+                "ChapterNo":1,
+                "ChapterName":"测试用的第2个Branch第一个章节",
+                "Sections":[
+                    "./Resources/Chapter/ch01/Sections/01.json"
+                ]
+            }
+        }
+    ]
+}

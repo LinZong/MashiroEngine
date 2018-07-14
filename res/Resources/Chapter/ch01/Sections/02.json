@@ -1,0 +1,41 @@
+{
+    "Header": {
+        "SectionNo": 1,
+        "SectionName": "苏希烔巨佬教不动我做人",
+        "CustomScripts": [
+            "./Resources/Chapter/ch01/Scripts/test1.js"
+        ]
+    },
+    "PreloadResources":{
+        "Scene":"null",
+        "BGM":"null",
+        "Character":"null"
+    },
+    "TextNodes": [
+        {
+            "ExecuteFunction": [
+                {
+                    "Name": "CreateAndBindButton",
+                    "Parameter": [
+                        300,
+                        400
+                    ],
+                    "ExecuteTime": 0
+                }
+            ],
+            "CharacterName": "郑泽明",
+            "Text": "苏希烔巨佬太牛批",
+            "TextMode": "new",
+            "Event": {
+                "ElementChange": {
+                    "ChangeTachie": "Object"
+                }
+            }
+        },
+        {
+            "CharacterName":"郑泽明",
+            "Text":"没人比他更牛批",
+            "TextMode":"append"
+        }
+    ]
+}

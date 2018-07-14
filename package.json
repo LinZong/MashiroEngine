@@ -1,0 +1,29 @@
+{
+  "name": "electron-react",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "electron": "^2.0.4",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-redux": "^5.0.7",
+    "react-scripts": "1.1.4",
+    "redux": "^4.0.0",
+    "react-addons-test-utils": "^15.4.2",
+    "redux-immutable-state-invariant": "^1.2.4",
+    "react-addons-perf": "^15.4.1"
+  },
+  "main": "main.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "electron-start": "electron . --env dev --debug-brk=5858",
+    "electron-build": "npm run build && electron . --env build"
+  },
+  "homepage": ".",
+  "devDependencies": {
+    "babel-register": "^6.26.0"
+  }
+}
