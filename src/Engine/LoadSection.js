@@ -1,7 +1,5 @@
-const { NEXT_NODE, PREV_NODE, SET_NODE_INDEX } = require('./SectionActionTypes');
-
+const { NEXT_NODE, PREV_NODE, SET_NODE_INDEX } = require('./Events');
 let TextNodeIndexer = null;
-
 function FindPrevText(Section,EndIndexer){
     while(Section.TextNodes[EndIndexer--].TextProperty.TextMode==='append');
     return EndIndexer+1;
@@ -30,6 +28,7 @@ function TextNodeInterpreter(NowPlayingSection,ev,callback) {
             break;
         }
     }
+    if(NowPlayingSection===null)return;
     if (TextNodeIndexer >= NowPlayingSection.TextNodes.length) window.alert("reach the end of section");
     if (TextNodeIndexer < 0) {
         TextNodeIndexer = 0;
@@ -39,13 +38,13 @@ function TextNodeInterpreter(NowPlayingSection,ev,callback) {
         TextNodeIndexer=NowPlayingSection.TextNodes.length - 1;
         return;
     }
-    if (0 <= TextNodeIndexer && TextNodeIndexer < NowPlayingSection.TextNodes.length) {
+    if(callback===null) return;
+    else if (0 <= TextNodeIndexer && TextNodeIndexer < NowPlayingSection.TextNodes.length) {
         callback(ev.type===PREV_NODE?
             MakeRollBackProperty(NowPlayingSection,TextNodeIndexer):
             NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty);//测试用
             return ;
     }
-    return null;
 }
 // function SectionResolver(SectionObject) {
 //     LoadCustomScripts(SectionObject.Header.CustomScripts);
@@ -54,6 +53,16 @@ function TextNodeInterpreter(NowPlayingSection,ev,callback) {
 //     //Unload CustomScript
 //     delete global.CustomScripts;
 // }
+function LoadSectionRes(SectionArr,Indexer){
+    let fs = window.electron.remote.require('fs');
+    try {
+        let res =  JSON.parse(fs.readFileSync(SectionArr[Indexer]));
+        return res;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+}
 function CustomFunctionAdapter(ExecuteFunctionArray) {
     ExecuteFunctionArray.forEach(element => {
         let Func = global.CustomScripts[element.Name];
@@ -63,7 +72,7 @@ function CustomFunctionAdapter(ExecuteFunctionArray) {
 function LoadCustomScripts(ScriptsPath) {
     global.CustomScripts = require(ScriptsPath);
 }
-module.exports = TextNodeInterpreter;
+module.exports = {TextNodeInterpreter,LoadSectionRes};
 //渲染主进程同时维护着一个状态机，当LoadChapterRes发出事件的时候状态机定位到当前游玩的节点
 //节点没有在存档树上的时候就append节点，SectionResolver发出进入Section的时候
 //状态机根据当前的Chapter(Branch) Section状态修改状态树
