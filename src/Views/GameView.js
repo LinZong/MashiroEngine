@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 import './GameView.css';
 import * as Actions from '../Engine/SectionActions'
 import { TextNodeInterpreter } from '../Engine/LoadSection';
-
+import TextBox from './TextBox';
 class GameView extends Component {
 	constructor(props, context) {
 		super(props, context);
-		this.state = { CharacterName: '', Text: '' };
+		this.state = { SectionName:'',CharacterName: '', Text: '' };
 		this.ChangeNode = this.ChangeNode.bind(this);
-		this.ApplyTextToNodes = this.ApplyTextToNodes.bind(this);
+		this.ApplyTextToView = this.ApplyTextToView.bind(this);
 		this.GetNewTextNode = this.GetNewTextNode.bind(this);
 		this.NeedNewSection = null;
 	}
@@ -43,19 +43,19 @@ class GameView extends Component {
 		else {
 			switch (Type) {
 				case 1: {
-					TextNodeInterpreter(this.props.Section, Actions.NextNode(), this.ApplyTextToNodes);
+					TextNodeInterpreter(this.props.Section, Actions.NextNode(), this.ApplyTextToView);
 					break;
 				}
 
 				case -1: {
-					TextNodeInterpreter(this.props.Section, Actions.PrevNode(), this.ApplyTextToNodes);
+					TextNodeInterpreter(this.props.Section, Actions.PrevNode(), this.ApplyTextToView);
 					break;
 				}
 				default: break;
 			}
 		}
 	}
-	ApplyTextToNodes(NodeProps) {
+	ApplyTextToView(NodeProps) {
 		this.NeedNewSection = NodeProps.Flag;
 		let ThisContent = NodeProps.TextContent;
 		if (ThisContent.TextMode === 'new') {
@@ -76,17 +76,12 @@ class GameView extends Component {
 		if (nextProps.Section !== undefined) {
 			let InitIndex = 0;
 			if (this.props.Section === null) InitIndex = this.props.location.state.TextNodeBegin;
-			TextNodeInterpreter(nextProps.Section, Actions.SetNodeIndex(InitIndex), this.ApplyTextToNodes);
+			TextNodeInterpreter(nextProps.Section, Actions.SetNodeIndex(InitIndex), this.ApplyTextToView);
 		}
 	}
 	render() {
-		return (this.props.Section === undefined ? 'Loading' : <div className="App">
-			<Link to='/'>返回到章节选择</Link>
-			<div className="TextBox" onMouseDown={() => this.ChangeNode({ Mouse: true })}>
-				<p className="App-intro" id="CharacterName">{this.state.CharacterName}</p>
-				<p className="App-intro" id="Text">{this.state.Text}</p>
-			</div>
-		</div>);
+		return (this.props.Section === undefined ? 'Loading' :
+			<TextBox SectionName={this.props.Section.Header.SectionName} CharacterName={this.state.CharacterName} TextContent={this.state.Text} MouseEventTrigger={this.ChangeNode} />);
 	}
 }
 const mapStateToProps = (state) => {

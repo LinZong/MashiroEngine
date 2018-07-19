@@ -47,6 +47,7 @@ function TextNodeInterpreter(NowPlayingSection, ev, RendererCallback) {
         let Content = ev.type===PREV_NODE||(ev.type===SET_NODE_INDEX&&NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty.TextMode==='append')?
         MakeRollBackProperty(NowPlayingSection,TextNodeIndexer):
         NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty;
+        //SectionName:NowPlayingSection.Header.SectionName,
         RendererCallback({TextContent:Content,Flag:StatusFlag});//测试用
         return;
     }

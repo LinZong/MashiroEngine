@@ -8,30 +8,53 @@ const { LoadChapterRes } = require('./LoadChapter');
 const { LoadSectionRes } = require('./LoadSection');
 var AllChapter = null;
 var CurrentChapter = null;
+var CurrentBranch = null;
 var CurrentSectionsInChapter = null;
-var CurrentSectionIndex=null;
+var CurrentSectionIndex = null;
 EventHandler.on(EventSets.GET_SELECTED_PLAYING_SECTION, (dispatch, actionCtor, SelectedChapter, SelectedBranch, SelectedSection) => {
     //测试用
-    CurrentChapter = LoadChapterRes(SelectedChapter.Path, SelectedBranch);
-    CurrentSectionsInChapter = CurrentChapter.Branch.Sections;
-    CurrentSectionIndex = SelectedSection;
-    let secres = LoadSectionRes(CurrentSectionsInChapter, SelectedSection);
-    dispatch(actionCtor(secres));
-});
-
-EventHandler.on(EventSets.GET_ALL_CHAPTERS, (dispatch, actionCtor,ErrorCtor) => {
-    if(AllChapter===null) AllChapter =  window.electron.remote.getGlobal('MyEngine').StatusMachine.AllChapter;
-    dispatch(actionCtor(AllChapter));
-});
-
-EventHandler.on(EventSets.ENTER_NEXT_SECTION,(dispatch,actionCtor,ErrorCtor)=>{
-    let NowSection = CurrentSectionIndex;
-    if(NowSection<CurrentSectionsInChapter.length){
-        let secres = LoadSectionRes(CurrentSectionsInChapter,NowSection+1);
-        CurrentSectionIndex++;
+    let TmpChapter = LoadChapterRes(SelectedChapter.Path, SelectedBranch);
+    if (TmpChapter !== null) {
+        let CurrChapterIndex = 0;
+        for(let i=0;i<AllChapter.length;++i){
+            if(AllChapter[i] === SelectedChapter){
+                CurrChapterIndex=i;
+                TmpChapter.Index = i;
+                break;
+            }
+        }
+        CurrentChapter = TmpChapter;
+        CurrentSectionsInChapter = CurrentChapter.Branch.Sections;
+        CurrentSectionIndex = SelectedSection;
+        CurrentBranch=SelectedBranch;
+        let secres = LoadSectionRes(CurrentSectionsInChapter, SelectedSection);
         dispatch(actionCtor(secres));
     }
 });
 
+EventHandler.on(EventSets.GET_ALL_CHAPTERS, (dispatch, actionCtor, ErrorCtor) => {
+    if (AllChapter === null) AllChapter = window.electron.remote.getGlobal('MyEngine').StatusMachine.AllChapter;
+    dispatch(actionCtor(AllChapter));
+});
+
+EventHandler.on(EventSets.ENTER_NEXT_SECTION, (dispatch, actionCtor, ErrorCtor) => {
+    let NowSection = CurrentSectionIndex;
+    if (NowSection < CurrentSectionsInChapter.length-1) {
+        let secres = LoadSectionRes(CurrentSectionsInChapter, NowSection + 1);
+        CurrentSectionIndex++;
+        dispatch(actionCtor(secres));
+    }
+    else{
+        EventHandler.emit(EventSets.ENTER_NEXT_CHAPTER,dispatch,actionCtor);
+    }
+});
+
+EventHandler.on(EventSets.ENTER_NEXT_CHAPTER, (dispatch,actionCtor) => {
+    let CurrChapterIndex = CurrentChapter.Index;
+    let AllChapterLength = AllChapter.length;
+    if(CurrChapterIndex<AllChapterLength-1){
+        EventHandler.emit(EventSets.GET_SELECTED_PLAYING_SECTION,dispatch,actionCtor,AllChapter[CurrChapterIndex+1],CurrentBranch,0);
+    }
+});
 module.exports = { EventHandler };
 

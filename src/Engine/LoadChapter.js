@@ -21,22 +21,20 @@ function LoadAllChapters(ChapterDir) {
 function LoadChapterRes(Path, Branch) {
     let RebuildChapterInfo = null;
     let fs = window.electron.remote.require('fs');//这个是在渲染进程做调用的，需要做远程调用。
-    if (Path === undefined || Branch === undefined) console.log("Error");
-    Path = Path + '/chapter.json';
-    try {
-        let ChapterInfo = JSON.parse(fs.readFileSync(Path));
-        ChapterInfo.Branch.forEach(ele => {
-            if (Branch == ele.BranchTag || Branch == ele.BranchName) {
-                RebuildChapterInfo = ChapterInfo;
-                RebuildChapterInfo.Branch = ele;
-                throw "Finished";
-            }
-        });
-    } catch (error) {
-        if (error === "Finished") return RebuildChapterInfo;
-        console.log(error);
-        return null;
+    if (Path === undefined || Branch === undefined) {
+        throw Error('Path or Branch cannot be null or undefined!');
     }
-    return null;
+    Path = Path + '/chapter.json';
+    let ChapterInfo = JSON.parse(fs.readFileSync(Path));
+    let AllBranch = ChapterInfo.Branch;
+    //Support find by tag or by name.
+    for (let i = 0; i < AllBranch.length; i++) {
+        if (Branch == AllBranch[i].BranchTag || Branch == AllBranch[i].BranchName) {
+            RebuildChapterInfo = ChapterInfo;
+            RebuildChapterInfo.Branch = AllBranch[i];
+            RebuildChapterInfo.BranchIndex = i;
+        }
+    }
+    return RebuildChapterInfo;
 }
 module.exports = { LoadAllChapters, LoadChapterRes };
