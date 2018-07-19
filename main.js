@@ -2,7 +2,6 @@
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
 require('./src/Engine/LoadConfig');
-require('./src/Engine/Events');//一些静态变量,事件标志
 
 let mainWindow
 

@@ -5,7 +5,6 @@ import './GameView.css';
 import * as Status from '../Engine/Status';
 import * as Actions from '../Engine/SectionActions'
 import { Link } from 'react-router-dom';
-const electron = window.electron;
 class WelcomeView extends React.Component {
     constructor() {
         super(...arguments);
@@ -19,15 +18,14 @@ class WelcomeView extends React.Component {
                 return (
                     <div className="App">
                         <header className="App-header">
-                            <img src={logo} className="App-logo" alt="logo" />
                             <h1 className="App-title">全部章节</h1>
                         </header>
                         <div>
-                            {this.props.ChapterList.map((item) => 
+                            {this.props.ChapterList.map((item) =>
                                 (<Link to=
-                                {{ pathname: '/section', state: {Chapter:item,Branch:1,Section:0,TextNodeBegin:0} }}>
-                                <li>{item.Name}</li></Link>
-                            ))}
+                                    {{ pathname: '/section', state: { Chapter: item, Branch: 1, Section: 0, TextNodeBegin: 0 } }}>
+                                    <li>{item.Name}</li></Link>
+                                ))}
                         </div>
                     </div>
                 );

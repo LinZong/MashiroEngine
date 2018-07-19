@@ -2,7 +2,7 @@
 
 function LoadAllChapters(ChapterDir) {
     let ChapterList = [];
-    let FileStream = require('fs');
+    let FileStream = require('fs');//这个是在主进程运行的,直接require原生模块即可
     try {
         FileStream.readdirSync(ChapterDir).forEach(Subdir => {
             let ele = FileStream.statSync(ChapterDir + '/' + Subdir);
@@ -20,7 +20,7 @@ function LoadAllChapters(ChapterDir) {
 
 function LoadChapterRes(Path, Branch) {
     let RebuildChapterInfo = null;
-    let fs = window.electron.remote.require('fs');
+    let fs = window.electron.remote.require('fs');//这个是在渲染进程做调用的，需要做远程调用。
     if (Path === undefined || Branch === undefined) console.log("Error");
     Path = Path + '/chapter.json';
     try {

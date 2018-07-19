@@ -6,7 +6,8 @@
             "BranchTag":1,
             "BranchName": "测试用的第1个Branch第一个章节",
             "Sections": [
-                "./res/Resources/Chapter/ch01/Sections/01.json"
+                "./res/Resources/Chapter/ch01/Sections/01.json",
+                "./res/Resources/Chapter/ch01/Sections/02.json"
             ]
         },
         {

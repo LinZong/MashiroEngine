@@ -1,19 +1,19 @@
 const { NEXT_NODE, PREV_NODE, SET_NODE_INDEX } = require('./Events');
 let TextNodeIndexer = null;
-function FindPrevText(Section,EndIndexer){
-    while(Section.TextNodes[EndIndexer--].TextProperty.TextMode==='append');
-    return EndIndexer+1;
+function FindPrevNewModeTextNode(Section, EndIndexer) {
+    while (Section.TextNodes[EndIndexer--].TextProperty.TextMode === 'append');
+    return EndIndexer + 1;
 }
-function MakeRollBackProperty(NowPlayingSection,EndIndexer){
-    let LastNewIndex = FindPrevText(NowPlayingSection,EndIndexer);
-    let RollbackText="";
-    for(var i=LastNewIndex;i<=TextNodeIndexer;++i){
-        RollbackText+=NowPlayingSection.TextNodes[i].TextProperty.Text;
+function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
+    let LastNewIndex = FindPrevNewModeTextNode(NowPlayingSection, EndIndexer);
+    let RollbackText = "";
+    for (var i = LastNewIndex; i <= TextNodeIndexer; ++i) {
+        RollbackText += NowPlayingSection.TextNodes[i].TextProperty.Text;
     }
-    let NewPropertyObj = {...NowPlayingSection.TextNodes[EndIndexer].TextProperty,Text:RollbackText,TextMode:'new'};
+    let NewPropertyObj = { ...NowPlayingSection.TextNodes[EndIndexer].TextProperty, Text: RollbackText, TextMode: 'new' };
     return NewPropertyObj;
 }
-function TextNodeInterpreter(NowPlayingSection,ev,callback) {
+function TextNodeInterpreter(NowPlayingSection, ev, RendererCallback) {
     switch (ev.type) {
         case NEXT_NODE: {
             TextNodeIndexer++;
@@ -28,22 +28,27 @@ function TextNodeInterpreter(NowPlayingSection,ev,callback) {
             break;
         }
     }
-    if(NowPlayingSection===null)return;
-    if (TextNodeIndexer >= NowPlayingSection.TextNodes.length) window.alert("reach the end of section");
+    if (NowPlayingSection === null) return;
+    let StatusFlag = null;/*
+    正常状态下StatusFlag为null,到达Section结尾的时候会为1，到达Section开头会设为2
+     */
     if (TextNodeIndexer < 0) {
+        console.log('reach the begin of this section.');
         TextNodeIndexer = 0;
-        window.alert("reach the begin of section");
+        StatusFlag = 2;
     }
-    else if (TextNodeIndexer > NowPlayingSection.TextNodes.length - 1) {
-        TextNodeIndexer=NowPlayingSection.TextNodes.length - 1;
-        return;
+    else if (TextNodeIndexer >= NowPlayingSection.TextNodes.length - 1) {
+        console.log('reach the end of this section.');
+        TextNodeIndexer = NowPlayingSection.TextNodes.length - 1;
+        StatusFlag = 1;
     }
-    if(callback===null) return;
+    if (RendererCallback === null) return;
     else if (0 <= TextNodeIndexer && TextNodeIndexer < NowPlayingSection.TextNodes.length) {
-        callback(ev.type===PREV_NODE?
-            MakeRollBackProperty(NowPlayingSection,TextNodeIndexer):
-            NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty);//测试用
-            return ;
+        let Content = ev.type===PREV_NODE||(ev.type===SET_NODE_INDEX&&NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty.TextMode==='append')?
+        MakeRollBackProperty(NowPlayingSection,TextNodeIndexer):
+        NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty;
+        RendererCallback({TextContent:Content,Flag:StatusFlag});//测试用
+        return;
     }
 }
 // function SectionResolver(SectionObject) {
@@ -53,10 +58,10 @@ function TextNodeInterpreter(NowPlayingSection,ev,callback) {
 //     //Unload CustomScript
 //     delete global.CustomScripts;
 // }
-function LoadSectionRes(SectionArr,Indexer){
+function LoadSectionRes(SectionArr, Indexer) {
     let fs = window.electron.remote.require('fs');
     try {
-        let res =  JSON.parse(fs.readFileSync(SectionArr[Indexer]));
+        let res = JSON.parse(fs.readFileSync(SectionArr[Indexer]));
         return res;
     } catch (error) {
         console.log(error);
@@ -72,7 +77,7 @@ function CustomFunctionAdapter(ExecuteFunctionArray) {
 function LoadCustomScripts(ScriptsPath) {
     global.CustomScripts = require(ScriptsPath);
 }
-module.exports = {TextNodeInterpreter,LoadSectionRes};
+module.exports = { TextNodeInterpreter, LoadSectionRes };
 //渲染主进程同时维护着一个状态机，当LoadChapterRes发出事件的时候状态机定位到当前游玩的节点
 //节点没有在存档树上的时候就append节点，SectionResolver发出进入Section的时候
 //状态机根据当前的Chapter(Branch) Section状态修改状态树

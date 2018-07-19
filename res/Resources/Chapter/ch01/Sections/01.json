@@ -19,14 +19,6 @@
                         400
                     ],
                     "ExecuteTime": 1000
-                },
-                {
-                    "Name": "CreateAndBindButton",
-                    "Parameter": [
-                        1,
-                        2
-                    ],
-                    "ExecuteTime": 0
                 }
             ],
             "TextProperty": {
@@ -52,6 +44,13 @@
             "CharacterName": "郑泽明",
             "Text": ",苏希帅烔天下第一牛批",
             "TextMode": "append"
+            }
+        },
+        {
+            "TextProperty": {
+            "CharacterName": "苏希帅烔",
+            "Text": "哎呀好了好了，我知道了，老子才是真牛批!",
+            "TextMode": "new"
             }
         }
     ]

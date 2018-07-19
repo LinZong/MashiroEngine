@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "electron": "^2.0.4",
+    "q": "^1.5.1",
     "react": "^16.4.1",
     "react-addons-perf": "^15.4.1",
     "react-addons-test-utils": "^15.4.2",
@@ -22,8 +23,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "electron-start": "electron . --env dev --debug-brk=5858",
-    "electron-build": "npm run build && electron . --env build"
+    "e-s": "electron . --env dev --debug-brk=5858",
+    "e-b": "npm run build && electron . --env build"
   },
   "homepage": ".",
   "devDependencies": {

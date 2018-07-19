@@ -12,7 +12,8 @@ import {
     PREV_NODE,
     SET_NODE_INDEX,
     GET_SELECTED_PLAYING_SECTION,
-    SET_SELECTED_PLAYING_SECTION
+    SET_SELECTED_PLAYING_SECTION,
+    INTERNAL_ERROR
 } from './Events';
 
 const {EventHandler} = require('./StatusMachine');
@@ -48,3 +49,13 @@ export const GetSelectedSection = (Chapter,Branch,Section) => {
     EventHandler.emit(GET_SELECTED_PLAYING_SECTION,dispatch,SetSelectedSection,Chapter,Branch,Section);
   }
 };
+export const GetNextSection = () => {
+  return (dispatch)=>{
+    EventHandler.emit(ENTER_NEXT_SECTION,dispatch,SetSelectedSection);
+  }
+};
+
+export const ErrorHandler = (ErrorMsg) =>({
+  type:INTERNAL_ERROR,
+  ErrorMsg
+});

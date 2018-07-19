@@ -1,41 +1,34 @@
 {
     "Header": {
         "SectionNo": 1,
-        "SectionName": "苏希烔巨佬教不动我做人",
-        "CustomScripts": [
-            "./Resources/Chapter/ch01/Scripts/test1.js"
-        ]
+        "SectionName": "苏希烔巨佬教不动我做人"
     },
-    "PreloadResources":{
-        "Scene":"null",
-        "BGM":"null",
-        "Character":"null"
+    "PreloadResources": {
+        "Scene": "null",
+        "BGM": "null",
+        "Character": "null"
     },
     "TextNodes": [
         {
-            "ExecuteFunction": [
-                {
-                    "Name": "CreateAndBindButton",
-                    "Parameter": [
-                        300,
-                        400
-                    ],
-                    "ExecuteTime": 0
-                }
-            ],
-            "CharacterName": "郑泽明",
-            "Text": "苏希烔巨佬太牛批",
-            "TextMode": "new",
-            "Event": {
-                "ElementChange": {
-                    "ChangeTachie": "Object"
-                }
+            "TextProperty": {
+                "CharacterName": "苏希烔",
+                "Text": "你看你这个傻逼，又不会Unity，又不会Maya",
+                "TextMode": "new"
             }
         },
         {
-            "CharacterName":"郑泽明",
-            "Text":"没人比他更牛批",
-            "TextMode":"append"
+            "TextProperty": {
+                "CharacterName": "苏希烔",
+                "Text": "整天就写一下傻逼代码，以后肯定没出息",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "苏希烔",
+                "Text": "不像我，老子才是真牛逼，琴棋书画样样精通！",
+                "TextMode": "new"
+            }
         }
     ]
 }
