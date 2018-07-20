@@ -6,11 +6,14 @@ let event = require('events').EventEmitter;
 var EventHandler = new event();
 const { LoadChapterRes } = require('./LoadChapter');
 const { LoadSectionRes } = require('./LoadSection');
+
+
 var AllChapter = null;
 var CurrentChapter = null;
 var CurrentBranch = null;
 var CurrentSectionsInChapter = null;
 var CurrentSectionIndex = null;
+
 EventHandler.on(EventSets.GET_SELECTED_PLAYING_SECTION, (dispatch, actionCtor, SelectedChapter, SelectedBranch, SelectedSection) => {
     //测试用
     let TmpChapter = LoadChapterRes(SelectedChapter.Path, SelectedBranch);

@@ -1,0 +1,54 @@
+@-webkit-keyframes BackGroundFadeIn{
+    0% {
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+  }
+  @-webkit-keyframes BackGroundFadeOut{
+    0% {
+        opacity: 1;
+    }
+    100%{
+        opacity: 0;
+    }
+  }
+div.SceneIn{
+    box-sizing:content-box; 
+    width: 100%;
+    height: -webkit-fill-available;
+    /*background-image: url(Miku.png);*/
+    /* 背景图垂直、水平均居中 */
+    background-position: center center;
+    /* 背景图不平铺 */
+    background-repeat: no-repeat;
+    /* 当内容高度大于图片高度时，背景图像的位置相对于viewport固定 */
+    background-attachment: fixed;
+    /* 让背景图基于容器大小伸缩 */
+    background-size: cover;
+    background-color: rgb(255, 255, 255);
+    -webkit-animation-name: BackGroundFadeIn;
+    -webkit-animation-duration: 2000ms;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-delay: 0s;
+  }
+  div.SceneOut{
+    box-sizing:content-box; 
+    width: 100%;
+    height: -webkit-fill-available;
+    /*background-image: url(Miku.png);*/
+    /* 背景图垂直、水平均居中 */
+    background-position: center center;
+    /* 背景图不平铺 */
+    background-repeat: no-repeat;
+    /* 当内容高度大于图片高度时，背景图像的位置相对于viewport固定 */
+    background-attachment: fixed;
+    /* 让背景图基于容器大小伸缩 */
+    background-size: cover;
+    background-color: rgb(255, 255, 255);
+    -webkit-animation-name: BackGroundFadeOut;
+    -webkit-animation-duration: 1990ms;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-delay: 0s;
+  }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import logo from '../logo.svg'
 import './GameView.css';
 import * as Status from '../Engine/Status';
 import * as Actions from '../Engine/SectionActions'

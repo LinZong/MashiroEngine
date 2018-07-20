@@ -18,7 +18,6 @@ function createWindow() {
 		resizable: false,
 		show: false
 	};
-
 	if (global.Environment !== null || global.Environment !== undefined) {
 		Options.width = global.Environment.Resolution['X'];
 		Options.height = global.Environment.Resolution['Y'];
@@ -41,7 +40,6 @@ app.on('window-all-closed', function () {
 		app.quit()
 	}
 })
-
 app.on('activate', function () {
 	if (mainWindow === null) {
 		createWindow()

@@ -1,5 +1,3 @@
-
-
 function LoadAllChapters(ChapterDir) {
     let ChapterList = [];
     let FileStream = require('fs');//这个是在主进程运行的,直接require原生模块即可
@@ -29,7 +27,7 @@ function LoadChapterRes(Path, Branch) {
     let AllBranch = ChapterInfo.Branch;
     //Support find by tag or by name.
     for (let i = 0; i < AllBranch.length; i++) {
-        if (Branch == AllBranch[i].BranchTag || Branch == AllBranch[i].BranchName) {
+        if (Branch === AllBranch[i].BranchTag || Branch === AllBranch[i].BranchName) {
             RebuildChapterInfo = ChapterInfo;
             RebuildChapterInfo.Branch = AllBranch[i];
             RebuildChapterInfo.BranchIndex = i;

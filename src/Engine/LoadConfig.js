@@ -5,6 +5,7 @@ const{LoadAllChapters}=require('./LoadChapter');
 function LoadGlobalConfig() {
     try {
         let Environment = JSON.parse(FileStream.readFileSync('./res/config/GlobalConfig.json'));
+        Environment.AppPath = __dirname;
         Environment.Resolution["X"] = Environment.Resolution[0];
         Environment.Resolution["Y"] = Environment.Resolution[1];
         Environment.ChapterDir = './' + Path.join(Environment.Path.Root, Environment.Path.Resources.Chapter);

@@ -13,7 +13,9 @@ function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
     let NewPropertyObj = { ...NowPlayingSection.TextNodes[EndIndexer].TextProperty, Text: RollbackText, TextMode: 'new' };
     return NewPropertyObj;
 }
-function TextNodeInterpreter(NowPlayingSection, ev, RendererCallback) {
+var MiddleWare = [CustomFunctionAdapter, TextBoxRender];
+//This callback should match the MiddleWareList correctly.
+function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
     switch (ev.type) {
         case NEXT_NODE: {
             TextNodeIndexer++;
@@ -42,16 +44,44 @@ function TextNodeInterpreter(NowPlayingSection, ev, RendererCallback) {
         TextNodeIndexer = NowPlayingSection.TextNodes.length - 1;
         StatusFlag = 1;
     }
-    if (RendererCallback === null) return;
-    else if (0 <= TextNodeIndexer && TextNodeIndexer < NowPlayingSection.TextNodes.length) {
-        let Content = ev.type===PREV_NODE||(ev.type===SET_NODE_INDEX&&NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty.TextMode==='append')?
-        MakeRollBackProperty(NowPlayingSection,TextNodeIndexer):
-        NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty;
+    if (0 <= TextNodeIndexer && TextNodeIndexer < NowPlayingSection.TextNodes.length) {
+        let Content = ev.type === PREV_NODE || (ev.type === SET_NODE_INDEX && NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty.TextMode === 'append') ?
+            MakeRollBackProperty(NowPlayingSection, TextNodeIndexer) :
+            NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty;
         //SectionName:NowPlayingSection.Header.SectionName,
-        RendererCallback({TextContent:Content,Flag:StatusFlag});//测试用
+        let CurrNode = NowPlayingSection.TextNodes[TextNodeIndexer];
+        CurrNode.TextProperty = Content;
+        // CustomFunctionAdapter(CurrNode,MiddleWareCallback[0],StatusFlag);
+        // TextBoxRender(CurrNode,MiddleWareCallback[1],StatusFlag);
+        MiddleWare.map((item,idx)=>({Func:item,Callback:MiddleWareCallback[idx]})).forEach(element=>{
+            element.Func(CurrNode,element.Callback,StatusFlag);
+        });
         return;
     }
 }
+
+
+function CustomFunctionAdapter(TextNodeObj,callback,StatusFlag) {
+    if (TextNodeObj.hasOwnProperty('ExecuteFunction')) {
+        let FuncArray = TextNodeObj.ExecuteFunction;
+        FuncArray.forEach(element => {
+            // let Func = global.CustomScripts[element.Name];
+            // setTimeout(() => Func(...element.Parameter), element.ExecuteTime);
+            console.log('Should execute function : ', element.Name);
+        });
+    }
+}
+
+function TextBoxRender(TextNodeObj,callback,StatusFlag) {
+    if (TextNodeObj.hasOwnProperty('TextProperty')) {
+        let CallbackArgs = {TextContent:TextNodeObj.TextProperty,Flag:StatusFlag};
+        if (typeof callback === 'function') {
+            callback(CallbackArgs);
+        }
+    }
+}
+/* */
+
 // function SectionResolver(SectionObject) {
 //     LoadCustomScripts(SectionObject.Header.CustomScripts);
 //     //LoadOrChangeResources(SectionObject.PreloadResources);
@@ -69,16 +99,16 @@ function LoadSectionRes(SectionArr, Indexer) {
         return null;
     }
 }
-function CustomFunctionAdapter(ExecuteFunctionArray) {
-    ExecuteFunctionArray.forEach(element => {
-        let Func = global.CustomScripts[element.Name];
-        setTimeout(() => Func(...element.Parameter), element.ExecuteTime);
-    });
-}
-function LoadCustomScripts(ScriptsPath) {
-    global.CustomScripts = require(ScriptsPath);
-}
-module.exports = { TextNodeInterpreter, LoadSectionRes };
+// function CustomFunctionAdapter(ExecuteFunctionArray) {
+//     ExecuteFunctionArray.forEach(element => {
+//         let Func = global.CustomScripts[element.Name];
+//         setTimeout(() => Func(...element.Parameter), element.ExecuteTime);
+//     });
+// }
+// function LoadCustomScripts(ScriptsPath) {
+//     global.CustomScripts = require(ScriptsPath);
+// }
+module.exports = { TextNodeInterpreter, LoadSectionRes, MiddleWare };
 //渲染主进程同时维护着一个状态机，当LoadChapterRes发出事件的时候状态机定位到当前游玩的节点
 //节点没有在存档树上的时候就append节点，SectionResolver发出进入Section的时候
 //状态机根据当前的Chapter(Branch) Section状态修改状态树
