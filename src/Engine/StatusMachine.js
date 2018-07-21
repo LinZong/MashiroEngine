@@ -11,7 +11,6 @@ const { LoadSectionRes } = require('./LoadSection');
 var AllChapter = null;
 var CurrentChapter = null;
 var CurrentBranch = null;
-var CurrentSectionsInChapter = null;
 var CurrentSectionIndex = null;
 
 EventHandler.on(EventSets.GET_SELECTED_PLAYING_SECTION, (dispatch, actionCtor, SelectedChapter, SelectedBranch, SelectedSection) => {
@@ -26,11 +25,10 @@ EventHandler.on(EventSets.GET_SELECTED_PLAYING_SECTION, (dispatch, actionCtor, S
                 break;
             }
         }
-        CurrentChapter = TmpChapter;
-        CurrentSectionsInChapter = CurrentChapter.Branch.Sections;
-        CurrentSectionIndex = SelectedSection;
-        CurrentBranch=SelectedBranch;
-        let secres = LoadSectionRes(CurrentSectionsInChapter, SelectedSection);
+        CurrentChapter = TmpChapter;//是一个存章节信息的Object
+        CurrentSectionIndex = SelectedSection;//选择了的Section数组Index
+        CurrentBranch = SelectedBranch;//选择的Branch号
+        let secres = LoadSectionRes(CurrentChapter, SelectedSection);
         dispatch(actionCtor(secres));
     }
 });
@@ -42,8 +40,8 @@ EventHandler.on(EventSets.GET_ALL_CHAPTERS, (dispatch, actionCtor, ErrorCtor) =>
 
 EventHandler.on(EventSets.ENTER_NEXT_SECTION, (dispatch, actionCtor, ErrorCtor) => {
     let NowSection = CurrentSectionIndex;
-    if (NowSection < CurrentSectionsInChapter.length-1) {
-        let secres = LoadSectionRes(CurrentSectionsInChapter, NowSection + 1);
+    if (NowSection < CurrentChapter.Branch.Sections.length-1) {
+        let secres = LoadSectionRes(CurrentChapter, NowSection + 1);
         CurrentSectionIndex++;
         dispatch(actionCtor(secres));
     }

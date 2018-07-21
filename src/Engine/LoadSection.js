@@ -89,10 +89,12 @@ function TextBoxRender(TextNodeObj,callback,StatusFlag) {
 //     //Unload CustomScript
 //     delete global.CustomScripts;
 // }
-function LoadSectionRes(SectionArr, Indexer) {
+function LoadSectionRes(ChapterNode, Indexer) {
     let fs = window.electron.remote.require('fs');
+    let SectionJsonPath=ChapterNode.Branch.Sections[Indexer];
     try {
-        let res = JSON.parse(fs.readFileSync(SectionArr[Indexer]));
+        let res = JSON.parse(fs.readFileSync(SectionJsonPath));
+        res.LoadingImage=ChapterNode.Branch.LoadingImage;
         return res;
     } catch (error) {
         console.log(error);

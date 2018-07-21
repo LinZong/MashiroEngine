@@ -10,7 +10,7 @@ import registerServiceWorker from './registerServiceWorker';
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
-            <div className='BGLayer'>
+            <div>
                 <Route exact path='/' component={WelcomeView} />
                 <Route path='/section' component={GameView} />
             </div>

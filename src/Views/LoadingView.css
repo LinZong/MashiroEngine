@@ -1,23 +1,8 @@
-@-webkit-keyframes BackGroundFadeIn{
-    0% {
-        opacity: 0;
-    }
-    100%{
-        opacity: 1;
-    }
-  }
-  @-webkit-keyframes BackGroundFadeOut{
-    0% {
-        opacity: 1;
-    }
-    100%{
-        opacity: 0;
-    }
-  }
-div.Scene{
+div#LoadingPage{
     box-sizing:content-box; 
     width: 100%;
     height: -webkit-fill-available;
+    /*background-image: url(Miku.png);*/
     /* 背景图垂直、水平均居中 */
     background-position: center center;
     /* 背景图不平铺 */
@@ -27,4 +12,4 @@ div.Scene{
     /* 让背景图基于容器大小伸缩 */
     background-size: cover;
     background-color: rgb(255, 255, 255);
-  }
+}

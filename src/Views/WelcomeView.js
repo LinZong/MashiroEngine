@@ -4,6 +4,7 @@ import './GameView.css';
 import * as Status from '../Engine/Status';
 import * as Actions from '../Engine/SectionActions'
 import { Link } from 'react-router-dom';
+
 class WelcomeView extends React.Component {
     constructor() {
         super(...arguments);
@@ -12,7 +13,7 @@ class WelcomeView extends React.Component {
         this.props.onLoadChapters();
     }
     render() {
-        switch (this.props.status) {
+        switch (this.props.WelcomeViewStatus) {
             case Status.SUCCESS: {
                 return (
                     <div className="App">
@@ -36,8 +37,8 @@ class WelcomeView extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
-        status: state.status,
-        ChapterList: state.ChapterList
+        WelcomeViewStatus: state.Welcome.status,
+        ChapterList: state.Welcome.ChapterList
     };
 };
 const mapDispatchToProps = (dispatch) => {

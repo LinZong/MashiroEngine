@@ -1,28 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import './GameView.css';
+import TransitionGroup from 'react-addons-css-transition-group';
 import * as Actions from '../Engine/SectionActions'
+import * as Status from '../Engine/Status'
 import { TextNodeInterpreter } from '../Engine/LoadSection';
-import TextBox from './TextBox';
-import { Scene } from './index';
-import Path from 'path';
+import { Scene, TextBox, Loading } from './index';
+import { GetRemoteUrlPath } from '../Engine/Util';
 const electron = window.electron;
 class GameView extends Component {
-	constructor(props, context) {
-		super(props, context);
+	constructor() {
+		super(...arguments);
 		this.state = { Scene: null, BGM: null, SectionName: null, CharacterName: null, Text: null };
 		this.ChangeNode = this.ChangeNode.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
 		this.GetNewTextNode = this.GetNewTextNode.bind(this);
 		this.InitPreloadResources = this.InitPreloadResources.bind(this);
-		this.KeyEventBlocker=this.KeyEventBlocker.bind(this);
+		this.KeyEventBlocker = this.KeyEventBlocker.bind(this);
 		this.NeedNewSection = null;
 		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView];
-		this.BlockKeyEvent=0;
+		this.BlockKeyEvent = 0;
 	}
 	ChangeNode(event) {
-		if(this.BlockKeyEvent===1) return;
+		if (this.BlockKeyEvent === 1) return;
 		if (event.Mouse) {
 			this.GetNewTextNode(1);
 		}
@@ -72,22 +71,21 @@ class GameView extends Component {
 		}
 	}
 	InitPreloadResources(PreloadResourcesObj) {
-		let AppPath = electron.remote.getGlobal('Environment').AppPath;
 		for (var key in PreloadResourcesObj) {
 			if (PreloadResourcesObj[key] !== null) {
-				PreloadResourcesObj[key] = "url(\"file:///" + Path.join(AppPath, PreloadResourcesObj[key]) + "\")";
+				PreloadResourcesObj[key] = GetRemoteUrlPath(PreloadResourcesObj[key]);
 			}
 		}
 		this.setState(PreloadResourcesObj);
 	}
-	KeyEventBlocker(event){
-		switch(event.type){
-			case "webkitAnimationStart":{
-				this.BlockKeyEvent=1;
+	KeyEventBlocker(event) {
+		switch (event.type) {
+			case "webkitAnimationStart": {
+				this.BlockKeyEvent = 1;
 				break;
 			}
-			case "webkitAnimationEnd":{
-				this.BlockKeyEvent=0;
+			case "webkitAnimationEnd": {
+				this.BlockKeyEvent = 0;
 				break;
 			}
 		}
@@ -96,13 +94,13 @@ class GameView extends Component {
 		let state = this.props.location.state;
 		this.props.onLoadSectionRes(state.Chapter, state.Branch, state.Section);
 		window.addEventListener('keydown', this.ChangeNode);
-		window.addEventListener('webkitAnimationStart',this.KeyEventBlocker);
-		window.addEventListener('webkitAnimationEnd',this.KeyEventBlocker);
+		window.addEventListener('webkitAnimationStart', this.KeyEventBlocker);
+		window.addEventListener('webkitAnimationEnd', this.KeyEventBlocker);
 	}
 	componentWillUnmount() {
 		window.removeEventListener('keydown', this.ChangeNode);
-		window.removeEventListener('webkitAnimationStart',this.KeyEventBlocker);
-		window.removeEventListener('webkitAnimationEnd',this.KeyEventBlocker);
+		window.removeEventListener('webkitAnimationStart', this.KeyEventBlocker);
+		window.removeEventListener('webkitAnimationEnd', this.KeyEventBlocker);
 	}
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.Section !== undefined) { //检查现在应不应该把新资源应用上去。
@@ -115,19 +113,36 @@ class GameView extends Component {
 		}
 	}
 	render() {
-		return (this.props.Section === undefined ? 'Loading' :
-			<Scene BG={this.state.Scene}>
-				<TextBox SectionName={this.props.Section.Header.SectionName}
-					CharacterName={this.state.CharacterName}
-					TextContent={this.state.Text}
-					MouseEventTrigger={this.ChangeNode} />
-			</Scene>);
+		return (
+			<TransitionGroup transitionName="fade" transitionEnterTimeout={500} transitionLeave={false} transitionAppear={true} transitionAppearTimeout={500}>
+				{
+					(() => {
+						switch (this.props.GameViewStatus) {
+							case Status.SUCCESS: {
+								return (<Scene key={2} BG={this.state.Scene}>
+									<TextBox SectionName={this.props.Section.Header.SectionName}
+										CharacterName={this.state.CharacterName}
+										TextContent={this.state.Text}
+										MouseEventTrigger={this.ChangeNode} />
+								</Scene>);
+							}
+							case Status.LOADING: {
+								return (<Loading key={1} LoadingImage={this.props.Section.LoadingImage} />);
+							}
+							default : return <p key={3}>{"Loading"}</p>;
+						}
+					}).call(this, null)
+					//<p key={1}>{"Relax"}</p>
+				}
+			</TransitionGroup>
+		)
 	}
 }
 const mapStateToProps = (state) => {
+	console.log(state.GameView);
 	return {
-		status: state.status,
-		Section: state.Section
+		GameViewStatus: state.GameView.status,
+		Section: state.GameView.Section
 	};
 };
 const mapDispatchToProps = (dispatch) => {

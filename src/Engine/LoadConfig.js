@@ -12,6 +12,8 @@ function LoadGlobalConfig() {
         Environment.CharacterDir = './' + Path.join(Environment.Path.Root, Environment.Path.Resources.Character);
         Environment.ThemeDir = './' + Path.join(Environment.Path.Root, Environment.Path.Resources.Theme);
         Environment.SaveDataDir = './' + Path.join(Environment.Path.Root, Environment.Path.Savedata);
+        //占坑，以后肯定是要加载全局UI 资源的(Default or usersettings)
+        Environment.UI={LoadingImage:'./'+Path.join(Environment.ThemeDir,'UIResources\\Framework\\FakeLoading.jpg')};
         global.Environment = Environment;
         global.MyEngine = {};
         global.MyEngine.StatusMachine = {};

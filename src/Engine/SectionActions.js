@@ -13,17 +13,25 @@ import {
     SET_NODE_INDEX,
     GET_SELECTED_PLAYING_SECTION,
     SET_SELECTED_PLAYING_SECTION,
-    INTERNAL_ERROR
+    INTERNAL_ERROR,
+    NOW_LOADING
 } from './Events';
+
+import {GetRemoteUrlPath} from './Util';
+//测试用，将来肯定要做好默认UI读取的。
+var GlobalLoading = GetRemoteUrlPath('.res\\Resources\\Theme\\UIResources\\Framework\\FakeLoading.jpg');
 
 const {EventHandler} = require('./StatusMachine');
 
 export const NextNode = () => ({
-  type: NEXT_NODE,
+  type: NEXT_NODE
 });
-
+export const Loading = (LoadingImage) => ({
+  type: NOW_LOADING,
+  LoadingImage
+});
 export const PrevNode = () => ({
-  type: PREV_NODE,
+  type: PREV_NODE
 });
 
 export const SetNodeIndex = (Indexer) => ({
@@ -46,12 +54,15 @@ export const GetAllChapter = () => {
 };
 export const GetSelectedSection = (Chapter,Branch,Section) => {
   return (dispatch)=>{
+    dispatch(Loading());
+    //Chapter是AllChapter扫了文件夹的Obj,Branch和Section都是数字
     EventHandler.emit(GET_SELECTED_PLAYING_SECTION,dispatch,SetSelectedSection,Chapter,Branch,Section);
   }
 };
 export const GetNextSection = () => {
   return (dispatch)=>{
-    EventHandler.emit(ENTER_NEXT_SECTION,dispatch,SetSelectedSection);
+    dispatch(Loading());
+    setTimeout(()=>{EventHandler.emit(ENTER_NEXT_SECTION,dispatch,SetSelectedSection);},2000);
   }
 };
 
