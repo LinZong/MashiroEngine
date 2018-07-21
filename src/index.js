@@ -17,4 +17,19 @@ ReactDOM.render(
         </BrowserRouter>
     </Provider>
     , document.getElementById('root'));
+
+if (module.hot) {
+    module.hot.accept(()=>{
+        ReactDOM.render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <div>
+                        <Route exact path='/' component={WelcomeView} />
+                        <Route path='/section' component={GameView} />
+                    </div>
+                </BrowserRouter>
+            </Provider>
+            , document.getElementById('root'));
+    });
+}
 registerServiceWorker();

@@ -11,7 +11,7 @@ const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
-
+const ManifestPlugin = require('webpack-manifest-plugin');
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
 const publicPath = '/';
@@ -35,6 +35,7 @@ module.exports = {
   entry: [
     // We ship a few polyfills by default:
     require.resolve('./polyfills'),
+    'react-hot-loader/patch',
     // Include an alternative client for WebpackDevServer. A client's job is to
     // connect to WebpackDevServer by a socket and get notified about changes.
     // When you save a file, the client will either apply hot updates (in case
@@ -143,13 +144,17 @@ module.exports = {
             test: /\.(js|jsx|mjs)$/,
             include: paths.appSrc,
             loader: require.resolve('babel-loader'),
-            options: {
-              
-              // This is a feature of `babel-loader` for webpack (not Babel itself).
-              // It enables caching results in ./node_modules/.cache/babel-loader/
-              // directory for faster rebuilds.
-              cacheDirectory: true,
+            query: {
+              presets: ['env', 'react'],
+              plugins: ["react-hot-loader/babel"] //增加
             },
+            // options: {
+              
+            //   // This is a feature of `babel-loader` for webpack (not Babel itself).
+            //   // It enables caching results in ./node_modules/.cache/babel-loader/
+            //   // directory for faster rebuilds.
+            //   cacheDirectory: true,
+            // },
           },
           // "postcss" loader applies autoprefixer to our CSS.
           // "css" loader resolves paths in CSS and adds assets as dependencies.
