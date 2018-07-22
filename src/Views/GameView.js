@@ -6,6 +6,7 @@ import * as Status from '../Engine/Status'
 import { TextNodeInterpreter } from '../Engine/LoadSection';
 import { Scene, TextBox, Loading } from './index';
 import { GetRemoteUrlPath } from '../Engine/Util';
+import Store from '../Store';
 const electron = window.electron;
 class GameView extends Component {
 	constructor() {
@@ -16,9 +17,15 @@ class GameView extends Component {
 		this.GetNewTextNode = this.GetNewTextNode.bind(this);
 		this.InitPreloadResources = this.InitPreloadResources.bind(this);
 		this.KeyEventBlocker = this.KeyEventBlocker.bind(this);
+		this.GetStatusFlag=this.GetStatusFlag.bind(this);
 		this.NeedNewSection = null;
-		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView];
+		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView,this.GetStatusFlag];
 		this.BlockKeyEvent = 0;
+		this.NodeIndex = null;
+	}
+	GetStatusFlag(StatusObj){
+		this.NeedNewSection=StatusObj.Flag;
+		this.NodeIndex = StatusObj.Index;
 	}
 	ChangeNode(event) {
 		if (this.BlockKeyEvent === 1) return;
@@ -62,12 +69,11 @@ class GameView extends Component {
 		}
 	}
 	ApplyTextToView(NodeProps) {
-		this.NeedNewSection = NodeProps.Flag;
-		let ThisContent = NodeProps.TextContent;
-		if (ThisContent.TextMode === 'new') {
-			this.setState(ThisContent);
-		} else if (ThisContent.TextMode === 'append') {
-			this.setState({ ...ThisContent, Text: this.state.Text + ThisContent.Text });
+		let NextTextContent = NodeProps.TextContent;
+		if (NextTextContent.TextMode === 'new') {
+			this.setState(NextTextContent);
+		} else if (NextTextContent.TextMode === 'append') {
+			this.setState({...NextTextContent, Text: this.state.Text + NextTextContent.Text});
 		}
 	}
 	InitPreloadResources(PreloadResourcesObj) {
@@ -98,12 +104,13 @@ class GameView extends Component {
 		window.addEventListener('webkitAnimationEnd', this.KeyEventBlocker);
 	}
 	componentWillUnmount() {
+		this.props.onLeaveGameView();
 		window.removeEventListener('keydown', this.ChangeNode);
 		window.removeEventListener('webkitAnimationStart', this.KeyEventBlocker);
 		window.removeEventListener('webkitAnimationEnd', this.KeyEventBlocker);
 	}
 	componentWillReceiveProps(nextProps) {
-		if (nextProps.Section !== undefined) { //检查现在应不应该把新资源应用上去。
+		if (nextProps.Section !== null && nextProps.GameViewStatus !== Status.LOADING) { //检查现在应不应该把新资源应用上去。
 			this.InitPreloadResources(nextProps.Section.PreloadResources);
 			let InitIndex = 0;
 			if (this.props.Section === null) InitIndex = this.props.location.state.TextNodeBegin;
@@ -132,17 +139,16 @@ class GameView extends Component {
 							default : return <p key={3}>{"Loading"}</p>;
 						}
 					}).call(this, null)
-					//<p key={1}>{"Relax"}</p>
 				}
 			</TransitionGroup>
 		)
 	}
 }
-const mapStateToProps = (state) => {
-	console.log(state.GameView);
+const mapStateToProps = (StoreState) => {
+	console.log(StoreState.GameView);
 	return {
-		GameViewStatus: state.GameView.status,
-		Section: state.GameView.Section
+		GameViewStatus: StoreState.GameView.status,
+		Section: StoreState.GameView.Section
 	};
 };
 const mapDispatchToProps = (dispatch) => {
@@ -152,6 +158,9 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		onLoadNextSection: () => {
 			dispatch(Actions.GetNextSection());
+		},
+		onLeaveGameView:()=>{
+			dispatch(Actions.ClearGameViewState());
 		}
 	};
 };

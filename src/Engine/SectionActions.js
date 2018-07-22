@@ -14,7 +14,8 @@ import {
     GET_SELECTED_PLAYING_SECTION,
     SET_SELECTED_PLAYING_SECTION,
     INTERNAL_ERROR,
-    NOW_LOADING
+    NOW_LOADING,
+    LEAVE_GAMEVIEW
 } from './Events';
 
 import {GetRemoteUrlPath} from './Util';
@@ -52,6 +53,10 @@ export const GetAllChapter = () => {
     EventHandler.emit(GET_ALL_CHAPTERS,dispatch,SetAllChapter);
   }
 };
+export const ClearGameViewState = () =>({
+  type:LEAVE_GAMEVIEW
+});
+
 export const GetSelectedSection = (Chapter,Branch,Section) => {
   return (dispatch)=>{
     dispatch(Loading());

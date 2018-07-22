@@ -8,6 +8,9 @@ export default (state={}, action) => {
     case ActionTypes.NOW_LOADING:{
       return {...state,status:Status.LOADING};  
     }
+    case ActionTypes.LEAVE_GAMEVIEW:{
+      return {status:null,Section:null}
+    }
     default:return state;
   }
 }

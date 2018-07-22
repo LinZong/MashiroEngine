@@ -21,8 +21,8 @@ class WelcomeView extends React.Component {
                             <h1 className="App-title">全部章节</h1>
                         </header>
                         <div>
-                            {this.props.ChapterList.map((item) =>
-                                (<Link to=
+                            {this.props.ChapterList.map((item,idx) =>
+                                (<Link key={idx} to=
                                     {{ pathname: '/section', state: { Chapter: item, Branch: 1, Section: 0, TextNodeBegin: 0 } }}>
                                     <li>{item.Name}</li></Link>
                                 ))}

@@ -13,8 +13,9 @@ function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
     let NewPropertyObj = { ...NowPlayingSection.TextNodes[EndIndexer].TextProperty, Text: RollbackText, TextMode: 'new' };
     return NewPropertyObj;
 }
-var MiddleWare = [CustomFunctionAdapter, TextBoxRender];
+var MiddleWare = [CustomFunctionAdapter, TextBoxRender,ParseStatusFlag];
 //This callback should match the MiddleWareList correctly.
+
 function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
     switch (ev.type) {
         case NEXT_NODE: {
@@ -53,16 +54,18 @@ function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
         CurrNode.TextProperty = Content;
         // CustomFunctionAdapter(CurrNode,MiddleWareCallback[0],StatusFlag);
         // TextBoxRender(CurrNode,MiddleWareCallback[1],StatusFlag);
+
+
         MiddleWare.map((item,idx)=>({Func:item,Callback:MiddleWareCallback[idx]})).forEach(element=>{
-            element.Func(CurrNode,element.Callback,StatusFlag);
+            element.Func(CurrNode,element.Callback,{Index:TextNodeIndexer,Flag:StatusFlag});
         });
         return;
     }
 }
 
 
-function CustomFunctionAdapter(TextNodeObj,callback,StatusFlag) {
-    if (TextNodeObj.hasOwnProperty('ExecuteFunction')) {
+function CustomFunctionAdapter(TextNodeObj,callback,StatusObj) {
+    if (TextNodeObj.ExecuteFunction!==undefined) {
         let FuncArray = TextNodeObj.ExecuteFunction;
         FuncArray.forEach(element => {
             // let Func = global.CustomScripts[element.Name];
@@ -72,23 +75,22 @@ function CustomFunctionAdapter(TextNodeObj,callback,StatusFlag) {
     }
 }
 
-function TextBoxRender(TextNodeObj,callback,StatusFlag) {
-    if (TextNodeObj.hasOwnProperty('TextProperty')) {
-        let CallbackArgs = {TextContent:TextNodeObj.TextProperty,Flag:StatusFlag};
+function TextBoxRender(TextNodeObj,callback,StatusObj) {
+    if (TextNodeObj.TextProperty!==undefined) {
+        let TextContentForApply = {TextContent:TextNodeObj.TextProperty};
         if (typeof callback === 'function') {
-            callback(CallbackArgs);
+            callback(TextContentForApply);
         }
     }
 }
-/* */
 
-// function SectionResolver(SectionObject) {
-//     LoadCustomScripts(SectionObject.Header.CustomScripts);
-//     //LoadOrChangeResources(SectionObject.PreloadResources);
-//     TextNodeInterpreter(SectionObject.TextNodes);
-//     //Unload CustomScript
-//     delete global.CustomScripts;
-// }
+function ParseStatusFlag(TextNodeObj,callback,StatusObj){
+    if(typeof callback=== 'function'){
+        callback(StatusObj);
+    }
+}
+
+
 function LoadSectionRes(ChapterNode, Indexer) {
     let fs = window.electron.remote.require('fs');
     let SectionJsonPath=ChapterNode.Branch.Sections[Indexer];
