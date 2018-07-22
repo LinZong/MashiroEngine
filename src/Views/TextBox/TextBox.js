@@ -1,19 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import './GameView.css'
+import '../GameView.css'
 import './TextBoxView.css'
 import Typed from 'react-typed';
-// const TextBox = ({ SectionName, CharacterName, TextContent, MouseEventTrigger }) => (
-//     <div className="App">
-//         <p className="App-title" id="SectionName">{SectionName}</p>
-//         <Link to='/' className="App-title">返回到章节选择</Link>
-//         <div className="TextBox" onMouseDown={() => MouseEventTrigger({ Mouse: true })}>
-//             <p className="App-intro" id="CharacterName">{CharacterName}</p>
-//         </div>
-
-//<Typed className="App-intro" typedRef={(typed) => { this.typed = typed; }} strings={[this.props.TextContent]} typeSpeed={40} showCursor={false} />
-//     </div>
-// );
 class TextBox extends Component {
     constructor() {
         super(...arguments);
