@@ -17,7 +17,8 @@ const reducer = combineReducers({
 
 const storeEnhancers = compose(
   applyMiddleware(...middlewares),
-  reset
+  reset,
+  window.devToolsExtension && window.devToolsExtension()
 );
 
 export default createStore(reducer, {}, storeEnhancers);

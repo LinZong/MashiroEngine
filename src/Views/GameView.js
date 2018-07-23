@@ -17,18 +17,25 @@ class GameView extends Component {
 		this.GetNewTextNode = this.GetNewTextNode.bind(this);
 		this.InitPreloadResources = this.InitPreloadResources.bind(this);
 		this.KeyEventBlocker = this.KeyEventBlocker.bind(this);
-		this.GetStatusFlag=this.GetStatusFlag.bind(this);
+		this.GetStatusFlag = this.GetStatusFlag.bind(this);
+		this.GetTypingStatus=this.GetTypingStatus.bind(this);
+		this.SetStopTypingController=this.SetStopTypingController.bind(this);
 		this.NeedNewSection = null;
-		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView,this.GetStatusFlag];
+		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView, this.GetStatusFlag];
 		this.BlockKeyEvent = 0;
 		this.NodeIndex = null;
+		this.TypingController = {Stopper:null,IsTyping:0};
 	}
-	GetStatusFlag(StatusObj){
-		this.NeedNewSection=StatusObj.Flag;
+	GetStatusFlag(StatusObj) {
+		this.NeedNewSection = StatusObj.Flag;
 		this.NodeIndex = StatusObj.Index;
 	}
 	ChangeNode(event) {
 		if (this.BlockKeyEvent === 1) return;
+		else if(this.TypingController.IsTyping===1){
+			this.TypingController.Stopper();
+			return;
+		}
 		if (event.Mouse) {
 			this.GetNewTextNode(1);
 		}
@@ -73,7 +80,7 @@ class GameView extends Component {
 		if (NextTextContent.TextMode === 'new') {
 			this.setState(NextTextContent);
 		} else if (NextTextContent.TextMode === 'append') {
-			this.setState({...NextTextContent, Text: this.state.Text + NextTextContent.Text});
+			this.setState({ ...NextTextContent, Text: this.state.Text + NextTextContent.Text });
 		}
 	}
 	InitPreloadResources(PreloadResourcesObj) {
@@ -95,6 +102,13 @@ class GameView extends Component {
 				break;
 			}
 		}
+	}
+	GetTypingStatus(StatusCode)//1是正在执行打字机效果，0是执行完成
+	{
+		this.TypingController.IsTyping = StatusCode;
+	}
+	SetStopTypingController(ControllerFunc){
+		this.TypingController.Stopper=ControllerFunc;
 	}
 	componentDidMount() {
 		let state = this.props.location.state;
@@ -126,17 +140,22 @@ class GameView extends Component {
 					(() => {
 						switch (this.props.GameViewStatus) {
 							case Status.SUCCESS: {
-								return (<Scene key={2} BG={this.state.Scene}>
-									<TextBox SectionName={this.props.Section.Header.SectionName}
+								return (
+								<Scene key={2} BG={this.state.Scene}>
+									<TextBox 
+										SectionName={this.props.Section.Header.SectionName}
 										CharacterName={this.state.CharacterName}
 										TextContent={this.state.Text}
-										MouseEventTrigger={this.ChangeNode} />
+										MouseEventTrigger={this.ChangeNode}
+										SetTypingStatus={this.GetTypingStatus}
+										GetStopTyping={this.SetStopTypingController}
+									/>
 								</Scene>);
 							}
 							case Status.LOADING: {
 								return (<Loading key={1} LoadingImage={this.props.Section.LoadingImage} />);
 							}
-							default : return <p key={3}>{"Loading"}</p>;
+							default: return <p key={3}>{"Loading"}</p>;
 						}
 					}).call(this, null)
 				}
@@ -159,7 +178,7 @@ const mapDispatchToProps = (dispatch) => {
 		onLoadNextSection: () => {
 			dispatch(Actions.GetNextSection());
 		},
-		onLeaveGameView:()=>{
+		onLeaveGameView: () => {
 			dispatch(Actions.ClearGameViewState());
 		}
 	};

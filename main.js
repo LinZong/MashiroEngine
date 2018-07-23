@@ -23,6 +23,8 @@ function createWindow() {
 		Options.height = global.Environment.Resolution['Y'];
 	}
 	require('./src/Engine/StatusMachine');//加载全部章节
+	BrowserWindow.addDevToolsExtension('C:/Users/NemesissLin/AppData/Local/Google/Chrome/User Data/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.3_0/');
+	
 	mainWindow = new BrowserWindow(Options)
 	mainWindow.loadURL("http://localhost:3000/");
 	mainWindow.once('ready-to-show', () => {
