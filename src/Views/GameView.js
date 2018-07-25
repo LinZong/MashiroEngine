@@ -6,33 +6,39 @@ import * as Status from '../Engine/Status'
 import { TextNodeInterpreter } from '../Engine/LoadSection';
 import { Scene, TextBox, Loading } from './index';
 import { GetRemoteUrlPath } from '../Engine/Util';
-import Store from '../Store';
+import 'bulma/css/bulma.css';
 const electron = window.electron;
 class GameView extends Component {
 	constructor() {
 		super(...arguments);
-		this.state = { Scene: null, BGM: null, SectionName: null, CharacterName: null, Text: null };
+		this.state = { Scene: null, BGM: null, SectionName: null, CharacterName: null, Text: null, SelectionArray: null, IsInSelection: false };
+
+		//游戏画面控制函数
 		this.ChangeNode = this.ChangeNode.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
 		this.GetNewTextNode = this.GetNewTextNode.bind(this);
 		this.InitPreloadResources = this.InitPreloadResources.bind(this);
-		this.KeyEventBlocker = this.KeyEventBlocker.bind(this);
+		this.BlockKeyEventInAnimation = this.BlockKeyEventInAnimation.bind(this);
 		this.GetStatusFlag = this.GetStatusFlag.bind(this);
-		this.GetTypingStatus=this.GetTypingStatus.bind(this);
-		this.SetStopTypingController=this.SetStopTypingController.bind(this);
+		this.GetTypingStatus = this.GetTypingStatus.bind(this);
+		this.SetStopTypingController = this.SetStopTypingController.bind(this);
+		this.ApplySelectionToView = this.ApplySelectionToView.bind(this);
+		//当前节点状态
 		this.NeedNewSection = null;
-		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView, this.GetStatusFlag];
-		this.BlockKeyEvent = 0;
 		this.NodeIndex = null;
-		this.TypingController = {Stopper:null,IsTyping:0};
+		//节点解析器的回调函数
+		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView, this.ApplySelectionToView, this.GetStatusFlag];
+		this.BlockKeyEvent = false;
+		//打字机特效控制函数
+		this.TypingController = { Stopper: null, IsTyping: 0 };
 	}
 	GetStatusFlag(StatusObj) {
 		this.NeedNewSection = StatusObj.Flag;
 		this.NodeIndex = StatusObj.Index;
 	}
 	ChangeNode(event) {
-		if (this.BlockKeyEvent === 1) return;
-		else if(this.TypingController.IsTyping===1){
+		if (this.BlockKeyEvent === true) return;
+		else if (this.TypingController.IsTyping === 1) {
 			this.TypingController.Stopper();
 			return;
 		}
@@ -83,6 +89,17 @@ class GameView extends Component {
 			this.setState({ ...NextTextContent, Text: this.state.Text + NextTextContent.Text });
 		}
 	}
+	ApplySelectionToView(NodeProps) {
+		if(NodeProps===null){
+			if(this.state.IsInSelection!==false){
+				this.setState({IsInSelection:false});
+			}
+			else return;
+		}
+		else{
+			this.setState({SelectionArray:NodeProps,IsInSelection:true});
+		}
+	}
 	InitPreloadResources(PreloadResourcesObj) {
 		for (var key in PreloadResourcesObj) {
 			if (PreloadResourcesObj[key] !== null) {
@@ -91,37 +108,24 @@ class GameView extends Component {
 		}
 		this.setState(PreloadResourcesObj);
 	}
-	KeyEventBlocker(event) {
-		switch (event.type) {
-			case "webkitAnimationStart": {
-				this.BlockKeyEvent = 1;
-				break;
-			}
-			case "webkitAnimationEnd": {
-				this.BlockKeyEvent = 0;
-				break;
-			}
-		}
+	BlockKeyEventInAnimation(event) {
+		this.BlockKeyEvent = event;
 	}
-	GetTypingStatus(StatusCode)//1是正在执行打字机效果，0是执行完成
-	{
+	GetTypingStatus(StatusCode) {
+		//1是正在执行打字机效果，0是执行完成
 		this.TypingController.IsTyping = StatusCode;
 	}
-	SetStopTypingController(ControllerFunc){
-		this.TypingController.Stopper=ControllerFunc;
+	SetStopTypingController(ControllerFunc) {
+		this.TypingController.Stopper = ControllerFunc;
 	}
 	componentDidMount() {
 		let state = this.props.location.state;
 		this.props.onLoadSectionRes(state.Chapter, state.Branch, state.Section);
 		window.addEventListener('keydown', this.ChangeNode);
-		window.addEventListener('webkitAnimationStart', this.KeyEventBlocker);
-		window.addEventListener('webkitAnimationEnd', this.KeyEventBlocker);
 	}
 	componentWillUnmount() {
 		this.props.onLeaveGameView();
 		window.removeEventListener('keydown', this.ChangeNode);
-		window.removeEventListener('webkitAnimationStart', this.KeyEventBlocker);
-		window.removeEventListener('webkitAnimationEnd', this.KeyEventBlocker);
 	}
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.Section !== null && nextProps.GameViewStatus !== Status.LOADING) { //检查现在应不应该把新资源应用上去。
@@ -135,27 +139,49 @@ class GameView extends Component {
 	}
 	render() {
 		return (
-			<TransitionGroup transitionName="fade" transitionEnterTimeout={500} transitionLeave={false} transitionAppear={true} transitionAppearTimeout={500}>
+			<TransitionGroup
+				transitionName="fade"
+				transitionEnterTimeout={500}
+				transitionLeave={false}
+				transitionAppear={true}
+				transitionAppearTimeout={500}
+				>
 				{
 					(() => {
 						switch (this.props.GameViewStatus) {
 							case Status.SUCCESS: {
+								this.BlockKeyEventInAnimation(this.state.IsInSelection);
 								return (
-								<Scene key={2} BG={this.state.Scene}>
-									<TextBox 
-										SectionName={this.props.Section.Header.SectionName}
-										CharacterName={this.state.CharacterName}
-										TextContent={this.state.Text}
-										MouseEventTrigger={this.ChangeNode}
-										SetTypingStatus={this.GetTypingStatus}
-										GetStopTyping={this.SetStopTypingController}
-									/>
-								</Scene>);
+									<Scene key={2} BG={this.state.Scene} IsInSection={this.state.IsInSelection}>
+										{this.state.IsInSelection ?
+											<div className="SelectionFlow">
+												{this.state.SelectionArray.map((item, idx) =>
+													(
+														<button key={idx} className="button" onClick={()=>{
+															const {Chapter, Branch,Section} = item.JumpTo;
+															this.props.onLoadSectionRes(Chapter,Branch,Section);
+														}}>{item.Text}</button>
+													)
+												)}
+											</div>
+											:
+											<TextBox
+												SectionName={this.props.Section.Header.SectionName}
+												CharacterName={this.state.CharacterName}
+												TextContent={this.state.Text}
+												MouseEventTrigger={this.ChangeNode}
+												SetTypingStatus={this.GetTypingStatus}
+												GetStopTyping={this.SetStopTypingController}
+											/>}
+									</Scene>);
 							}
 							case Status.LOADING: {
+								this.BlockKeyEventInAnimation(true);
 								return (<Loading key={1} LoadingImage={this.props.Section.LoadingImage} />);
 							}
-							default: return <p key={3}>{"Loading"}</p>;
+							default: {
+								return <p key={3}>{"Loading"}</p>;
+							}
 						}
 					}).call(this, null)
 				}
@@ -164,7 +190,7 @@ class GameView extends Component {
 	}
 }
 const mapStateToProps = (StoreState) => {
-	console.log(StoreState.GameView);
+	//console.log(StoreState.GameView);
 	return {
 		GameViewStatus: StoreState.GameView.status,
 		Section: StoreState.GameView.Section

@@ -5,4 +5,15 @@ div.TextBox{
     width: 80%;
     font-size: 18pt;
     color:black;
-}   
+}
+.TextBox-title {
+    text-align: center;
+    margin-top: 0px;
+    font-size: 1.5em;
+  }
+  
+.TextBox-intro {
+    margin-top: 0px;
+    font-size: 17pt;
+}
+  

@@ -23,11 +23,6 @@
   font-size: 17pt;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
 .fade-enter{
   opacity: 0.01;
 }
@@ -48,4 +43,14 @@
 .fade-leave.fade-leave-active {
   opacity: 0.01;
   transition: opacity 500ms ease-in;
+}
+
+div.SelectionFlow{
+        position: absolute;
+        top: 30%;
+        width: 100%;
+        height: 100%;
+        z-index: 1002;
+        overflow: auto;
+        text-align: center;
 }

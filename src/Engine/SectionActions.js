@@ -59,7 +59,6 @@ export const ClearGameViewState = () =>({
 
 export const GetSelectedSection = (Chapter,Branch,Section) => {
   return (dispatch)=>{
-    dispatch(Loading());
     //Chapter是AllChapter扫了文件夹的Obj,Branch和Section都是数字
     EventHandler.emit(GET_SELECTED_PLAYING_SECTION,dispatch,SetSelectedSection,Chapter,Branch,Section);
   }

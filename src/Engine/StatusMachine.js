@@ -15,6 +15,7 @@ var CurrentSectionIndex = null;
 
 EventHandler.on(EventSets.GET_SELECTED_PLAYING_SECTION, (dispatch, actionCtor, SelectedChapter, SelectedBranch, SelectedSection) => {
     //测试用
+    if(typeof SelectedChapter === 'number') SelectedChapter=AllChapter[SelectedChapter];
     let TmpChapter = LoadChapterRes(SelectedChapter.Path, SelectedBranch);
     if (TmpChapter !== null) {
         let CurrChapterIndex = 0;

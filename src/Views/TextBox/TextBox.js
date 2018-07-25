@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import '../GameView.css'
 import './TextBoxView.css'
 import Typed from 'react-typed';
 class TextBox extends Component {
@@ -18,27 +17,26 @@ class TextBox extends Component {
     }
     componentDidMount(){
         this.props.GetStopTyping(this.StopTyping);
-        console.log("Sent Conrtroller",this.StopTyping);
     }
     StopTyping() {
         this.typed.destroy();
         document.getElementById("Text").innerText = this.props.TextContent;
     }
     render() {
-        return (<div className="App">
-            <p className="App-title" id="SectionName">{this.props.SectionName}</p>
+        return (<div>
+            <p className="TextBox-title" id="SectionName">{this.props.SectionName}</p>
             <Link to='/' className="App-title">返回到章节选择</Link>
             <div className="TextBox" onMouseDown={() => this.props.MouseEventTrigger({ Mouse: true })}>
-                <p className="App-intro" id="CharacterName">{this.props.CharacterName}</p>
+                <p className="TextBox-intro" id="CharacterName">{this.props.CharacterName}</p>
                 <Typed
                     typedRef={(typed) => { this.typed = typed; }}
                     strings={[this.props.TextContent]}
-                    typeSpeed={40}
+                    typeSpeed={20}
                     showCursor={false}
                     preStringTyped={() => this.props.SetTypingStatus(1)}
                     onComplete={() => this.props.SetTypingStatus(0)}
                     onDestroy={() => this.props.SetTypingStatus(0)}>
-                    <p className="App-intro" id="Text" />
+                    <p className="TextBox-intro" id="Text" />
                 </Typed>
             </div>
         </div>);
