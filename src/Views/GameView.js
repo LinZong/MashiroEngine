@@ -6,6 +6,9 @@ import * as Status from '../Engine/Status'
 import { TextNodeInterpreter } from '../Engine/LoadSection';
 import { Scene, TextBox, Loading } from './index';
 import { GetRemoteUrlPath } from '../Engine/Util';
+import safetouch from 'safe-touch';
+
+import {Link} from 'react-router-dom';
 import 'bulma/css/bulma.css';
 const electron = window.electron;
 class GameView extends Component {
@@ -23,6 +26,7 @@ class GameView extends Component {
 		this.GetTypingStatus = this.GetTypingStatus.bind(this);
 		this.SetStopTypingController = this.SetStopTypingController.bind(this);
 		this.ApplySelectionToView = this.ApplySelectionToView.bind(this);
+		this.SaveState=this.SaveState.bind(this);
 		//当前节点状态
 		this.NeedNewSection = null;
 		this.NodeIndex = null;
@@ -90,14 +94,14 @@ class GameView extends Component {
 		}
 	}
 	ApplySelectionToView(NodeProps) {
-		if(NodeProps===null){
-			if(this.state.IsInSelection!==false){
-				this.setState({IsInSelection:false});
+		if (NodeProps === null) {
+			if (this.state.IsInSelection !== false) {
+				this.setState({ IsInSelection: false });
 			}
 			else return;
 		}
-		else{
-			this.setState({SelectionArray:NodeProps,IsInSelection:true});
+		else {
+			this.setState({ SelectionArray: NodeProps, IsInSelection: true });
 		}
 	}
 	InitPreloadResources(PreloadResourcesObj) {
@@ -118,9 +122,24 @@ class GameView extends Component {
 	SetStopTypingController(ControllerFunc) {
 		this.TypingController.Stopper = ControllerFunc;
 	}
+	SaveState(){
+		let FreezeState = { ...this.state, NodeIndex:this.NodeIndex };
+		this.props.onSaveCurrentState(FreezeState);
+	}
 	componentDidMount() {
 		let state = this.props.location.state;
-		this.props.onLoadSectionRes(state.Chapter, state.Branch, state.Section);
+		if(this.props.PreviousState!==undefined&&this.props.PreviousState!==null){
+			let PrevState = this.props.PreviousState;
+			//这个时候应该还原之前的状态
+			this.setState(PrevState);
+			TextNodeInterpreter(this.props.Section,
+				Actions.SetNodeIndex(PrevState.NodeIndex),
+				this.MiddleWareCallbackFuncArr);
+			this.props.onClearGameViewState();//加载完了之后退出。
+		}
+		else {
+			this.props.onLoadSectionRes(state.Chapter, state.Branch, state.Section);
+		}
 		window.addEventListener('keydown', this.ChangeNode);
 	}
 	componentWillUnmount() {
@@ -129,12 +148,14 @@ class GameView extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.Section !== null && nextProps.GameViewStatus !== Status.LOADING) { //检查现在应不应该把新资源应用上去。
-			this.InitPreloadResources(nextProps.Section.PreloadResources);
-			let InitIndex = 0;
-			if (this.props.Section === null) InitIndex = this.props.location.state.TextNodeBegin;
-			TextNodeInterpreter(nextProps.Section,
-				Actions.SetNodeIndex(InitIndex),
-				this.MiddleWareCallbackFuncArr);
+			if (nextProps.Section !== this.props.Section) {
+				this.InitPreloadResources(nextProps.Section.PreloadResources);
+				let InitIndex = 0;
+				if (this.props.Section === null) InitIndex = this.props.location.state.TextNodeBegin;
+				TextNodeInterpreter(nextProps.Section,
+					Actions.SetNodeIndex(InitIndex),
+					this.MiddleWareCallbackFuncArr);
+			}
 		}
 	}
 	render() {
@@ -145,7 +166,7 @@ class GameView extends Component {
 				transitionLeave={false}
 				transitionAppear={true}
 				transitionAppearTimeout={500}
-				>
+			>
 				{
 					(() => {
 						switch (this.props.GameViewStatus) {
@@ -157,22 +178,25 @@ class GameView extends Component {
 											<div className="SelectionFlow">
 												{this.state.SelectionArray.map((item, idx) =>
 													(
-														<button key={idx} className="button" onClick={()=>{
-															const {Chapter, Branch,Section} = item.JumpTo;
-															this.props.onLoadSectionRes(Chapter,Branch,Section);
+														<button key={idx} className="button" onClick={() => {
+															const { Chapter, Branch, Section } = item.JumpTo;
+															this.props.onLoadSectionRes(Chapter, Branch, Section);
 														}}>{item.Text}</button>
 													)
 												)}
 											</div>
 											:
-											<TextBox
+											<div>
+												<TextBox
 												SectionName={this.props.Section.Header.SectionName}
 												CharacterName={this.state.CharacterName}
 												TextContent={this.state.Text}
 												MouseEventTrigger={this.ChangeNode}
 												SetTypingStatus={this.GetTypingStatus}
 												GetStopTyping={this.SetStopTypingController}
-											/>}
+											/>
+											<Link to='/settings' className="button" onClick={()=>{this.SaveState();}}>跳转到设置</Link>
+											</div>}
 									</Scene>);
 							}
 							case Status.LOADING: {
@@ -190,10 +214,10 @@ class GameView extends Component {
 	}
 }
 const mapStateToProps = (StoreState) => {
-	//console.log(StoreState.GameView);
 	return {
 		GameViewStatus: StoreState.GameView.status,
-		Section: StoreState.GameView.Section
+		Section: StoreState.GameView.Section,
+		PreviousState: StoreState.GameView.PrevState
 	};
 };
 const mapDispatchToProps = (dispatch) => {
@@ -205,7 +229,13 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(Actions.GetNextSection());
 		},
 		onLeaveGameView: () => {
-			dispatch(Actions.ClearGameViewState());
+			dispatch(Actions.LeaveGameView());
+		},
+		onSaveCurrentState: (FreezeState) => {
+			dispatch(Actions.SaveGameViewState(FreezeState));
+		},
+		onClearGameViewState: () => {
+			dispatch(Actions.ClearGameViewPrevState());
 		}
 	};
 };

@@ -4,7 +4,7 @@ import './index.css';
 import { Provider } from 'react-redux';
 import store from './Store.js'
 import { BrowserRouter, Route } from 'react-router-dom';
-import { WelcomeView, GameView } from './Views/index';
+import { WelcomeView, GameView ,SettingsView} from './Views/index';
 import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(
@@ -13,6 +13,7 @@ ReactDOM.render(
             <div>
                 <Route exact path='/' component={WelcomeView} />
                 <Route path='/section' component={GameView} />
+                <Route path='/settings' component={SettingsView} />
             </div>
         </BrowserRouter>
     </Provider>
@@ -26,6 +27,7 @@ if (module.hot) {
                     <div>
                         <Route exact path='/' component={WelcomeView} />
                         <Route path='/section' component={GameView} />
+                        <Route path='/settings' component={SettingsView} />
                     </div>
                 </BrowserRouter>
             </Provider>

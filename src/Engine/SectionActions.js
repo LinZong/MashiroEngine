@@ -15,7 +15,9 @@ import {
     SET_SELECTED_PLAYING_SECTION,
     INTERNAL_ERROR,
     NOW_LOADING,
-    LEAVE_GAMEVIEW
+    LEAVE_GAMEVIEW,
+    SAVE_GAMEVIEW_STATE,
+    CLEAR_GAMEVIEW_STATE
 } from './Events';
 
 import {GetRemoteUrlPath} from './Util';
@@ -53,10 +55,12 @@ export const GetAllChapter = () => {
     EventHandler.emit(GET_ALL_CHAPTERS,dispatch,SetAllChapter);
   }
 };
-export const ClearGameViewState = () =>({
+export const LeaveGameView = () =>({
   type:LEAVE_GAMEVIEW
 });
-
+export const ClearGameViewPrevState = () => ({
+  type:CLEAR_GAMEVIEW_STATE
+})
 export const GetSelectedSection = (Chapter,Branch,Section) => {
   return (dispatch)=>{
     //Chapter是AllChapter扫了文件夹的Obj,Branch和Section都是数字
@@ -74,3 +78,8 @@ export const ErrorHandler = (ErrorMsg) =>({
   type:INTERNAL_ERROR,
   ErrorMsg
 });
+
+export const SaveGameViewState = (StateForSave) => ({
+  type:SAVE_GAMEVIEW_STATE,
+  StateForSave
+})

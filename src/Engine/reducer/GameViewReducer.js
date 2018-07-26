@@ -9,7 +9,13 @@ export default (state={}, action) => {
       return {...state,status:Status.LOADING};  
     }
     case ActionTypes.LEAVE_GAMEVIEW:{
-      return {status:null,Section:null}
+      return {...state,status:null}
+    }
+    case ActionTypes.CLEAR_GAMEVIEW_STATE:{
+      return {...state,PrevState:null,status:Status.SUCCESS}
+    }
+    case ActionTypes.SAVE_GAMEVIEW_STATE:{
+      return {...state,PrevState:action.StateForSave};
     }
     default:return state;
   }
