@@ -1,14 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import './GameView.css';
-import * as Status from '../Engine/Status';
-import * as Actions from '../Engine/SectionActions'
+import '../GameView/GameView.css';
+import * as Status from '../../Engine/Status';
+import * as Actions from '../../Engine/SectionActions'
 import { Link } from 'react-router-dom';
-
-class WelcomeView extends React.Component {
-    constructor() {
-        super(...arguments);
-    }
+class AllChapterView extends React.Component {
     componentDidMount() {
         this.props.onLoadChapters();
     }
@@ -46,4 +42,4 @@ const mapDispatchToProps = (dispatch) => {
         onLoadChapters: () => { dispatch(Actions.GetAllChapter()) }
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(WelcomeView);
+export default connect(mapStateToProps, mapDispatchToProps)(AllChapterView);

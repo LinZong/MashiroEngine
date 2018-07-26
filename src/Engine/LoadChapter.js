@@ -15,7 +15,6 @@ function LoadAllChapters(ChapterDir) {
         console.log(error);
     }
 }
-
 function LoadChapterRes(Path, Branch) {
     let RebuildChapterInfo = null;
     let fs = window.electron.remote.require('fs');//这个是在渲染进程做调用的，需要做远程调用。

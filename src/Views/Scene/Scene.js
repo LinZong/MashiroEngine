@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import SceneView from './SceneView.css';
 class Scene extends Component {
-    constructor(){
-        super(...arguments);
-    }
     render() {
         return (
             <div className="Scene" style={{ ...SceneView, backgroundImage: this.props.BG }}>

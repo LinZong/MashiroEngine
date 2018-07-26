@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import TransitionGroup from 'react-addons-css-transition-group';
-import * as Actions from '../Engine/SectionActions'
-import * as Status from '../Engine/Status'
-import { TextNodeInterpreter } from '../Engine/LoadSection';
-import { Scene, TextBox, Loading } from './index';
-import { GetRemoteUrlPath } from '../Engine/Util';
+import * as Actions from '../../Engine/SectionActions'
+import * as Status from '../../Engine/Status'
+import { TextNodeInterpreter } from '../../Engine/LoadSection';
+import { Scene, TextBox, Loading } from '../index';
+import { GetRemoteUrlPath } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import 'bulma/css/bulma.css';
 const electron = window.electron;
 class GameView extends Component {
@@ -26,7 +26,7 @@ class GameView extends Component {
 		this.GetTypingStatus = this.GetTypingStatus.bind(this);
 		this.SetStopTypingController = this.SetStopTypingController.bind(this);
 		this.ApplySelectionToView = this.ApplySelectionToView.bind(this);
-		this.SaveState=this.SaveState.bind(this);
+		this.SaveState = this.SaveState.bind(this);
 		//当前节点状态
 		this.NeedNewSection = null;
 		this.NodeIndex = null;
@@ -122,13 +122,13 @@ class GameView extends Component {
 	SetStopTypingController(ControllerFunc) {
 		this.TypingController.Stopper = ControllerFunc;
 	}
-	SaveState(){
-		let FreezeState = { ...this.state, NodeIndex:this.NodeIndex };
+	SaveState() {
+		let FreezeState = { ...this.state, NodeIndex: this.NodeIndex };
 		this.props.onSaveCurrentState(FreezeState);
 	}
 	componentDidMount() {
 		let state = this.props.location.state;
-		if(this.props.PreviousState!==undefined&&this.props.PreviousState!==null){
+		if (state === undefined && this.props.PreviousState !== undefined && this.props.PreviousState !== null) {
 			let PrevState = this.props.PreviousState;
 			//这个时候应该还原之前的状态
 			this.setState(PrevState);
@@ -148,17 +148,20 @@ class GameView extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.Section !== null && nextProps.GameViewStatus !== Status.LOADING) { //检查现在应不应该把新资源应用上去。
-			if (nextProps.Section !== this.props.Section) {
+			if (nextProps.Section !== this.props.Section) {//从其他页面跳回来的情况下就不用初始化资源了。
 				this.InitPreloadResources(nextProps.Section.PreloadResources);
 				let InitIndex = 0;
-				if (this.props.Section === null) InitIndex = this.props.location.state.TextNodeBegin;
+				if (this.props.Section === null) {
+					let UrlState = safetouch(this.props.location.state);
+					InitIndex = UrlState.TextNodeBegin;
+				}
 				TextNodeInterpreter(nextProps.Section,
 					Actions.SetNodeIndex(InitIndex),
 					this.MiddleWareCallbackFuncArr);
 			}
 		}
 	}
-	render() {
+	render() { 
 		return (
 			<TransitionGroup
 				transitionName="fade"
@@ -188,14 +191,14 @@ class GameView extends Component {
 											:
 											<div>
 												<TextBox
-												SectionName={this.props.Section.Header.SectionName}
-												CharacterName={this.state.CharacterName}
-												TextContent={this.state.Text}
-												MouseEventTrigger={this.ChangeNode}
-												SetTypingStatus={this.GetTypingStatus}
-												GetStopTyping={this.SetStopTypingController}
-											/>
-											<Link to='/settings' className="button" onClick={()=>{this.SaveState();}}>跳转到设置</Link>
+													SectionName={this.props.Section.Header.SectionName}
+													CharacterName={this.state.CharacterName}
+													TextContent={this.state.Text}
+													MouseEventTrigger={this.ChangeNode}
+													SetTypingStatus={this.GetTypingStatus}
+													GetStopTyping={this.SetStopTypingController}
+												/>
+												<Link to='/settings' className="button" onClick={this.SaveState}>跳转到设置</Link>
 											</div>}
 									</Scene>);
 							}

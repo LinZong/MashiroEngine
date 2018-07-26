@@ -1,0 +1,38 @@
+aside.welcomemenu{
+    
+    width: 300px;
+    top: 30%;
+    position:absolute;
+    display: block;
+    font-size: 2rem;
+    left: 4%;
+    overflow: hidden;
+    font-family: Microsoft Yahei;
+    height: 450px;
+    margin-top: 20px auto;
+    z-index: 1
+}
+
+.nav_ul{
+    height: 100%;
+    width: 320px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+div.WelcomeBG{
+    box-sizing:content-box; 
+    width: 100%;
+    height: -webkit-fill-available;
+    /* 背景图垂直、水平均居中 */
+    background-position: center center;
+    /* 背景图不平铺 */
+    background-repeat: no-repeat;
+    /* 当内容高度大于图片高度时，背景图像的位置相对于viewport固定 */
+    background-attachment: fixed;
+    /* 让背景图基于容器大小伸缩 */
+    background-size: cover;
+    background-color: rgb(255, 255, 255);
+    z-index: 0;
+    position: absolute;
+  }
