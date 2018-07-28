@@ -18,7 +18,7 @@ class SettingsView extends React.Component{
         return (<div>
             <Link to='/section'><li>回到游戏画面</li></Link>
             <Link to='/'><li>回到主界面</li></Link>
-            <button className="button is-primary" onClick={this.LocalPersistState}>获取全Store状态</button>
+            <button className="button is-primary" onClick={this.LocalPersistState}>快速存档</button>
             
         </div>)
     }

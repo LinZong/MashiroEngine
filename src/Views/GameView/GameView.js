@@ -162,7 +162,7 @@ class GameView extends Component {
 		window.removeEventListener('keydown', this.ChangeNode);
 	}
 	componentWillReceiveProps(nextProps) {
-		if (nextProps.Section !== null && nextProps.GameViewStatus !== Status.LOADING) { //检查现在应不应该把新资源应用上去。
+		if (nextProps.Section !== null && nextProps.GameViewStatus === Status.SUCCESS) { //检查现在应不应该把新资源应用上去。
 			if (nextProps.Section !== this.props.Section) {//从其他页面跳回来的情况下就不用初始化资源了。
 				var InitIndex = 0;
 				let SaveDataInfo = safetouch(this.props.location.state).SaveInfo();
@@ -222,7 +222,7 @@ class GameView extends Component {
 													SetTypingStatus={this.GetTypingStatus}
 													GetStopTyping={this.SetStopTypingController}
 												/>
-												<Link to='/settings' className="button" onClick={()=>this.SaveState(1)}>跳转到设置</Link>
+												<Link to='/settings' className="button" onClick={this.SaveState}>跳转到设置</Link>
 											</div>}
 									</Scene>);
 							}
