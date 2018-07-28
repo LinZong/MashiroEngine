@@ -9,7 +9,7 @@ export default (state={}, action) => {
       return {...state,status:Status.LOADING};  
     }
     case ActionTypes.LEAVE_GAMEVIEW:{
-      return {...state,status:null}
+      return {...state,status:Status.LEAVED}
     }
     case ActionTypes.CLEAR_GAMEVIEW_STATE:{
       return {...state,PrevState:null,status:Status.SUCCESS}

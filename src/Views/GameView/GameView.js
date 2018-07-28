@@ -7,10 +7,8 @@ import { TextNodeInterpreter } from '../../Engine/LoadSection';
 import { Scene, TextBox, Loading } from '../index';
 import { GetRemoteUrlPath } from '../../Engine/Util';
 import safetouch from 'safe-touch';
-
 import { Link } from 'react-router-dom';
-import 'bulma/css/bulma.css';
-const electron = window.electron;
+import * as EventsType from '../../Engine/Events';
 class GameView extends Component {
 	constructor() {
 		super(...arguments);
@@ -122,23 +120,40 @@ class GameView extends Component {
 	SetStopTypingController(ControllerFunc) {
 		this.TypingController.Stopper = ControllerFunc;
 	}
-	SaveState() {
-		let FreezeState = { ...this.state, NodeIndex: this.NodeIndex };
+	SaveState(CreateSaveData) {
+		var FreezeState = { ...this.state, NodeIndex: this.NodeIndex };
+		if(CreateSaveData!==undefined){
+			const PrevInfo = require('../../Engine/StatusMachine').GetGlobalVar();
+			FreezeState = {...FreezeState,PrevInfo};
+		}
 		this.props.onSaveCurrentState(FreezeState);
 	}
 	componentDidMount() {
-		let state = this.props.location.state;
-		if (state === undefined && this.props.PreviousState !== undefined && this.props.PreviousState !== null) {
+		// let state = safetouch(this.props.location.state);
+		let Chapter,Branch,Section,SaveDataInfo;
+		Chapter = safetouch(this.props.location.state).Chapter();
+		Branch = safetouch(this.props.location.state).Branch();
+		Section = safetouch(this.props.location.state).Section();
+		SaveDataInfo = safetouch(this.props.location.state).SaveInfo();
+
+		//有三种情况，1，从指定的位置开始，2，读取存档，3，从别的页面跳回来的时候恢复数据。
+		if (this.props.PreviousState !== undefined && this.props.PreviousState !== null) {
 			let PrevState = this.props.PreviousState;
-			//这个时候应该还原之前的状态
 			this.setState(PrevState);
 			TextNodeInterpreter(this.props.Section,
 				Actions.SetNodeIndex(PrevState.NodeIndex),
 				this.MiddleWareCallbackFuncArr);
 			this.props.onClearGameViewState();//加载完了之后退出。
 		}
-		else {
-			this.props.onLoadSectionRes(state.Chapter, state.Branch, state.Section);
+		else if(SaveDataInfo!==undefined){
+			//加载从存档页（现在的全部章节页）传来的初始化信息。
+			let TmpInfo = Object.assign({}, SaveDataInfo);//deep copy
+			delete TmpInfo['PrevInfo'];
+			this.props.onLoadSaveData(SaveDataInfo);
+			this.setState(TmpInfo);
+		}
+		else{
+			this.props.onLoadSectionRes(Chapter, Branch, Section);
 		}
 		window.addEventListener('keydown', this.ChangeNode);
 	}
@@ -149,18 +164,27 @@ class GameView extends Component {
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.Section !== null && nextProps.GameViewStatus !== Status.LOADING) { //检查现在应不应该把新资源应用上去。
 			if (nextProps.Section !== this.props.Section) {//从其他页面跳回来的情况下就不用初始化资源了。
-				this.InitPreloadResources(nextProps.Section.PreloadResources);
-				let InitIndex = 0;
-				if (this.props.Section === null) {
-					let UrlState = safetouch(this.props.location.state);
-					InitIndex = UrlState.TextNodeBegin;
+				var InitIndex = 0;
+				let SaveDataInfo = safetouch(this.props.location.state).SaveInfo();
+				if(SaveDataInfo===undefined){
+					this.InitPreloadResources(nextProps.Section.PreloadResources);
+					if (this.props.Section === null) {
+						let UrlState = safetouch(this.props.location.state)();
+						InitIndex = UrlState.TextNodeBegin;
+					}
+				}
+				else{
+					InitIndex = this.props.location.state.SaveInfo.NodeIndex;
+					this.props.location.state.SaveInfo=undefined;//读过一次就删掉了
 				}
 				TextNodeInterpreter(nextProps.Section,
 					Actions.SetNodeIndex(InitIndex),
 					this.MiddleWareCallbackFuncArr);
 			}
 		}
-	}
+	}/*
+	 * 从GameView跳到存档界面的时候肯定是要保存先前状态的，这个时候存档机只需要读已经被snapshot的当前状态，写进文件就OK。
+	 */
 	render() { 
 		return (
 			<TransitionGroup
@@ -198,7 +222,7 @@ class GameView extends Component {
 													SetTypingStatus={this.GetTypingStatus}
 													GetStopTyping={this.SetStopTypingController}
 												/>
-												<Link to='/settings' className="button" onClick={this.SaveState}>跳转到设置</Link>
+												<Link to='/settings' className="button" onClick={()=>this.SaveState(1)}>跳转到设置</Link>
 											</div>}
 									</Scene>);
 							}
@@ -225,6 +249,9 @@ const mapStateToProps = (StoreState) => {
 };
 const mapDispatchToProps = (dispatch) => {
 	return {
+		onLoadSaveData:(SaveDataInfo)=>{
+			dispatch(Actions.ReloadStoreSection(SaveDataInfo));
+		},
 		onLoadSectionRes: (Chapter, Branch, Section) => {
 			dispatch(Actions.GetSelectedSection(Chapter, Branch, Section));
 		},

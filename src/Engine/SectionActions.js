@@ -17,7 +17,8 @@ import {
     NOW_LOADING,
     LEAVE_GAMEVIEW,
     SAVE_GAMEVIEW_STATE,
-    CLEAR_GAMEVIEW_STATE
+    CLEAR_GAMEVIEW_STATE,
+    LOAD_SAVEDATA
 } from './Events';
 
 import {GetRemoteUrlPath} from './Util';
@@ -73,6 +74,13 @@ export const GetNextSection = () => {
     setTimeout(()=>{EventHandler.emit(ENTER_NEXT_SECTION,dispatch,SetSelectedSection);},2000);
   }
 };
+
+export const ReloadStoreSection = (SaveDataInfo) => {
+  return (dispatch)=>{
+    EventHandler.emit(LOAD_SAVEDATA,SaveDataInfo,dispatch,SetSelectedSection);
+  }
+};
+
 
 export const ErrorHandler = (ErrorMsg) =>({
   type:INTERNAL_ERROR,

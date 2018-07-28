@@ -1,7 +1,14 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow,dialog } = require('electron')
+const { app, BrowserWindow,ipcMain } = require('electron')
 const path = require('path')
+var fs = require('fs');
 require('./src/Engine/LoadConfig');
+
+ipcMain.on('PersistSaveData',(event,arg)=>{
+	fs.writeFile('savedata.bin',arg,()=>console.log('OK'));
+});
+
+
 
 let mainWindow
 

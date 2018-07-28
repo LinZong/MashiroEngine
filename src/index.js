@@ -22,19 +22,20 @@ ReactDOM.render(
     , document.getElementById('root'));
 
 if (module.hot) {
-    module.hot.accept(() => {
-        ReactDOM.render(
-            <Provider store={store}>
-                <BrowserRouter>
-                    <div>
-                        <Route exact path='/' component={WelcomeView} />
-                        <Route path='/chapters' component={AllChapterView} />
-                        <Route path='/section' component={GameView} />
-                        <Route path='/settings' component={SettingsView} />
-                    </div>
-                </BrowserRouter>
-            </Provider>
-            , document.getElementById('root'));
-    });
+    module.hot.accept();
 }
 registerServiceWorker();
+// () => {
+//     ReactDOM.render(
+//         <Provider store={store}>
+//             <BrowserRouter>
+//                 <div>
+//                     <Route exact path='/' component={WelcomeView} />
+//                     <Route path='/chapters' component={AllChapterView} />
+//                     <Route path='/section' component={GameView} />
+//                     <Route path='/settings' component={SettingsView} />
+//                 </div>
+//             </BrowserRouter>
+//         </Provider>
+//         , document.getElementById('root'));
+// }
