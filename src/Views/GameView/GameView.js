@@ -8,7 +8,6 @@ import { Scene, TextBox, Loading } from '../index';
 import { GetRemoteUrlPath } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import { Link } from 'react-router-dom';
-import * as EventsType from '../../Engine/Events';
 class GameView extends Component {
 	constructor() {
 		super(...arguments);
@@ -223,7 +222,7 @@ class GameView extends Component {
 													GetStopTyping={this.SetStopTypingController}
 												/>
 												<Link to='/' className="button" onClick={this.props.onLeaveGameView}>返回到章节选择</Link>
-												<Link to='/settings' className="button" onClick={()=>this.SaveState(1)}>跳转到设置</Link>
+												<Link to='/settings'onClick={()=>this.SaveState(1)}>跳转到设置</Link>
 											</div>}
 									</Scene>);
 							}

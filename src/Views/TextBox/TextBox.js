@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
 import './TextBoxView.css'
 import Typed from 'react-typed';
+import { Card } from 'antd';
 class TextBox extends Component {
     constructor() {
         super(...arguments);
-        this.StopTyping=this.StopTyping.bind(this);
+        this.StopTyping = this.StopTyping.bind(this);
     }
     componentWillUpdate() {
         this.typed.reset();
@@ -15,7 +15,7 @@ class TextBox extends Component {
             this.typed.destroy();
         }
     }
-    componentDidMount(){
+    componentDidMount() {
         this.props.GetStopTyping(this.StopTyping);
     }
     StopTyping() {
@@ -26,17 +26,18 @@ class TextBox extends Component {
         return (<div>
             <p className="TextBox-title" id="SectionName">{this.props.SectionName}</p>
             <div className="TextBox" onMouseDown={() => this.props.MouseEventTrigger({ Mouse: true })}>
-                <p className="TextBox-intro" id="CharacterName">{this.props.CharacterName}</p>
-                <Typed
-                    typedRef={(typed) => { this.typed = typed; }}
-                    strings={[this.props.TextContent]}
-                    typeSpeed={20}
-                    showCursor={false}
-                    preStringTyped={() => this.props.SetTypingStatus(1)}
-                    onComplete={() => this.props.SetTypingStatus(0)}
-                    onDestroy={() => this.props.SetTypingStatus(0)}>
-                    <p className="TextBox-intro" id="Text" />
-                </Typed>
+                <Card className="TextBox-intro" title={this.props.CharacterName} bordered={false}>
+                    <Typed
+                        typedRef={(typed) => { this.typed = typed; }}
+                        strings={[this.props.TextContent]}
+                        typeSpeed={20}
+                        showCursor={false}
+                        preStringTyped={() => this.props.SetTypingStatus(1)}
+                        onComplete={() => this.props.SetTypingStatus(0)}
+                        onDestroy={() => this.props.SetTypingStatus(0)}>
+                        <p className="TextBox-intro" id="Text" />
+                    </Typed>
+                </Card>
             </div>
         </div>);
     }

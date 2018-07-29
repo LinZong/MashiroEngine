@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "antd": "^3.7.3",
     "autoprefixer": "7.1.6",
     "babel-core": "6.26.0",
     "babel-eslint": "7.2.3",
@@ -69,6 +70,7 @@
   },
   "homepage": ".",
   "devDependencies": {
+    "babel-plugin-import": "^1.8.0",
     "babel-register": "^6.26.0",
     "electron-devtools-installer": "^2.2.4",
     "react-hot-loader": "^4.3.3",

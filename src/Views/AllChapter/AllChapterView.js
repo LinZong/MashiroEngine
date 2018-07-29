@@ -32,13 +32,15 @@ class AllChapterView extends React.Component {
                             <Link key={3} to=
                                 {{ pathname: '/section', state: {SaveInfo:this.TestSaveInfo } }}>
                                 <li>测试存档加载</li></Link>
+                                <button onClick={()=>this.props.history.push('/',{Test:"Relax"})}>大概是返回吧</button>
+                                
                         </div>
                     </div>
                 );
             }
             default: return (null);
         }
-
+//原来Link也可以这样写hhh
     }
 }
 const mapStateToProps = (state) => {
