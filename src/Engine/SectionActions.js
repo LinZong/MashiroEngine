@@ -16,6 +16,7 @@ import {
     INTERNAL_ERROR,
     NOW_LOADING,
     LEAVE_GAMEVIEW,
+    PAUSE_GAMEVIEW,
     SAVE_GAMEVIEW_STATE,
     CLEAR_GAMEVIEW_STATE,
     LOAD_SAVEDATA
@@ -58,6 +59,9 @@ export const GetAllChapter = () => {
 };
 export const LeaveGameView = () =>({
   type:LEAVE_GAMEVIEW
+});
+export const PauseGameView = () =>({
+  type:PAUSE_GAMEVIEW
 });
 export const ClearGameViewPrevState = () => ({
   type:CLEAR_GAMEVIEW_STATE

@@ -25,7 +25,6 @@ class TextBox extends Component {
     render() {
         return (<div>
             <p className="TextBox-title" id="SectionName">{this.props.SectionName}</p>
-            <Link to='/' className="App-title">返回到章节选择</Link>
             <div className="TextBox" onMouseDown={() => this.props.MouseEventTrigger({ Mouse: true })}>
                 <p className="TextBox-intro" id="CharacterName">{this.props.CharacterName}</p>
                 <Typed

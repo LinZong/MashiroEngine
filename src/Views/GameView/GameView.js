@@ -158,12 +158,12 @@ class GameView extends Component {
 		window.addEventListener('keydown', this.ChangeNode);
 	}
 	componentWillUnmount() {
-		this.props.onLeaveGameView();
+		this.props.onPauseGameView();
 		window.removeEventListener('keydown', this.ChangeNode);
 	}
 	componentWillReceiveProps(nextProps) {
-		if (nextProps.Section !== null && nextProps.GameViewStatus === Status.SUCCESS) { //检查现在应不应该把新资源应用上去。
-			if (nextProps.Section !== this.props.Section) {//从其他页面跳回来的情况下就不用初始化资源了。
+		if (nextProps.Section&& nextProps.GameViewStatus === Status.SUCCESS) { //检查现在应不应该把新资源应用上去。
+			if (nextProps.Section !== this.props.Section&&!this.props.PreviousState) {//从其他页面跳回来的情况下就不用初始化资源了。因为跳回来的时候Store上Section完全不变，这里就会被跳过
 				var InitIndex = 0;
 				let SaveDataInfo = safetouch(this.props.location.state).SaveInfo();
 				if(SaveDataInfo===undefined){
@@ -222,7 +222,8 @@ class GameView extends Component {
 													SetTypingStatus={this.GetTypingStatus}
 													GetStopTyping={this.SetStopTypingController}
 												/>
-												<Link to='/settings' className="button" onClick={this.SaveState}>跳转到设置</Link>
+												<Link to='/' className="button" onClick={this.props.onLeaveGameView}>返回到章节选择</Link>
+												<Link to='/settings' className="button" onClick={()=>this.SaveState(1)}>跳转到设置</Link>
 											</div>}
 									</Scene>);
 							}
@@ -257,6 +258,9 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		onLoadNextSection: () => {
 			dispatch(Actions.GetNextSection());
+		},
+		onPauseGameView: () => {
+			dispatch(Actions.PauseGameView());
 		},
 		onLeaveGameView: () => {
 			dispatch(Actions.LeaveGameView());
