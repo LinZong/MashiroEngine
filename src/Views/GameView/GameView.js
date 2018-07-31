@@ -7,7 +7,6 @@ import { TextNodeInterpreter } from '../../Engine/LoadSection';
 import { Scene, TextBox, Loading } from '../index';
 import { GetRemoteUrlPath } from '../../Engine/Util';
 import safetouch from 'safe-touch';
-import { Link } from 'react-router-dom';
 class GameView extends Component {
 	constructor() {
 		super(...arguments);
@@ -136,7 +135,7 @@ class GameView extends Component {
 		SaveDataInfo = safetouch(this.props.location.state).SaveInfo();
 
 		//有三种情况，1，从指定的位置开始，2，读取存档，3，从别的页面跳回来的时候恢复数据。
-		if (this.props.PreviousState !== undefined && this.props.PreviousState !== null) {
+		if (this.props.PreviousState) {
 			let PrevState = this.props.PreviousState;
 			this.setState(PrevState);
 			TextNodeInterpreter(this.props.Section,
@@ -144,7 +143,7 @@ class GameView extends Component {
 				this.MiddleWareCallbackFuncArr);
 			this.props.onClearGameViewState();//加载完了之后退出。
 		}
-		else if(SaveDataInfo!==undefined){
+		else if(SaveDataInfo){
 			//加载从存档页（现在的全部章节页）传来的初始化信息。
 			let TmpInfo = Object.assign({}, SaveDataInfo);//deep copy
 			delete TmpInfo['PrevInfo'];
@@ -221,8 +220,6 @@ class GameView extends Component {
 													SetTypingStatus={this.GetTypingStatus}
 													GetStopTyping={this.SetStopTypingController}
 												/>
-												<Link to='/' className="button" onClick={this.props.onLeaveGameView}>返回到章节选择</Link>
-												<Link to='/settings'onClick={()=>this.SaveState(1)}>跳转到设置</Link>
 											</div>}
 									</Scene>);
 							}

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './TextBoxView.css'
 import Typed from 'react-typed';
-import { Card } from 'antd';
+import { Card, Button } from 'antd';
+import { NavLink } from 'react-router-dom';
 class TextBox extends Component {
     constructor() {
         super(...arguments);
@@ -26,7 +27,7 @@ class TextBox extends Component {
         return (<div>
             <p className="TextBox-title" id="SectionName">{this.props.SectionName}</p>
             <div className="TextBox" onMouseDown={() => this.props.MouseEventTrigger({ Mouse: true })}>
-                <Card className="TextBox-intro" title={this.props.CharacterName} bordered={false}>
+                <Card className="TextBox-card" title={this.props.CharacterName} bordered={false}>
                     <Typed
                         typedRef={(typed) => { this.typed = typed; }}
                         strings={[this.props.TextContent]}
@@ -37,6 +38,9 @@ class TextBox extends Component {
                         onDestroy={() => this.props.SetTypingStatus(0)}>
                         <p className="TextBox-intro" id="Text" />
                     </Typed>
+                        <NavLink className="nav-text" to='/settings'>
+                            <Button icon='arrow-left large' shape='circle' />
+                        </NavLink>
                 </Card>
             </div>
         </div>);

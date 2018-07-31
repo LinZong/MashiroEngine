@@ -35,7 +35,7 @@ class WelcomeView extends React.Component {
                         <a>特典</a>
                     </li>
                     <li>
-                        <Link to='/settings'><li>設定</li></Link>
+                        <Link to='/NewSettings'><li>設定</li></Link>
                     </li>
                     <li>
                         <a onClick={() => {
