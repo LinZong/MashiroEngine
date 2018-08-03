@@ -1,24 +1,31 @@
 import React from 'react';
-import { Radio, Row, Col, Divider, Select, Tooltip, Slider, InputNumber } from 'antd';
+import { Radio, Row, Col, Divider, Select, Tooltip, Slider, InputNumber ,message} from 'antd';
 import safetouch from 'safe-touch';
-import { LoadUserConfig } from '../../Engine/LoadConfig';
-import { IMAGE_SETTING } from '../../Engine/actionTypes/SettingType';
+import { LoadUserConfig,SaveUserConfig } from '../../Engine/LoadConfig';
 import * as Status from '../../Engine/Status';
-class ImageConfig extends React.Component {
+class ConfigPanel extends React.Component {
 	constructor() {
 		super(...arguments);
-		this.state = { status: 'loading', Desc: null, Settings: null }
+		this.state = { status: 'loading', Desc: null, Settings: null, Changed:false }
 		this.ApplySettings = this.ApplySettings.bind(this);
 		this.NodeInterpreter=this.NodeInterpreter.bind(this);
 	}
 	ApplySettings(value, idx,SelectedCol) {
 		let refObj = this.state.Settings;
 		refObj.SettingElement[SelectedCol][idx].Value = safetouch(value.target).value() || value;
-		this.setState({ Settings: refObj });
+		this.setState({ Settings: refObj ,Changed:true});
 	}
 	componentDidMount() {
-		var res = LoadUserConfig(IMAGE_SETTING);
-		this.setState({ status: 'success', Desc: res.Desc, Settings: res.Settings });
+		var res = LoadUserConfig(this.props.match.params.id);
+		this.setState({ status: 'success', Desc: res.Desc, Settings: res.Settings ,Changed:false});
+	}
+	componentWillReceiveProps(nextProps){
+		if(this.state.Changed){SaveUserConfig(this.props.match.params.id,this.state.Settings).done((data)=>message.success(data,1),(reason)=>message.error(reason,1));}
+		var res = LoadUserConfig(nextProps.match.params.id);
+		this.setState({ status: 'success', Desc: res.Desc, Settings: res.Settings ,Changed:false});
+	}
+	componentWillUnmount(){
+		if(this.state.Changed){SaveUserConfig(this.props.match.params.id,this.state.Settings).done((data)=>message.success(data,1),(reason)=>message.error(reason,1));}
 	}
 	NodeInterpreter(Desc,SelectedCol) {
 		return (<Col span={12}>
@@ -26,11 +33,11 @@ class ImageConfig extends React.Component {
 				switch (Item.Type) {
 					case "RadioGroup": {
 						return (
-							<div style={{ textAlign: "center" }}>
+							<div key={idx} style={{ textAlign: "center" }}>
 								<Divider orientation="left">{Item.Description ?
 									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
 									(Item.Title)}</Divider>
-								<Radio.Group defaultValue={this.state.Settings.SettingElement[SelectedCol][idx].Value}
+								<Radio.Group value={this.state.Settings.SettingElement[SelectedCol][idx].Value}
 									buttonStyle="solid" onChange={(value) => this.ApplySettings(value, idx,SelectedCol)}>
 									{Item.Selection.map((e, index) => {
 										return (<Radio.Button value={e.Value}>{e.Title}</Radio.Button>);
@@ -40,7 +47,7 @@ class ImageConfig extends React.Component {
 					}
 					case "Select": {
 						return (
-							<div style={{ textAlign: "center" }}>
+							<div key={idx} style={{ textAlign: "center" }}>
 								<Divider orientation="left">{Item.Description ?
 									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
 									(Item.Title)}</Divider>
@@ -54,7 +61,7 @@ class ImageConfig extends React.Component {
 					}
 					case "Slider": {
 						return (
-							<div style={{ textAlign: "center" }}>
+							<div key={idx} style={{ textAlign: "center" }}>
 								<Divider orientation="left">{Item.Description ?
 									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
 									(Item.Title)}</Divider>
@@ -84,7 +91,7 @@ class ImageConfig extends React.Component {
 				return "Loading";
 			}
 			case Status.SUCCESS: {
-				return (<div style={{ padding: 24, background: '#fff' }}>
+				return (<div className={this.props.match.params.id} style={{ padding: 24, background: '#fff' }}>
 					<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
 						{this.NodeInterpreter(this.state.Desc,'LeftCol')}
 						{this.NodeInterpreter(this.state.Desc,'RightCol')}
@@ -97,4 +104,4 @@ class ImageConfig extends React.Component {
 }
 
 
-export default ImageConfig;
+export default ConfigPanel;

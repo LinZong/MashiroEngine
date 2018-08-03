@@ -31,7 +31,6 @@ class TextConfig extends React.Component {
 								/>
 							</Col>
 						</div>
-
 						<div style={{ textAlign: "center" }}>
 							<Divider orientation="left">自动播放速度</Divider>
 							<Col span={16}>
@@ -74,7 +73,6 @@ class TextConfig extends React.Component {
 						</div>
 					</Col>
 					<Col span={12}>
-
 					</Col>
 				</Row>
 			</div>

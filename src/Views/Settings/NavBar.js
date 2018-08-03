@@ -1,29 +1,31 @@
 import React from 'react';
-import { Layout, Menu, Icon, message } from 'antd';
-import ImageConfig from './ImageConfig'
-import { Route, Switch, NavLink } from 'react-router-dom';
+import { Layout, Menu, Icon, message, Tooltip } from 'antd';
+import { NavLink } from 'react-router-dom';
+import { IMAGE_SETTING, TEXT_SETTING } from '../../Engine/actionTypes/SettingType';
 const { Content, Footer, Sider } = Layout;
 
 class NavBar extends React.Component {
+	constructor(){
+		super(...arguments);
+		this.state={PanelPath:IMAGE_SETTING};
+	}
 	render() {
 		return (
 			<Layout style={{ height: '100vh' }}>
 				<Sider
 					breakpoint="lg"
 					collapsedWidth="0"
-					onBreakpoint={(broken) => { console.log(broken); }}
-					onCollapse={(collapsed, type) => { console.log(collapsed, type); }}
 				>
 					<div className="logo" />
-					<Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-						<Menu.Item key="1">
-							<NavLink className="nav-text" to='/NewSettings/ImageConfig'>
+					<Menu theme="dark" mode="inline" defaultSelectedKeys={[this.state.PanelPath]}>
+						<Menu.Item key={IMAGE_SETTING}>
+							<NavLink className="nav-text" onClick={()=>this.setState({PanelPath:IMAGE_SETTING})} to={'/NewSettings/' + IMAGE_SETTING}>
 								<Icon type="desktop" />
 								画面设置
 							</NavLink>
 						</Menu.Item>
-						<Menu.Item key="2">
-							<NavLink className="nav-text" to='/NewSettings/TextConfig'>
+						<Menu.Item key={TEXT_SETTING}>
+							<NavLink className="nav-text" onClick={()=>this.setState({PanelPath:TEXT_SETTING})} to={'/NewSettings/' + TEXT_SETTING}>
 								<Icon type="file-text" />
 								文本设置
 							</NavLink>
@@ -45,10 +47,10 @@ class NavBar extends React.Component {
 							<span className="nav-text">恢复初始设置</span>
 						</Menu.Item>
 					</Menu>
-					<Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} selectable={false}>
-						<Menu.Item key="7" onClick={() => message.info('成功保存设置', 1)}>
+					<Menu theme="dark" mode="inline" selectable={false}>
+						<Menu.Item key="7" disabled>
 							<Icon type="save" />
-							<span className="nav-text">保存</span>
+							<span className="nav-text"><Tooltip title="您无需按下这个傻逼的按钮，一切动作将会自动保存">保存</Tooltip></span>
 						</Menu.Item>
 						<Menu.Item key="8">
 							<NavLink className="nav-text" to='/section'>

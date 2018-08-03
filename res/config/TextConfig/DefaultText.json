@@ -1,0 +1,29 @@
+{
+	"SettingName":"TextConfig",
+	"SettingElement":{
+		"LeftCol":[
+			{
+				"Name":"TextTypingSpeed",
+				"Value":45
+			},
+			{
+				"Name":"AutoPlaySpeed",
+				"Value":50
+			},
+			{
+				"Name":"AutoPlayMode",
+				"Value":"Normal"
+			},
+			{
+				"Name":"SkipModeAfterSelection",
+				"Value":"Keep"
+			},
+			{
+				"Name":"AutoPlayModeAfterSelection",
+				"Value":"Keep"
+			}
+		],
+		"RightCol":[
+		]
+	}
+}

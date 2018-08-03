@@ -1,5 +1,4 @@
-import ImageConfig from './ImageConfig';
+import ConfigPanel from './ConfigPanel';
 import NavBar from './NavBar';
-import TextConfig from './TextConfig';
 import Settings from './Settings';
-export {NavBar,ImageConfig,TextConfig,Settings};
+export {NavBar,ConfigPanel,Settings};

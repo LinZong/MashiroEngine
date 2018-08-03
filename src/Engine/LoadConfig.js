@@ -6,7 +6,7 @@ const { IMAGE_SETTING,
     CONTROLLER_SETTING,
     INGAME_SETTING, } = require('./actionTypes/SettingType');
 const {ExtendJson} = require('./Util');
-
+const Q  = require('q');
 function LoadGlobalConfig() {
     try {
         let FileStream = require('fs');
@@ -43,9 +43,7 @@ function LoadGlobalConfig() {
         throw error;
     }
 }
-
-function LoadUserConfig(SettingType) {
-    let fs = window.electron.remote.require('fs');
+function PathResolver(SettingType){
     var TargetPath = {};
     var ConfigPathNode = window.electron.remote.getGlobal('Environment').Config;
     switch (SettingType) {
@@ -75,6 +73,12 @@ function LoadUserConfig(SettingType) {
         }
         default: TargetPath = {};
     }
+    return TargetPath;
+}
+function LoadUserConfig(SettingType) {
+    let fs = window.electron.remote.require('fs');
+    let TargetPath = PathResolver(SettingType);
+
     let DescHandle = fs.readFileSync(TargetPath.Desc);
     let DefHandle = fs.readFileSync(TargetPath.Default);
     let UserHandle = fs.readFileSync(TargetPath.User);
@@ -82,8 +86,18 @@ function LoadUserConfig(SettingType) {
     let DescJson = JSON.parse(DescHandle);
     let DefJson = JSON.parse(DefHandle);
     let UserJson = JSON.parse(UserHandle);
-    
-	return {Desc:DescJson,Settings:ExtendJson(DefJson,UserJson)};
 
+	return {Desc:DescJson,Settings:ExtendJson(DefJson,UserJson)};
 }
-module.exports = { LoadGlobalConfig, LoadUserConfig };
+
+function SaveUserConfig(SettingType,ConfigObj){
+    var deferrer = Q.defer();
+    let fs = window.electron.remote.require('fs');
+    let TargetPath = PathResolver(SettingType);
+    fs.writeFile(TargetPath.User,JSON.stringify(ConfigObj),(err)=>{
+        if(err) {console.log(err);deferrer.reject('保存配置失败!');}
+        else deferrer.resolve('保存配置成功!');
+    });
+    return deferrer.promise;
+}
+module.exports = { LoadGlobalConfig, LoadUserConfig,SaveUserConfig };

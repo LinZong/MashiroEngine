@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import '../GameView/GameView.css';
 import * as Status from '../../Engine/Status';
 import {GetAllChapter} from '../../Engine/StatusMachine';
