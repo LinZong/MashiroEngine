@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Menu, Icon, message, Tooltip } from 'antd';
 import { NavLink } from 'react-router-dom';
-import { IMAGE_SETTING, TEXT_SETTING } from '../../Engine/actionTypes/SettingType';
+import { IMAGE_SETTING, TEXT_SETTING,SOUND_SETTING,CONTROLLER_SETTING,INGAME_SETTING } from '../../Engine/actionTypes/SettingType';
 const { Content, Footer, Sider } = Layout;
 
 class NavBar extends React.Component {

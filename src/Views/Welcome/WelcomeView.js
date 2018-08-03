@@ -1,11 +1,11 @@
- import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom'
 import 'bulma/css/bulma.css'
 import './WelcomeView.css'
 const electron = window.electron;
 class WelcomeView extends React.Component {
-    constructor(props){
-        super(props);
+    constructor(){
+        super(...arguments);
         this.welcomeRef=React.createRef();
         this.WelcomeImageAnimator=this.WelcomeImageAnimator.bind(this);
     }
@@ -13,9 +13,6 @@ class WelcomeView extends React.Component {
         var count = 0;
         let IntervalHandler = setInterval(()=>{if(0<=count&&count<=60){count++;this.welcomeRef.current.style.opacity = 1-(count/60);}},32);
         setTimeout(()=>{this.welcomeRef.current.style.zIndex=0;clearInterval(IntervalHandler)},3000);
-    }
-    componentDidMount(){
-        //this.WelcomeImageAnimator();
     }
     render() {
         return (<div>

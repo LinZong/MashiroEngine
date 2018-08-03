@@ -9,20 +9,24 @@ class ConfigPanel extends React.Component {
 		this.state = { status: 'loading', Desc: null, Settings: null, Changed:false }
 		this.ApplySettings = this.ApplySettings.bind(this);
 		this.NodeInterpreter=this.NodeInterpreter.bind(this);
+		this.LoadConfigPanel=this.LoadConfigPanel.bind(this);
 	}
 	ApplySettings(value, idx,SelectedCol) {
 		let refObj = this.state.Settings;
 		refObj.SettingElement[SelectedCol][idx].Value = safetouch(value.target).value() || value;
 		this.setState({ Settings: refObj ,Changed:true});
+		window.electron.remote.getGlobal('SettingsNode')[this.props.match.params.id] = refObj;
+	}
+	LoadConfigPanel(id){
+		let res = LoadUserConfig(id);
+		this.setState({ status: 'success', Desc: res.Desc, Settings: res.Settings,Changed:false});
 	}
 	componentDidMount() {
-		var res = LoadUserConfig(this.props.match.params.id);
-		this.setState({ status: 'success', Desc: res.Desc, Settings: res.Settings ,Changed:false});
+		this.LoadConfigPanel(this.props.match.params.id);
 	}
 	componentWillReceiveProps(nextProps){
 		if(this.state.Changed){SaveUserConfig(this.props.match.params.id,this.state.Settings).done((data)=>message.success(data,1),(reason)=>message.error(reason,1));}
-		var res = LoadUserConfig(nextProps.match.params.id);
-		this.setState({ status: 'success', Desc: res.Desc, Settings: res.Settings ,Changed:false});
+		this.LoadConfigPanel(nextProps.match.params.id);
 	}
 	componentWillUnmount(){
 		if(this.state.Changed){SaveUserConfig(this.props.match.params.id,this.state.Settings).done((data)=>message.success(data,1),(reason)=>message.error(reason,1));}

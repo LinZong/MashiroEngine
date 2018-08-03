@@ -23,14 +23,16 @@ function LoadGlobalConfig() {
         Environment.SaveDataDir = './' + Path.join(Environment.Path.Root, Environment.Path.Savedata);
 
         Environment.Config = {};
-        Environment.Config.ImageConfigPathDesc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Elements);
-        Environment.Config.ImageConfigPathDef = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Default);
-        Environment.Config.ImageConfigPathUser = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.User);
+        Environment.Config[IMAGE_SETTING] = {};
+        Environment.Config[TEXT_SETTING] = {};
+        Environment.Config[IMAGE_SETTING].Desc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Elements);
+        Environment.Config[IMAGE_SETTING].Def = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Default);
+        Environment.Config[IMAGE_SETTING].User = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.User);
         
 
-        Environment.Config.TextConfigPathDesc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Elements);
-        Environment.Config.TextConfigPathDef = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Default);
-        Environment.Config.TextConfigPathUser = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.User);
+        Environment.Config[TEXT_SETTING].Desc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Elements);
+        Environment.Config[TEXT_SETTING].Def = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Default);
+        Environment.Config[TEXT_SETTING].User = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.User);
 
 
         //占坑，以后肯定是要加载全局UI 资源的(Default or usersettings)
@@ -39,6 +41,13 @@ function LoadGlobalConfig() {
         global.MyEngine = {};
         global.MyEngine.StatusMachine = {};
         global.MyEngine.StatusMachine.AllChapter = LoadAllChapters(Environment.ChapterDir);//测试加载所有章节.
+        global.SettingsNode = {};
+        for(var conf in Environment.Config){
+            let p = Environment.Config[conf].User;
+            let handle = FileStream.readFileSync(p);
+            global.SettingsNode[conf] = JSON.parse(handle);
+        }
+        
     } catch (error) {
         throw error;
     }
@@ -48,15 +57,15 @@ function PathResolver(SettingType){
     var ConfigPathNode = window.electron.remote.getGlobal('Environment').Config;
     switch (SettingType) {
         case IMAGE_SETTING: {
-            TargetPath.Desc = ConfigPathNode.ImageConfigPathDesc;
-            TargetPath.Default = ConfigPathNode.ImageConfigPathDef;
-            TargetPath.User = ConfigPathNode.ImageConfigPathUser;
+            TargetPath.Desc = ConfigPathNode[IMAGE_SETTING].Desc;
+            TargetPath.Default = ConfigPathNode[IMAGE_SETTING].Def;
+            TargetPath.User = ConfigPathNode[IMAGE_SETTING].User;
             break;
         }
         case TEXT_SETTING: {
-            TargetPath.Desc = ConfigPathNode.TextConfigPathDesc;
-            TargetPath.Default = ConfigPathNode.TextConfigPathDef;
-            TargetPath.User = ConfigPathNode.TextConfigPathUser;
+            TargetPath.Desc = ConfigPathNode[TEXT_SETTING].Desc;
+            TargetPath.Default = ConfigPathNode[TEXT_SETTING].Def;
+            TargetPath.User = ConfigPathNode[TEXT_SETTING].User;
             break;
         }
         case SOUND_SETTING: {
@@ -75,6 +84,7 @@ function PathResolver(SettingType){
     }
     return TargetPath;
 }
+
 function LoadUserConfig(SettingType) {
     let fs = window.electron.remote.require('fs');
     let TargetPath = PathResolver(SettingType);
