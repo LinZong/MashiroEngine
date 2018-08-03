@@ -2,21 +2,19 @@ import React from 'react';
 import { connect } from 'react-redux';
 import '../GameView/GameView.css';
 import * as Status from '../../Engine/Status';
-import * as Actions from '../../Engine/SectionActions'
+import {GetAllChapter} from '../../Engine/StatusMachine';
 import { Link } from 'react-router-dom';
-const fs = window.electron.remote.require('fs');
 class AllChapterView extends React.Component {
     constructor(){
         super(...arguments);
-        this.TestSaveInfo = null;
-        let res = fs.readFileSync('relax.txt');
-        this.TestSaveInfo = JSON.parse(res);
+        this.state = {WelcomeViewStatus:'loading',ChapterList:null};
     }
     componentDidMount() {
-        this.props.onLoadChapters();
+        let allchapter = GetAllChapter();
+        this.setState({WelcomeViewStatus:'success',ChapterList:allchapter});
     }
     render() {
-        switch (this.props.WelcomeViewStatus) {
+        switch (this.state.WelcomeViewStatus) {
             case Status.SUCCESS: {
                 return (
                     <div className="App">
@@ -24,14 +22,11 @@ class AllChapterView extends React.Component {
                             <h1 className="App-title">全部章节</h1>
                         </header>
                         <div>
-                            {this.props.ChapterList.map((item, idx) =>
+                            {this.state.ChapterList.map((item, idx) =>
                                 (<Link key={idx} to=
                                     {{ pathname: '/section', state: { Chapter: item, Branch: 1, Section: 0, TextNodeBegin: 0 } }}>
                                     <li>{item.Name}</li></Link>
                                 ))}
-                            <Link key={3} to=
-                                {{ pathname: '/section', state: {SaveInfo:this.TestSaveInfo } }}>
-                                <li>测试存档加载</li></Link>
                                 <button onClick={()=>this.props.history.push('/',{Test:"Relax"})}>大概是返回吧</button>
                                 
                         </div>
@@ -43,15 +38,4 @@ class AllChapterView extends React.Component {
 //原来Link也可以这样写hhh
     }
 }
-const mapStateToProps = (state) => {
-    return {
-        WelcomeViewStatus: state.Welcome.status,
-        ChapterList: state.Welcome.ChapterList
-    };
-};
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onLoadChapters: () => { dispatch(Actions.GetAllChapter()) }
-    };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(AllChapterView);
+export default (AllChapterView);

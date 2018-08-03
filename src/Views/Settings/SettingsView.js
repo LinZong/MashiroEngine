@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import store from '../../Store';
-import * as Actions from '../../Engine/SectionActions'
+import * as Actions from '../../Engine/actions/SectionActions'
 var fs = window.electron.remote.require('fs');
 class SettingsView extends React.Component{
     constructor(){

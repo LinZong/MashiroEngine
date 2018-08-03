@@ -23,24 +23,24 @@
   font-size: 17pt;
 }
 
-.fade-enter{
+.GameViewFade-enter{
   opacity: 0.01;
 }
-.fade-enter.fade-enter-active {
+.GameViewFade-enter.GameViewFade-enter-active {
   opacity: 1;
   transition: opacity 500ms ease-in;
 }
-.fade-appear {
+.GameViewFade-appear {
   opacity: 0.01;
 }
-.fade-appear.fade-appear-active {
+.GameViewFade-appear.GameViewFade-appear-active {
   opacity: 1;
   transition: opacity 500ms ease-in;
 }
-.fade-leave {
+.GameViewFade-leave {
   opacity: 1;
 }
-.fade-leave.fade-leave-active {
+.GameViewFade-leave.GameViewFade-leave-active {
   opacity: 0.01;
   transition: opacity 500ms ease-in;
 }

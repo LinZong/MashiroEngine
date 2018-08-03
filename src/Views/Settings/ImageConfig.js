@@ -1,75 +1,98 @@
 import React from 'react';
-import { Radio, Row, Col, Divider, Select } from 'antd';
+import { Radio, Row, Col, Divider, Select, Tooltip, Slider, InputNumber } from 'antd';
+import safetouch from 'safe-touch';
+import { LoadUserConfig } from '../../Engine/LoadConfig';
+import { IMAGE_SETTING } from '../../Engine/actionTypes/SettingType';
+import * as Status from '../../Engine/Status';
 class ImageConfig extends React.Component {
+	constructor() {
+		super(...arguments);
+		this.state = { status: 'loading', Desc: null, Settings: null }
+		this.ApplySettings = this.ApplySettings.bind(this);
+		this.NodeInterpreter=this.NodeInterpreter.bind(this);
+	}
+	ApplySettings(value, idx,SelectedCol) {
+		let refObj = this.state.Settings;
+		refObj.SettingElement[SelectedCol][idx].Value = safetouch(value.target).value() || value;
+		this.setState({ Settings: refObj });
+	}
+	componentDidMount() {
+		var res = LoadUserConfig(IMAGE_SETTING);
+		this.setState({ status: 'success', Desc: res.Desc, Settings: res.Settings });
+	}
+	NodeInterpreter(Desc,SelectedCol) {
+		return (<Col span={12}>
+			{Desc.SettingOptions[SelectedCol].map((Item, idx) => {
+				switch (Item.Type) {
+					case "RadioGroup": {
+						return (
+							<div style={{ textAlign: "center" }}>
+								<Divider orientation="left">{Item.Description ?
+									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
+									(Item.Title)}</Divider>
+								<Radio.Group defaultValue={this.state.Settings.SettingElement[SelectedCol][idx].Value}
+									buttonStyle="solid" onChange={(value) => this.ApplySettings(value, idx,SelectedCol)}>
+									{Item.Selection.map((e, index) => {
+										return (<Radio.Button value={e.Value}>{e.Title}</Radio.Button>);
+									})}
+								</Radio.Group>
+							</div>);
+					}
+					case "Select": {
+						return (
+							<div style={{ textAlign: "center" }}>
+								<Divider orientation="left">{Item.Description ?
+									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
+									(Item.Title)}</Divider>
+								<Select defaultValue={this.state.Settings.SettingElement[SelectedCol][idx].Value} style={{ width: 200 }}
+									onChange={(value) => this.ApplySettings(value, idx,SelectedCol)}>
+									{Item.Selection.map((e, index) => {
+										return (<Select.Option value={e.Value}>{e.Title}</Select.Option>);
+									})}
+								</Select>
+							</div>);
+					}
+					case "Slider": {
+						return (
+							<div style={{ textAlign: "center" }}>
+								<Divider orientation="left">{Item.Description ?
+									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
+									(Item.Title)}</Divider>
+								<Col span={16}>
+									<Slider min={Item.Min} max={Item.Max} onChange={(value) => this.ApplySettings(value, idx,SelectedCol)}
+										value={this.state.Settings.SettingElement[SelectedCol][idx].Value} />
+								</Col>
+								<Col span={8}>
+									<InputNumber
+										min={Item.Min}
+										max={Item.Max}
+										style={{ marginLeft: 16 }}
+										value={this.state.Settings.SettingElement[SelectedCol][idx].Value}
+										onChange={(value) => this.ApplySettings(value, idx,SelectedCol)}
+									/>
+								</Col>
+							</div>);
+					}
+					default: break;
+				}
+			},this)}
+		</Col>)
+	};
 	render() {
-		return (
-
-			<div style={{ padding: 24, background: '#fff' }}>
-				<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-					<Col span={12}>
-						<div style={{ textAlign: "center" }}>
-							<Divider orientation="left">显示模式</Divider>
-							<Radio.Group defaultValue="a" buttonStyle="solid">
-								<Radio.Button value="a">窗口模式</Radio.Button>
-								<Radio.Button value="b">全屏模式</Radio.Button>
-							</Radio.Group>
-						</div>
-						<div style={{ textAlign: "center" }}>
-							<Divider orientation="left">画面比例</Divider>
-							<Radio.Group defaultValue="a" buttonStyle="solid">
-								<Radio.Button value="a">4:3</Radio.Button>
-								<Radio.Button value="b">16:9</Radio.Button>
-							</Radio.Group>
-						</div>
-						<div style={{ textAlign: "center" }}>
-							<Divider orientation="left">动画效果</Divider>
-							<Radio.Group defaultValue="a" buttonStyle="solid">
-								<Radio.Button value="a">有</Radio.Button>
-								<Radio.Button value="b"> 无</Radio.Button>
-							</Radio.Group>
-						</div>
-						<div style={{ textAlign: "center" }}>
-							<Divider orientation="left">使窗口永远位于顶端</Divider>
-							<Radio.Group defaultValue="a" buttonStyle="solid">
-								<Radio.Button value="a">是的</Radio.Button>
-								<Radio.Button value="b">不用了我不想暴露属性</Radio.Button>
-							</Radio.Group>
-						</div>
-						<div style={{ textAlign: "center" }}>
-							<Divider orientation="left">说话人的表情随着文字变更</Divider>
-							<Radio.Group defaultValue="a" buttonStyle="solid">
-								<Radio.Button value="a">开</Radio.Button>
-								<Radio.Button value="b">关</Radio.Button>
-							</Radio.Group>
-						</div>
-					</Col>
-					<Col span={12}>
-						<div style={{ textAlign: "center" }}>
-							<Divider orientation="left">膜苏希烔巨佬</Divider>
-							<Radio.Group defaultValue="a" buttonStyle="solid">
-								<Radio.Button value="a">是</Radio.Button>
-								<Radio.Button value="b">是</Radio.Button>
-							</Radio.Group>
-						</div>
-						<div style={{ textAlign: "center" }}>
-							<Divider orientation="left">游戏界面语言</Divider>
-							<Select
-								showSearch
-								defaultValue="Chinese"
-								style={{ width: 200 }}
-								placeholder="Select a person"
-								optionFilterProp="children"
-								filterOption={(input, option) => {return option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;}}
-							>
-								<Select.Option value="Chinese">中文(简体)</Select.Option>
-								<Select.Option value="English">English</Select.Option>
-								<Select.Option value="Japanese">日本語</Select.Option>
-							</Select>
-						</div>
-					</Col>
-				</Row>
-			</div>
-		);
+		switch (this.state.status) {
+			case Status.LOADING: {
+				return "Loading";
+			}
+			case Status.SUCCESS: {
+				return (<div style={{ padding: 24, background: '#fff' }}>
+					<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+						{this.NodeInterpreter(this.state.Desc,'LeftCol')}
+						{this.NodeInterpreter(this.state.Desc,'RightCol')}
+					</Row>
+				</div>)
+			}
+			default: return "Internal Error!!";
+		}
 	}
 }
 

@@ -1,9 +1,16 @@
 //加载配置文件，初始化全局环境变量
-var FileStream = require('fs');
-var Path = require('path');
-const{LoadAllChapters}=require('./LoadChapter');
+const { LoadAllChapters } = require('./LoadChapter');
+const { IMAGE_SETTING,
+    TEXT_SETTING,
+    SOUND_SETTING,
+    CONTROLLER_SETTING,
+    INGAME_SETTING, } = require('./actionTypes/SettingType');
+const {ExtendJson} = require('./Util');
+
 function LoadGlobalConfig() {
     try {
+        let FileStream = require('fs');
+        let Path = require('path');
         let Environment = JSON.parse(FileStream.readFileSync('./res/config/GlobalConfig.json'));
         Environment.AppPath = __dirname;
         Environment.Resolution["X"] = Environment.Resolution[0];
@@ -11,9 +18,23 @@ function LoadGlobalConfig() {
         Environment.ChapterDir = './' + Path.join(Environment.Path.Root, Environment.Path.Resources.Chapter);
         Environment.CharacterDir = './' + Path.join(Environment.Path.Root, Environment.Path.Resources.Character);
         Environment.ThemeDir = './' + Path.join(Environment.Path.Root, Environment.Path.Resources.Theme);
+
+
         Environment.SaveDataDir = './' + Path.join(Environment.Path.Root, Environment.Path.Savedata);
+
+        Environment.Config = {};
+        Environment.Config.ImageConfigPathDesc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Elements);
+        Environment.Config.ImageConfigPathDef = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Default);
+        Environment.Config.ImageConfigPathUser = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.User);
+        
+
+        Environment.Config.TextConfigPathDesc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Elements);
+        Environment.Config.TextConfigPathDef = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Default);
+        Environment.Config.TextConfigPathUser = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.User);
+
+
         //占坑，以后肯定是要加载全局UI 资源的(Default or usersettings)
-        Environment.UI={LoadingImage:'./'+Path.join(Environment.ThemeDir,'UIResources\\Framework\\FakeLoading.jpg')};
+        Environment.UI = { LoadingImage: './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\FakeLoading.jpg') };
         global.Environment = Environment;
         global.MyEngine = {};
         global.MyEngine.StatusMachine = {};
@@ -22,14 +43,47 @@ function LoadGlobalConfig() {
         throw error;
     }
 }
- 
-function LoadUserConfig() {
-    /* In electron, we need to apply all the global config and usersetting, 
-        binding hotkeys, etc, when showing welcome photo.
-    */
+
+function LoadUserConfig(SettingType) {
+    let fs = window.electron.remote.require('fs');
+    var TargetPath = {};
+    var ConfigPathNode = window.electron.remote.getGlobal('Environment').Config;
+    switch (SettingType) {
+        case IMAGE_SETTING: {
+            TargetPath.Desc = ConfigPathNode.ImageConfigPathDesc;
+            TargetPath.Default = ConfigPathNode.ImageConfigPathDef;
+            TargetPath.User = ConfigPathNode.ImageConfigPathUser;
+            break;
+        }
+        case TEXT_SETTING: {
+            TargetPath.Desc = ConfigPathNode.TextConfigPathDesc;
+            TargetPath.Default = ConfigPathNode.TextConfigPathDef;
+            TargetPath.User = ConfigPathNode.TextConfigPathUser;
+            break;
+        }
+        case SOUND_SETTING: {
+            TargetPath = ConfigPathNode.ImageConfigPath;
+            break;
+        }
+        case CONTROLLER_SETTING: {
+            TargetPath = ConfigPathNode.ImageConfigPath;
+            break;
+        }
+        case INGAME_SETTING: {
+            TargetPath = ConfigPathNode.ImageConfigPath;
+            break;
+        }
+        default: TargetPath = {};
+    }
+    let DescHandle = fs.readFileSync(TargetPath.Desc);
+    let DefHandle = fs.readFileSync(TargetPath.Default);
+    let UserHandle = fs.readFileSync(TargetPath.User);
+
+    let DescJson = JSON.parse(DescHandle);
+    let DefJson = JSON.parse(DefHandle);
+    let UserJson = JSON.parse(UserHandle);
+    
+	return {Desc:DescJson,Settings:ExtendJson(DefJson,UserJson)};
+
 }
-
-LoadGlobalConfig();
-LoadUserConfig();
-
 module.exports = { LoadGlobalConfig, LoadUserConfig };

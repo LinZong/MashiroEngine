@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import TransitionGroup from 'react-addons-css-transition-group';
-import * as Actions from '../../Engine/SectionActions'
+import * as Actions from '../../Engine/actions/SectionActions'
 import * as Status from '../../Engine/Status'
 import { TextNodeInterpreter } from '../../Engine/LoadSection';
 import { Scene, TextBox, Loading } from '../index';
@@ -186,7 +186,7 @@ class GameView extends Component {
 	render() { 
 		return (
 			<TransitionGroup
-				transitionName="fade"
+				transitionName="GameViewFade"
 				transitionEnterTimeout={500}
 				transitionLeave={false}
 				transitionAppear={true}

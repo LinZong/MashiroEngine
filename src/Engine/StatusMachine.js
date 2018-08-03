@@ -7,6 +7,8 @@ var EventHandler = new event();
 const { LoadChapterRes } = require('./LoadChapter');
 const { LoadSectionRes } = require('./LoadSection');
 
+
+
 var AllChapter = null;
 var CurrentChapter = null;
 var CurrentBranch = null;
@@ -33,20 +35,20 @@ EventHandler.on(EventsType.GET_SELECTED_PLAYING_SECTION, (dispatch, actionCtor, 
         CurrentChapter = TmpChapter;//是一个存章节信息的Object
         CurrentSectionIndex = SelectedSection;//选择了的Section数组Index
         CurrentBranch = SelectedBranch;//选择的Branch号
-        DispatchSectionJson(dispatch,actionCtor)(CurrentChapter,CurrentSectionIndex);
+        DispatchSectionJson(dispatch, actionCtor)(CurrentChapter, CurrentSectionIndex);
     }
 });
 
-EventHandler.on(EventsType.GET_ALL_CHAPTERS, (dispatch, actionCtor, ErrorCtor) => {
+function GetAllChapter(){
     if (AllChapter === null) AllChapter = window.electron.remote.getGlobal('MyEngine').StatusMachine.AllChapter;
-    dispatch(actionCtor(AllChapter));
-});
+    return (AllChapter);
+}
 
 EventHandler.on(EventsType.ENTER_NEXT_SECTION, (dispatch, actionCtor, ErrorCtor) => {
     let NowSection = CurrentSectionIndex;
     if (NowSection < CurrentChapter.Branch.Sections.length - 1) {
         CurrentSectionIndex++;
-        DispatchSectionJson(dispatch,actionCtor)(CurrentChapter,NowSection + 1);
+        DispatchSectionJson(dispatch, actionCtor)(CurrentChapter, NowSection + 1);
     }
     else {
         EventHandler.emit(EventsType.ENTER_NEXT_CHAPTER, dispatch, actionCtor);
@@ -60,14 +62,17 @@ EventHandler.on(EventsType.ENTER_NEXT_CHAPTER, (dispatch, actionCtor) => {
         EventHandler.emit(EventsType.GET_SELECTED_PLAYING_SECTION, dispatch, actionCtor, AllChapter[CurrChapterIndex + 1], CurrentBranch, 0);
     }
 });
-EventHandler.on(EventsType.LOAD_SAVEDATA, (SaveDataInfo,dispatch,actionCtor) => {
+EventHandler.on(EventsType.LOAD_SAVEDATA, (SaveDataInfo, dispatch, actionCtor) => {
     CurrentChapter = SaveDataInfo.PrevInfo.CurrentChapter;
     CurrentBranch = SaveDataInfo.PrevInfo.CurrentBranch;
     CurrentSectionIndex = SaveDataInfo.PrevInfo.CurrentSectionIndex;
-    DispatchSectionJson(dispatch,actionCtor)(CurrentChapter,CurrentSectionIndex);
+    DispatchSectionJson(dispatch, actionCtor)(CurrentChapter, CurrentSectionIndex);
 });
+
+
+
 function GetGlobalVar() {
     return { AllChapter, CurrentChapter, CurrentBranch, CurrentSectionIndex };
 }
-module.exports = { EventHandler, GetGlobalVar };
+module.exports = { EventHandler, GetGlobalVar,GetAllChapter };
 

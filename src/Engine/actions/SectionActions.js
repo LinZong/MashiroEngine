@@ -20,13 +20,13 @@ import {
     SAVE_GAMEVIEW_STATE,
     CLEAR_GAMEVIEW_STATE,
     LOAD_SAVEDATA
-} from './Events';
+} from '../Events';
 
-import {GetRemoteUrlPath} from './Util';
+import {GetRemoteUrlPath} from '../Util';
 //测试用，将来肯定要做好默认UI读取的。
 var GlobalLoading = GetRemoteUrlPath('.res\\Resources\\Theme\\UIResources\\Framework\\FakeLoading.jpg');
 
-const {EventHandler} = require('./StatusMachine');
+const {EventHandler} = require('../StatusMachine');
 
 export const NextNode = () => ({
   type: NEXT_NODE

@@ -10,6 +10,21 @@
             "Character": "Character",
             "Theme": "Theme"
         },
-        "Savedata":"./res/Savedata"
+        "Savedata":"./res/Savedata",
+        "Config":{
+            "Root":"./res/config",
+            "Resources":{
+                "Image":{
+                    "Elements":"./ImageConfig/Image.json",
+                    "Default":"./ImageConfig/DefaultImage.json",
+                    "User":"./ImageConfig/UserImage.json"
+                },
+                "Text":{
+                    "Elements":"./TextConfig/Text.json",
+                    "Default":"./TextConfig/DefaultText.json",
+                    "User":"./TextConfig/UserText.json"
+                }
+            }
+        }
     }
 }

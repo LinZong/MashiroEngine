@@ -4,7 +4,6 @@ import ImageConfig from './ImageConfig'
 import { Route, Switch, NavLink } from 'react-router-dom';
 const { Content, Footer, Sider } = Layout;
 
-
 class NavBar extends React.Component {
 	render() {
 		return (
@@ -19,13 +18,15 @@ class NavBar extends React.Component {
 					<Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
 						<Menu.Item key="1">
 							<NavLink className="nav-text" to='/NewSettings/ImageConfig'>
-							<Icon type="desktop" />
-							画面设置
+								<Icon type="desktop" />
+								画面设置
 							</NavLink>
 						</Menu.Item>
 						<Menu.Item key="2">
-							<Icon type="file-text" />
-							<span className="nav-text">文本设置</span>
+							<NavLink className="nav-text" to='/NewSettings/TextConfig'>
+								<Icon type="file-text" />
+								文本设置
+							</NavLink>
 						</Menu.Item>
 						<Menu.Item key="3">
 							<Icon type="sound" />
@@ -51,27 +52,24 @@ class NavBar extends React.Component {
 						</Menu.Item>
 						<Menu.Item key="8">
 							<NavLink className="nav-text" to='/section'>
-							<Icon type="to-top" />
+								<Icon type="to-top" />
 								回到游戏
 							</NavLink>
 						</Menu.Item>
 						<Menu.Item key="9">
 							<NavLink className="nav-text" to='/'>
-							<Icon type="arrow-left" />
-							回到主菜单
+								<Icon type="arrow-left" />
+								回到主菜单
 							</NavLink>
 						</Menu.Item>
 					</Menu>
 				</Sider>
 				<Layout>
 					<Content style={{ margin: '24px 16px 0' }}>
-						<Switch>
-							<Route path='/NewSettings' component={ImageConfig} />
-							<Route path='/NewSettings/ImageConfig' component={ImageConfig} />
-						</Switch>
+						{this.props.children}
 					</Content>
 					<Footer style={{ textAlign: 'center' }}>
-						年度笑话合集——傻逼galgame游戏引擎
+						まだ記憶の中の日々、あどけない笑顔二つ
      				 </Footer>
 				</Layout>
 			</Layout>

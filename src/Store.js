@@ -1,8 +1,6 @@
 import { createStore, applyMiddleware, compose ,combineReducers} from 'redux';
 
-import { WelcomeViewReducer } from './Engine/reducer';
-
-import { GameViewReducer } from './Engine/reducer';
+import { WelcomeViewReducer,GameViewReducer } from './Engine/reducer/index';
 
 import thunkMiddleware from 'redux-thunk'
 
@@ -12,7 +10,7 @@ const middlewares = [thunkMiddleware];
 
 const reducer = combineReducers({
   Welcome:WelcomeViewReducer,
-  GameView:GameViewReducer
+  GameView:GameViewReducer,
 })
 
 const storeEnhancers = compose(
