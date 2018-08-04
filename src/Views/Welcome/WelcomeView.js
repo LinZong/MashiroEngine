@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import 'bulma/css/bulma.css'
 import './WelcomeView.css'
 const electron = window.electron;
@@ -20,10 +20,10 @@ class WelcomeView extends React.Component {
             <aside className="menu welcomemenu">
                 <ul className="menu-list nav_ul">
                     <li>
-                        <Link to='/chapters'><li>初めから</li></Link>
+                        <NavLink to='/chapters'><li>初めから</li></NavLink>
                     </li>
                     <li>
-                        <a>続きから</a>
+                        <NavLink to='/savedata'><li>続きから</li></NavLink>
                     </li>
                     <li>
                         <a>フローチャート</a>
@@ -32,7 +32,7 @@ class WelcomeView extends React.Component {
                         <a>特典</a>
                     </li>
                     <li>
-                        <Link to='/NewSettings'><li>設定</li></Link>
+                        <NavLink to='/NewSettings'><li>設定</li></NavLink>
                     </li>
                     <li>
                         <a onClick={() => {

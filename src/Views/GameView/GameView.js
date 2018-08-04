@@ -7,11 +7,12 @@ import { TextNodeInterpreter } from '../../Engine/LoadSection';
 import { Scene, TextBox, Loading } from '../index';
 import { GetRemoteUrlPath } from '../../Engine/Util';
 import safetouch from 'safe-touch';
+import './GameView.css';
+//const {CreateSaveData} = require('../../Engine/LoadSaveData');
 class GameView extends Component {
 	constructor() {
 		super(...arguments);
 		this.state = { Scene: null, BGM: null, SectionName: null, CharacterName: null, Text: null, SelectionArray: null, IsInSelection: false };
-
 		//游戏画面控制函数
 		this.ChangeNode = this.ChangeNode.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
@@ -118,13 +119,18 @@ class GameView extends Component {
 	SetStopTypingController(ControllerFunc) {
 		this.TypingController.Stopper = ControllerFunc;
 	}
-	SaveState(CreateSaveData) {
-		var FreezeState = { ...this.state, NodeIndex: this.NodeIndex };
-		if(CreateSaveData!==undefined){
-			const PrevInfo = require('../../Engine/StatusMachine').GetGlobalVar();
-			FreezeState = {...FreezeState,PrevInfo};
-		}
-		this.props.onSaveCurrentState(FreezeState);
+	SaveState() {
+		let FreezeState = { ...this.state, NodeIndex: this.NodeIndex };
+		const contents = window.electron.remote.getCurrentWindow().webContents;
+		const PrevInfo = require('../../Engine/StatusMachine').GetGlobalVar();
+		let now = new Date();
+		FreezeState = {...FreezeState,PrevInfo,TimeStamp:now.toLocaleString()};
+		contents.capturePage((image)=>{
+			console.log('成功暂存数据');
+			//CreateSaveData(1,image,FreezeState).then((res)=>console.log(res),(reason)=>console.log(reason));
+			FreezeState = {...FreezeState,Image:image}
+			this.props.onSaveCurrentState(FreezeState);
+		});
 	}
 	componentDidMount() {
 		// let state = safetouch(this.props.location.state);
@@ -147,6 +153,7 @@ class GameView extends Component {
 			//加载从存档页（现在的全部章节页）传来的初始化信息。
 			let TmpInfo = Object.assign({}, SaveDataInfo);//deep copy
 			delete TmpInfo['PrevInfo'];
+			delete TmpInfo['Image'];
 			this.props.onLoadSaveData(SaveDataInfo);
 			this.setState(TmpInfo);
 		}
@@ -156,6 +163,7 @@ class GameView extends Component {
 		window.addEventListener('keydown', this.ChangeNode);
 	}
 	componentWillUnmount() {
+		//this.SaveState();
 		this.props.onPauseGameView();
 		window.removeEventListener('keydown', this.ChangeNode);
 	}
@@ -203,7 +211,7 @@ class GameView extends Component {
 											<div className="SelectionFlow">
 												{this.state.SelectionArray.map((item, idx) =>
 													(
-														<button key={idx} className="button" onClick={() => {
+														<button Key={idx} className="button" onClick={() => {
 															const { Chapter, Branch, Section } = item.JumpTo;
 															this.props.onLoadSectionRes(Chapter, Branch, Section);
 														}}>{item.Text}</button>

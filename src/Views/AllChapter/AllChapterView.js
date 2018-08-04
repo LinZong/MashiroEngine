@@ -22,7 +22,7 @@ class AllChapterView extends React.Component {
                         </header>
                         <div>
                             {this.state.ChapterList.map((item, idx) =>
-                                (<Link key={idx} to=
+                                (<Link Key={idx} to=
                                     {{ pathname: '/section', state: { Chapter: item, Branch: 1, Section: 0, TextNodeBegin: 0 } }}>
                                     <li>{item.Name}</li></Link>
                                 ))}

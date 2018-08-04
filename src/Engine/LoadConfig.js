@@ -20,7 +20,7 @@ function LoadGlobalConfig() {
         Environment.ThemeDir = './' + Path.join(Environment.Path.Root, Environment.Path.Resources.Theme);
 
 
-        Environment.SaveDataDir = './' + Path.join(Environment.Path.Root, Environment.Path.Savedata);
+        Environment.SaveDataDir = './' + Environment.Path.Savedata;
 
         Environment.Config = {};
         Environment.Config[IMAGE_SETTING] = {};
@@ -36,7 +36,8 @@ function LoadGlobalConfig() {
 
 
         //占坑，以后肯定是要加载全局UI 资源的(Default or usersettings)
-        Environment.UI = { LoadingImage: './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\FakeLoading.jpg') };
+        Environment.UI = { LoadingImage: './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\FakeLoading.jpg'),
+                           SaveDataPlaceHolder : './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\EmptySlot.png') };
         global.Environment = Environment;
         global.MyEngine = {};
         global.MyEngine.StatusMachine = {};

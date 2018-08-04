@@ -16,49 +16,48 @@ class NavBar extends React.Component {
 					breakpoint="lg"
 					collapsedWidth="0"
 				>
-					<div className="logo" />
 					<Menu theme="dark" mode="inline" defaultSelectedKeys={[this.state.PanelPath]}>
-						<Menu.Item key={IMAGE_SETTING}>
+						<Menu.Item Key={IMAGE_SETTING}>
 							<NavLink className="nav-text" onClick={()=>this.setState({PanelPath:IMAGE_SETTING})} to={'/NewSettings/' + IMAGE_SETTING}>
 								<Icon type="desktop" />
 								画面设置
 							</NavLink>
 						</Menu.Item>
-						<Menu.Item key={TEXT_SETTING}>
+						<Menu.Item Key={TEXT_SETTING}>
 							<NavLink className="nav-text" onClick={()=>this.setState({PanelPath:TEXT_SETTING})} to={'/NewSettings/' + TEXT_SETTING}>
 								<Icon type="file-text" />
 								文本设置
 							</NavLink>
 						</Menu.Item>
-						<Menu.Item key="3">
+						<Menu.Item Key="3">
 							<Icon type="sound" />
 							<span className="nav-text">声音设置</span>
 						</Menu.Item>
-						<Menu.Item key="4">
+						<Menu.Item Key="4">
 							<Icon type="tool" />
 							<span className="nav-text">控制设置</span>
 						</Menu.Item>
-						<Menu.Item key="5">
+						<Menu.Item Key="5">
 							<Icon type="select" />
 							<span className="nav-text">游戏进行设置</span>
 						</Menu.Item>
-						<Menu.Item key="6">
+						<Menu.Item Key="6">
 							<Icon type="reload" />
 							<span className="nav-text">恢复初始设置</span>
 						</Menu.Item>
 					</Menu>
 					<Menu theme="dark" mode="inline" selectable={false}>
-						<Menu.Item key="7" disabled>
+						<Menu.Item Key="7" disabled>
 							<Icon type="save" />
 							<span className="nav-text"><Tooltip title="您无需按下这个傻逼的按钮，一切动作将会自动保存">保存</Tooltip></span>
 						</Menu.Item>
-						<Menu.Item key="8">
+						<Menu.Item Key="8">
 							<NavLink className="nav-text" to='/section'>
 								<Icon type="to-top" />
 								回到游戏
 							</NavLink>
 						</Menu.Item>
-						<Menu.Item key="9">
+						<Menu.Item Key="9">
 							<NavLink className="nav-text" to='/'>
 								<Icon type="arrow-left" />
 								回到主菜单

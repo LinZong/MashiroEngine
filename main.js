@@ -33,7 +33,7 @@ function createWindow() {
 	mainWindow = new BrowserWindow(Options)
 	mainWindow.loadURL("http://localhost:3000/");
 	mainWindow.once('ready-to-show', () => {
-		mainWindow.show()
+		mainWindow.show();
 	})
 	mainWindow.on('closed', function () {
 		mainWindow = null
