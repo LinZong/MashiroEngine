@@ -42,10 +42,12 @@ class SaveDataCard extends React.Component {
 	}
 	SaveToSlot() {
 		let data = store.getState().GameView.PrevState;
+		const closehandle = message.loading("正在保存");
 		CreateSaveData(this.props.Index, data).then((ok) => {
-			message.success('成功保存存档');
+			closehandle();
+			message.success('成功保存存档',1);
 			this.setState({ Cover: ok.Cover, SaveTimeStamp: ok.State.TimeStamp, Title: ok.State.Text, Exist: true });
-		}, (reason) => message.error(reason)).done();
+		}, (reason) => message.error(reason));
 	}
 	showModal() {
 		if (!this.state.visible)
@@ -55,24 +57,16 @@ class SaveDataCard extends React.Component {
 	}
 	handleOk(e) {
 		e.stopPropagation();
-		this.ActionFunc();
 		this.setState({
 			visible: false,
 		});
+		this.ActionFunc();
 	}
 	handleCancel(e) {
 		e.stopPropagation();
 		this.setState({
 			visible: false,
 		});
-	}
-	componentWillReceiveProps(nextProps, nextState) {
-		if (nextProps.data) {
-			this.setState({ Exist: true });
-		}
-		else {
-			this.setState({ Exist: false });
-		}
 	}
 	onClickSlot(event) {
 		if (this.props.type.delete && this.state.Exist) {
