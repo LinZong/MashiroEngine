@@ -39,7 +39,7 @@ class TextBox extends Component {
                         <p className="TextBox-intro" id="Text" />
                     </Typed>
                 </Card>
-                <NavLink to='/NewSettings'>
+                <NavLink to='/savedata/save'>
                     <Button icon='arrow-left large' shape='circle' />
                 </NavLink>
             </div>

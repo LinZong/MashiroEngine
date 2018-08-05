@@ -1,12 +1,14 @@
 div.CardFramework{
 	position: relative;
-	width: auto;
-	height:auto;
 	overflow: hidden;
 	border-style:solid;
 	border-width: 1px;
 	border-color: #e8e8e8;
+	height:0;
+	width:100%;
+	padding-bottom:27%;
 }
+
 div.CardFramework:hover{
 	box-shadow: 2px 4px 6px #e8e8e8;
 }
@@ -16,9 +18,9 @@ div.SaveDataInfo{
 	padding-left: 4px;
 }
 p.TimeStamp{
-	font-size: 14pt;
+	font-size: 2.4vh;
 }
 p.Text{
-	font-size: 12pt;
+	font-size: 2.1vh;
 }
 

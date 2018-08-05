@@ -20,7 +20,7 @@ function createWindow() {
 			webSecurity: false,
 			preload: path.join(__dirname, './public/renderer.js')
 		},
-		resizable: false,
+		resizable: true,
 		show: false
 	};
 	if (global.Environment !== null || global.Environment !== undefined) {

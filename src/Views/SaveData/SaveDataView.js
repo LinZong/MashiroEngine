@@ -1,24 +1,17 @@
 import React from 'react';
-import { Layout, Menu, Row, Col, Icon } from 'antd';
+import { Layout, Menu, Row, Col, Icon,Switch } from 'antd';
 import { NavLink } from 'react-router-dom';
 import './SaveDataView.css';
 import SaveDataPanel from './SaveDataPanel';
-const { GetAllSaveData } = require('../../Engine/LoadSaveData');
 const { Header, Content, Footer } = Layout;
 
 class SaveDataView extends React.Component {
-	constructor() {
-		super(...arguments);
-		this.TestScreenShot = this.TestScreenShot.bind(this);
+	constructor(props){
+		super(props);
+		this.state={type:null,delete:false};
 	}
-	TestScreenShot() {
-		const contents = window.electron.remote.getCurrentWindow().webContents;
-		console.log(contents);
-		contents.capturePage((image) => {
-			let png = image.toPNG();
-			let fs = window.electron.remote.require('fs');
-			fs.writeFile('screen.png', png, (err) => console.log("OK"));
-		});
+	componentDidMount(){
+		this.setState({type:this.props.match.params.type});
 	}
 	render() {
 		return (
@@ -30,7 +23,7 @@ class SaveDataView extends React.Component {
 						style={{ lineHeight: '64px' }}
 						selectable={false}
 					>
-						<Menu.Item Key="1" style={{ fontSize: "15pt" }}>存档选择</Menu.Item>
+						<Menu.Item Key="1" style={{ fontSize: "2em" }}>存档选择</Menu.Item>
 						<Menu.Item Key="2">
 							<NavLink className="nav-text" to='/'>
 								<Icon type="arrow-left" />
@@ -38,15 +31,18 @@ class SaveDataView extends React.Component {
 						</NavLink>
 						</Menu.Item>
 						<Menu.Item Key="3">
-							<NavLink className="nav-text" to='/section'>
+							{this.state.type==='save'?<NavLink className="nav-text" to='/section'>
 								<Icon type="to-top" />
 								回到游戏
-						</NavLink>
+						</NavLink>:null}
+						</Menu.Item>
+						<Menu.Item Key="4">
+							<Switch checkedChildren="delete" unCheckedChildren={this.state.type} onChange={(checked)=>this.setState({delete:checked})} />	,
 						</Menu.Item>
 					</Menu>
 				</Header>
 				<Content style={{ padding: '0 50px' }}>
-					<SaveDataPanel />
+					<SaveDataPanel type={{type:this.state.type,delete:this.state.delete}}/>
 				</Content>
 				<Footer style={{ textAlign: 'center' }}>
 					你都不知道苏希烔多牛批，还不快努力学习打码

@@ -8,7 +8,7 @@ import { Scene, TextBox, Loading } from '../index';
 import { GetRemoteUrlPath } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import './GameView.css';
-//const {CreateSaveData} = require('../../Engine/LoadSaveData');
+const {CreateSaveData} = require('../../Engine/LoadSaveData');
 class GameView extends Component {
 	constructor() {
 		super(...arguments);
@@ -127,7 +127,7 @@ class GameView extends Component {
 		FreezeState = {...FreezeState,PrevInfo,TimeStamp:now.toLocaleString()};
 		contents.capturePage((image)=>{
 			console.log('成功暂存数据');
-			//CreateSaveData(1,image,FreezeState).then((res)=>console.log(res),(reason)=>console.log(reason));
+			//CreateSaveData(7,image,FreezeState).then((res)=>console.log(res),(reason)=>console.log(reason));
 			FreezeState = {...FreezeState,Image:image}
 			this.props.onSaveCurrentState(FreezeState);
 		});
@@ -163,7 +163,7 @@ class GameView extends Component {
 		window.addEventListener('keydown', this.ChangeNode);
 	}
 	componentWillUnmount() {
-		//this.SaveState();
+		this.SaveState();
 		this.props.onPauseGameView();
 		window.removeEventListener('keydown', this.ChangeNode);
 	}

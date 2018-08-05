@@ -2,6 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom'
 import 'bulma/css/bulma.css'
 import './WelcomeView.css'
+import store from '../../Store';
+import {LeaveGameView} from '../../Engine/actions/SectionActions';
 const electron = window.electron;
 class WelcomeView extends React.Component {
     constructor(){
@@ -14,6 +16,12 @@ class WelcomeView extends React.Component {
         let IntervalHandler = setInterval(()=>{if(0<=count&&count<=60){count++;this.welcomeRef.current.style.opacity = 1-(count/60);}},32);
         setTimeout(()=>{this.welcomeRef.current.style.zIndex=0;clearInterval(IntervalHandler)},3000);
     }
+    componentDidMount(){
+        let GameViewData = store.getState().GameView;
+        if(GameViewData.Section){
+            store.dispatch(LeaveGameView());
+        }
+    }
     render() {
         return (<div>
             <div className="WelcomeBG" ref={this.welcomeRef} style={{ backgroundImage: "url(\"file:///../../../res/Resources/Theme/UIResources/Framework/WelcomeBG.png\")" }} />
@@ -23,7 +31,7 @@ class WelcomeView extends React.Component {
                         <NavLink to='/chapters'><li>初めから</li></NavLink>
                     </li>
                     <li>
-                        <NavLink to='/savedata'><li>続きから</li></NavLink>
+                        <NavLink to='/savedata/load'><li>続きから</li></NavLink>
                     </li>
                     <li>
                         <a>フローチャート</a>

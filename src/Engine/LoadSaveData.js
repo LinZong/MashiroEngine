@@ -5,8 +5,9 @@ const Q = require('q');
 function GetFsAndSaveDir() {
 	let remote = window.electron.remote;
 	let _fs = remote.require('fs');
+	let _rimraf = remote.require('rimraf');
 	let _SaveDataPath = remote.getGlobal('Environment').SaveDataDir;
-	return { fs: _fs, SaveDataPath: _SaveDataPath };
+	return { rimraf:_rimraf, fs: _fs, SaveDataPath: _SaveDataPath };
 }
 function GetAllSaveData() {
 	const { fs, SaveDataPath } = GetFsAndSaveDir();
@@ -29,24 +30,40 @@ function GetAllSaveData() {
 	return savearr;
 }
 
-function CreateSaveData(FolderIndex, CoverImgBuffer, StateJsonObj) {
+function CreateSaveData(FolderIndex, StateJsonObj) {
 	var deferrer = Q.defer();
+	let CoverImgBuffer = StateJsonObj.Image;
+	let RemoveBuffer = Object.assign({},StateJsonObj);
+	delete RemoveBuffer['Image'];
 	const { fs, SaveDataPath } = GetFsAndSaveDir();
 	let fullpath = SaveDataPath + '/' + FolderIndex.toString();
 	if (!fs.existsSync(fullpath)) {
 		fs.mkdirSync(fullpath);
 	}
 	//保存图片
-	try {
-		let png = CoverImgBuffer.toPNG();
-		fs.writeFile(fullpath + '/Cover.png', png);
-		fs.writeFile(fullpath + '/State.json', JSON.stringify(StateJsonObj));
-		deferrer.resolve("保存完成");
-	} catch (err) {
-		deferrer.reject(err);
-	}
-	//这样的话存档就能保存完了
+	let png = CoverImgBuffer.toPNG();
+	fs.writeFile(fullpath + '/Cover.png', png, (err) =>{
+		if(err) deferrer.reject(err);
+		else console.log('截屏保存完成')
+	});
+	let json = JSON.stringify(RemoveBuffer);
+	fs.writeFile(fullpath + '/State.json', json , (err) => {
+		if(err)deferrer.reject(err);
+		else console.log('存档文件保存完成');
+	});
+	deferrer.resolve({Cover:fullpath + '/Cover.png',State:RemoveBuffer});
 	return deferrer.promise;
 }
 
-module.exports = { GetAllSaveData, CreateSaveData };
+function DeleteSaveData(FolderIndex) {
+	var deferrer = Q.defer();
+	const { rimraf,SaveDataPath } = GetFsAndSaveDir();
+	let fullpath = SaveDataPath + '/' + FolderIndex.toString();
+	rimraf(fullpath,(err)=>{
+		if(err) deferrer.reject(err);
+		else deferrer.resolve('成功删除存档');
+	});
+	return deferrer.promise;
+}
+
+module.exports = { GetAllSaveData, CreateSaveData,DeleteSaveData };
