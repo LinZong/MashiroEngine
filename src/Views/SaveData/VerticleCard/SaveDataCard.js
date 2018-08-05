@@ -15,7 +15,6 @@ class SaveDataCard extends React.Component {
 		this.state.Cover = this.props.Cover;
 		this.state.SaveTimeStamp = this.props.SaveTimeStamp;
 		this.state.Title = this.props.Title;
-
 		this.onClickSlot = this.onClickSlot.bind(this);
 		this.showModal = this.showModal.bind(this);
 		this.handleOk = this.handleOk.bind(this);
@@ -104,7 +103,7 @@ class SaveDataCard extends React.Component {
 				</Modal>
 				<Col span={12}>
 					<div className="ScreenShotImg">
-						<img alt="这是当前游戏画面的截图" src={"file:///" + this.state.Cover} style={{ width: '100%' }} />
+						<img alt="这是当前游戏画面的截图" src={"file:///" + this.state.Cover+"?"+Math.random()} style={{ width: '100%' }} />
 					</div>
 				</Col>
 				<Col span={12}>

@@ -127,7 +127,6 @@ class GameView extends Component {
 		FreezeState = {...FreezeState,PrevInfo,TimeStamp:now.toLocaleString()};
 		contents.capturePage((image)=>{
 			console.log('成功暂存数据');
-			//CreateSaveData(7,image,FreezeState).then((res)=>console.log(res),(reason)=>console.log(reason));
 			FreezeState = {...FreezeState,Image:image}
 			this.props.onSaveCurrentState(FreezeState);
 		});
