@@ -66,6 +66,7 @@ EventHandler.on(EventsType.LOAD_SAVEDATA, (SaveDataInfo, dispatch, actionCtor) =
     CurrentChapter = SaveDataInfo.PrevInfo.CurrentChapter;
     CurrentBranch = SaveDataInfo.PrevInfo.CurrentBranch;
     CurrentSectionIndex = SaveDataInfo.PrevInfo.CurrentSectionIndex;
+    AllChapter=SaveDataInfo.PrevInfo.AllChapter;
     DispatchSectionJson(dispatch, actionCtor)(CurrentChapter, CurrentSectionIndex);
 });
 
