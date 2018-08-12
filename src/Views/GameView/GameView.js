@@ -210,7 +210,7 @@ class GameView extends Component {
 											<div className="SelectionFlow">
 												{this.state.SelectionArray.map((item, idx) =>
 													(
-														<button Key={idx} className="button" onClick={() => {
+														<button key={idx} className="button" onClick={() => {
 															const { Chapter, Branch, Section } = item.JumpTo;
 															this.props.onLoadSectionRes(Chapter, Branch, Section);
 														}}>{item.Text}</button>
