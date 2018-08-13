@@ -143,7 +143,6 @@ class GameView extends Component {
 	}
 	componentDidMount() {
 		// let state = safetouch(this.props.location.state);
-
 		let LoadType = this.state.load;
 		switch (LoadType) {
 			case 'next':
@@ -177,7 +176,7 @@ class GameView extends Component {
 		window.addEventListener('keydown', this.ChangeNode);
 	}
 	componentWillUnmount() {
-		//this.SaveState();
+		this.SaveState();
 		this.props.onPauseGameView();
 		window.removeEventListener('keydown', this.ChangeNode);
 	}
@@ -217,7 +216,7 @@ class GameView extends Component {
 				case 'save': {
 					this.InitPreloadResources(nextProps.Section.PreloadResources);
 					let InitIndex = this.props.location.state.SaveInfo.NodeIndex;
-			// 		this.props.location.state.SaveInfo = undefined;//读过一次就删掉了
+			 		this.props.location.state.SaveInfo = undefined;//读过一次就删掉了
 					TextNodeInterpreter(nextProps.Section,
 						Actions.SetNodeIndex(InitIndex),
 						this.MiddleWareCallbackFuncArr);

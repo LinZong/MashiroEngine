@@ -31,7 +31,7 @@ class SaveDataView extends React.Component {
 						</NavLink>
 						</Menu.Item>
 						<Menu.Item Key="3">
-							{this.state.type==='save'?<NavLink className="nav-text" to='/section'>
+							{this.state.type==='save'?<NavLink className="nav-text" to='/section/prev'>
 								<Icon type="to-top" />
 								回到游戏
 						</NavLink>:null}
