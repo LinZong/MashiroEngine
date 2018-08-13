@@ -28,7 +28,7 @@ class TextBox extends Component {
     render() {
         return (
             <div className="TextBox">
-                <Card className="TextBox-card" title={this.props.CharacterName} bordered={false} onClick={() => this.props.MouseEventTrigger({ Mouse: true })}>
+                <Card className="TextBox-card" style={{display:this.props.visible?'block':'none'}} title={this.props.CharacterName} bordered={false} onClick={() => this.props.MouseEventTrigger({ Mouse: true })}>
                     <Typed
                         typedRef={(typed) => { this.typed = typed; }}
                         strings={[this.props.TextContent]}
@@ -39,7 +39,7 @@ class TextBox extends Component {
                         onDestroy={() => this.props.SetTypingStatus(0)}>
                         <p className="TextBox-intro" id="Text" />
                     </Typed>
-                    <ControlButton />
+                    <ControlButton setVisible={this.props.setVisible}/>
                 </Card>
             </div>
         );

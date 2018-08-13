@@ -20,6 +20,8 @@ function createWindow() {
 			webSecurity: false,
 			preload: path.join(__dirname, './public/renderer.js')
 		},
+		fullscreen:global.SettingsNode['IMAGE_SETTING']['SettingElement']['LeftCol'][0].Value,
+		alwaysOnTop:global.SettingsNode['IMAGE_SETTING']['SettingElement']['LeftCol'][3].Value,
 		resizable: true,
 		show: false
 	};
@@ -35,6 +37,24 @@ function createWindow() {
 	mainWindow.once('ready-to-show', () => {
 		mainWindow.show();
 	})
+
+	// mainWindow.on('resize',function(event){
+	// 	let sizearr = mainWindow.getSize();
+	// 	let newWidth = sizearr[0];
+	// 	let ratio = global.SettingsNode['IMAGE_SETTING']['SettingElement']['LeftCol'][1].Value;
+	// 	console.log(newWidth);
+	// 	switch (ratio){
+	// 		case '4of3':{
+	// 			mainWindow.setSize(newWidth,parseInt(newWidth*(3/4)));
+	// 			break;
+	// 		}
+	// 		case '16of9':{
+				
+	// 			mainWindow.setSize(newWidth,parseInt(newWidth*(9/16)));
+	// 			break;
+	// 		}
+	// 	}
+	// })
 	mainWindow.on('closed', function () {
 		mainWindow = null
 	})

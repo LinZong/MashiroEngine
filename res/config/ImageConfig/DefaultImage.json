@@ -4,7 +4,7 @@
 		"LeftCol":[
 			{
 				"Name":"WindowMode",
-				"Value":"Window"
+				"Value":false
 			},
 			{
 				"Name":"WindowRatio",
@@ -16,7 +16,7 @@
 			},
 			{
 				"Name":"KeepWindowAtTop",
-				"Value":"true"
+				"Value":false
 			},
 			{
 				"Name":"ChangeSpeakerEmotion",

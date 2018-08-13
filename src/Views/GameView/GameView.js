@@ -20,7 +20,8 @@ class GameView extends Component {
 			CharacterName: null, 
 			Text: null, 
 			SelectionArray: null, 
-			IsInSelection: false 
+			IsInSelection: false,
+			TextBoxVisible:true
 		};
 		//游戏画面控制函数
 		this.ChangeNode = this.ChangeNode.bind(this);
@@ -33,6 +34,8 @@ class GameView extends Component {
 		this.SetStopTypingController = this.SetStopTypingController.bind(this);
 		this.ApplySelectionToView = this.ApplySelectionToView.bind(this);
 		this.SaveState = this.SaveState.bind(this);
+		this.ToggleTextBoxVisible=this.ToggleTextBoxVisible.bind(this);
+		this.SetTextBoxVisible=this.SetTextBoxVisible.bind(this);
 		//当前节点状态
 		this.NeedNewSection = null;
 		this.NodeIndex = null;
@@ -200,8 +203,8 @@ class GameView extends Component {
 			// 		Actions.SetNodeIndex(InitIndex),
 			// 		this.MiddleWareCallbackFuncArr);
 			// }
+			if(nextProps.Section===this.props.Section) return;
 			let LoadType = this.state.load;
-
 			switch (LoadType) {
 				case 'next':
 				case 'new': {
@@ -227,7 +230,16 @@ class GameView extends Component {
 				}
 			}
 		}
-	}/*
+	}
+	ToggleTextBoxVisible(){
+		if(!this.state.TextBoxVisible){
+			this.setState({TextBoxVisible:true});
+		}
+	}
+	SetTextBoxVisible(visible){
+		this.setState({TextBoxVisible:visible});
+	}
+	/*
 	 * 从GameView跳到存档界面的时候肯定是要保存先前状态的，这个时候存档机只需要读已经被snapshot的当前状态，写进文件就OK。
 	 */
 	render() {
@@ -245,7 +257,7 @@ class GameView extends Component {
 							case Status.SUCCESS: {
 								this.BlockKeyEventInAnimation(this.state.IsInSelection);
 								return (
-									<Scene key={2} BG={this.state.Scene} IsInSection={this.state.IsInSelection}>
+									<Scene key={2} BG={this.state.Scene} IsInSection={this.state.IsInSelection} onClick={this.ToggleTextBoxVisible}>
 										{this.state.IsInSelection ?
 											<Selection SelectionArray={this.state.SelectionArray} onLoadSectionRes={this.props.onLoadSectionRes} />
 											:
@@ -256,6 +268,8 @@ class GameView extends Component {
 												MouseEventTrigger={this.ChangeNode}
 												SetTypingStatus={this.GetTypingStatus}
 												GetStopTyping={this.SetStopTypingController}
+												visible={this.state.TextBoxVisible}
+												setVisible={this.SetTextBoxVisible}
 											/>
 										}
 									</Scene>);

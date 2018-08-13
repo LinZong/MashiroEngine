@@ -7,8 +7,8 @@
 				"Title":"显示模式",
 				"Type":"RadioGroup",
 				"Selection":[
-					{"Value":"Window","Title":"窗口模式"},
-					{"Value":"FullScreen","Title":"全屏模式"}
+					{"Value":false,"Title":"窗口模式"},
+					{"Value":true,"Title":"全屏模式"}
 				],
 				"Description":"设置是全屏运行还是窗口运行，没屌用。"
 			},
@@ -35,8 +35,8 @@
 				"Title":"保持窗口位于前端显示",
 				"Type":"RadioGroup",
 				"Selection":[
-					{"Value":"true","Title":"是"},
-					{"Value":"false","Title":"否"}
+					{"Value":true,"Title":"是"},
+					{"Value":false,"Title":"否"}
 				]
 			},
 			{

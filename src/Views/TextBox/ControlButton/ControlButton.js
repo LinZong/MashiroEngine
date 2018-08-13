@@ -15,7 +15,7 @@ const ControlButtion = (props) => {
 				<Tooltip title="回到标题页"><NavLink to='/'><Button icon='desktop large' /></NavLink></Tooltip>
 			</ButtonGroup>
 			<br />
-			<ButtonGroup>
+			<ButtonGroup onClick={(e)=>e.stopPropagation()}>
 				<Tooltip title="回到上一个选择肢"><Button icon='backward large' /></Tooltip>
 				<Tooltip title="回到上一个小节"><Button icon='fast-backward large' /></Tooltip>
 				<Tooltip title="上一句话"><Button icon='step-backward large' /></Tooltip>
@@ -24,7 +24,7 @@ const ControlButtion = (props) => {
 				<Tooltip title="下一句话"><Button icon='step-forward large' /></Tooltip>
 				<Tooltip title="下一小节"><Button icon='fast-forward large' /></Tooltip>
 				<Tooltip title="下个选择肢"><Button icon='forward large' /></Tooltip>
-				<Tooltip title="隐藏TextBox"><Button icon='close large' /></Tooltip>
+				<Tooltip title="隐藏TextBox"><Button icon='close large' onClick={(e)=>{props.setVisible(false)}}/></Tooltip>
 			</ButtonGroup>
 		</div>);
 }
