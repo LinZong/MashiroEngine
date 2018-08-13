@@ -4,15 +4,24 @@ import TransitionGroup from 'react-addons-css-transition-group';
 import * as Actions from '../../Engine/actions/SectionActions'
 import * as Status from '../../Engine/Status'
 import { TextNodeInterpreter } from '../../Engine/LoadSection';
-import { Scene, TextBox, Loading } from '../index';
+import { Scene, TextBox, Loading, Selection } from '../index';
 import { GetRemoteUrlPath } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import './GameView.css';
-const {CreateSaveData} = require('../../Engine/LoadSaveData');
+const { CreateSaveData } = require('../../Engine/LoadSaveData');
 class GameView extends Component {
 	constructor() {
 		super(...arguments);
-		this.state = { Scene: null, BGM: null, SectionName: null, CharacterName: null, Text: null, SelectionArray: null, IsInSelection: false };
+		this.state = { 
+			load:this.props.match.params.load,
+			Scene: null, 
+			BGM: null, 
+			SectionName: null, 
+			CharacterName: null, 
+			Text: null, 
+			SelectionArray: null, 
+			IsInSelection: false 
+		};
 		//游戏画面控制函数
 		this.ChangeNode = this.ChangeNode.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
@@ -33,8 +42,9 @@ class GameView extends Component {
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
 	}
-	GetStatusFlag(StatusObj) {
+	GetStatusFlag(StatusObj) {//Read-only
 		this.NeedNewSection = StatusObj.Flag;
+		if(this.NeedNewSection) this.setState({load:'next'});
 		this.NodeIndex = StatusObj.Index;
 	}
 	ChangeNode(event) {
@@ -124,73 +134,104 @@ class GameView extends Component {
 		const contents = window.electron.remote.getCurrentWindow().webContents;
 		const PrevInfo = require('../../Engine/StatusMachine').GetGlobalVar();
 		let now = new Date();
-		FreezeState = {...FreezeState,PrevInfo,TimeStamp:now.toLocaleString()};
-		contents.capturePage((image)=>{
+		FreezeState = { ...FreezeState, PrevInfo, TimeStamp: now.toLocaleString() };
+		contents.capturePage((image) => {
 			console.log('成功暂存数据');
-			FreezeState = {...FreezeState,Image:image}
+			FreezeState = { ...FreezeState, Image: image }
 			this.props.onSaveCurrentState(FreezeState);
 		});
 	}
 	componentDidMount() {
 		// let state = safetouch(this.props.location.state);
-		let Chapter,Branch,Section,SaveDataInfo;
-		Chapter = safetouch(this.props.location.state).Chapter();
-		Branch = safetouch(this.props.location.state).Branch();
-		Section = safetouch(this.props.location.state).Section();
-		SaveDataInfo = safetouch(this.props.location.state).SaveInfo();
 
-		//有三种情况，1，从指定的位置开始，2，读取存档，3，从别的页面跳回来的时候恢复数据。
-		if (this.props.PreviousState) {
-			let PrevState = this.props.PreviousState;
-			this.setState(PrevState);
-			TextNodeInterpreter(this.props.Section,
-				Actions.SetNodeIndex(PrevState.NodeIndex),
-				this.MiddleWareCallbackFuncArr);
-			this.props.onClearGameViewState();//加载完了之后退出。
-		}
-		else if(SaveDataInfo){
-			//加载从存档页（现在的全部章节页）传来的初始化信息。
-			let TmpInfo = Object.assign({}, SaveDataInfo);//deep copy
-			delete TmpInfo['PrevInfo'];
-			delete TmpInfo['Image'];
-			this.props.onLoadSaveData(SaveDataInfo);
-			this.setState(TmpInfo);
-		}
-		else{
-			this.props.onLoadSectionRes(Chapter, Branch, Section);
+		let LoadType = this.state.load;
+		switch (LoadType) {
+			case 'next':
+			case 'new': {
+				let Chapter, Branch, Section;
+				Chapter = safetouch(this.props.location.state).Chapter();
+				Branch = safetouch(this.props.location.state).Branch();
+				Section = safetouch(this.props.location.state).Section();
+				this.props.onLoadSectionRes(Chapter, Branch, Section);
+				break;
+			}
+			case 'save': {
+				let SaveDataInfo = safetouch(this.props.location.state).SaveInfo();
+				let TmpInfo = Object.assign({}, SaveDataInfo);//deep copy
+				delete TmpInfo['PrevInfo'];
+				delete TmpInfo['Image'];
+				this.props.onLoadSaveData(SaveDataInfo);
+				this.setState(TmpInfo);
+				break;
+			}
+			case 'prev': {
+				let PrevState = this.props.PreviousState;
+				this.setState(PrevState);
+				TextNodeInterpreter(this.props.Section,
+					Actions.SetNodeIndex(PrevState.NodeIndex),
+					this.MiddleWareCallbackFuncArr);
+				this.props.onFinishedReload();//加载完了之后退出。
+				break;
+			}
 		}
 		window.addEventListener('keydown', this.ChangeNode);
 	}
 	componentWillUnmount() {
-		this.SaveState();
+		//this.SaveState();
 		this.props.onPauseGameView();
 		window.removeEventListener('keydown', this.ChangeNode);
 	}
 	componentWillReceiveProps(nextProps) {
-		if (nextProps.Section&& nextProps.GameViewStatus === Status.SUCCESS) { //检查现在应不应该把新资源应用上去。
-			if (nextProps.Section !== this.props.Section&&!this.props.PreviousState) {//从其他页面跳回来的情况下就不用初始化资源了。因为跳回来的时候Store上Section完全不变，这里就会被跳过
-				var InitIndex = 0;
-				let SaveDataInfo = safetouch(this.props.location.state).SaveInfo();
-				if(SaveDataInfo===undefined){
+		if (nextProps.Section && nextProps.GameViewStatus === Status.SUCCESS) { //检查现在应不应该把新资源应用上去。
+			// if (nextProps.Section !== this.props.Section && !this.props.PreviousState) {//从其他页面跳回来的情况下就不用初始化资源了。因为跳回来的时候Store上Section完全不变，这里就会被跳过
+			// 	var InitIndex = 0;
+			// 	let SaveDataInfo = safetouch(this.props.location.state).SaveInfo();
+			// 	if (SaveDataInfo === undefined) {
+			// 		this.InitPreloadResources(nextProps.Section.PreloadResources);
+			// 		if (this.props.Section === null) {
+			// 			let UrlState = safetouch(this.props.location.state)();
+			// 			InitIndex = UrlState.TextNodeBegin;
+			// 		}
+			// 	}
+			// 	else {
+			// 		InitIndex = this.props.location.state.SaveInfo.NodeIndex;
+			// 		this.props.location.state.SaveInfo = undefined;//读过一次就删掉了
+			// 	}
+			// 	TextNodeInterpreter(nextProps.Section,
+			// 		Actions.SetNodeIndex(InitIndex),
+			// 		this.MiddleWareCallbackFuncArr);
+			// }
+			let LoadType = this.state.load;
+
+			switch (LoadType) {
+				case 'next':
+				case 'new': {
+					let InitIndex = this.props.Section?0:
+					safetouch(this.props.location.state)().TextNodeBegin;
 					this.InitPreloadResources(nextProps.Section.PreloadResources);
-					if (this.props.Section === null) {
-						let UrlState = safetouch(this.props.location.state)();
-						InitIndex = UrlState.TextNodeBegin;
-					}
+					TextNodeInterpreter(nextProps.Section,
+						Actions.SetNodeIndex(InitIndex),
+						this.MiddleWareCallbackFuncArr);
+					break;
 				}
-				else{
-					InitIndex = this.props.location.state.SaveInfo.NodeIndex;
-					this.props.location.state.SaveInfo=undefined;//读过一次就删掉了
+				case 'save': {
+					this.InitPreloadResources(nextProps.Section.PreloadResources);
+					let InitIndex = this.props.location.state.SaveInfo.NodeIndex;
+			// 		this.props.location.state.SaveInfo = undefined;//读过一次就删掉了
+					TextNodeInterpreter(nextProps.Section,
+						Actions.SetNodeIndex(InitIndex),
+						this.MiddleWareCallbackFuncArr);
+					break;
 				}
-				TextNodeInterpreter(nextProps.Section,
-					Actions.SetNodeIndex(InitIndex),
-					this.MiddleWareCallbackFuncArr);
+				case 'prev': {
+					break;
+				}
 			}
 		}
 	}/*
 	 * 从GameView跳到存档界面的时候肯定是要保存先前状态的，这个时候存档机只需要读已经被snapshot的当前状态，写进文件就OK。
 	 */
-	render() { 
+	render() {
 		return (
 			<TransitionGroup
 				transitionName="GameViewFade"
@@ -207,27 +248,17 @@ class GameView extends Component {
 								return (
 									<Scene key={2} BG={this.state.Scene} IsInSection={this.state.IsInSelection}>
 										{this.state.IsInSelection ?
-											<div className="SelectionFlow">
-												{this.state.SelectionArray.map((item, idx) =>
-													(
-														<button key={idx} className="button" onClick={() => {
-															const { Chapter, Branch, Section } = item.JumpTo;
-															this.props.onLoadSectionRes(Chapter, Branch, Section);
-														}}>{item.Text}</button>
-													)
-												)}
-											</div>
+											<Selection SelectionArray={this.state.SelectionArray} onLoadSectionRes={this.props.onLoadSectionRes} />
 											:
-											<div>
-												<TextBox
-													SectionName={this.props.Section.Header.SectionName}
-													CharacterName={this.state.CharacterName}
-													TextContent={this.state.Text}
-													MouseEventTrigger={this.ChangeNode}
-													SetTypingStatus={this.GetTypingStatus}
-													GetStopTyping={this.SetStopTypingController}
-												/>
-											</div>}
+											<TextBox
+												SectionName={this.props.Section.Header.SectionName}
+												CharacterName={this.state.CharacterName}
+												TextContent={this.state.Text}
+												MouseEventTrigger={this.ChangeNode}
+												SetTypingStatus={this.GetTypingStatus}
+												GetStopTyping={this.SetStopTypingController}
+											/>
+										}
 									</Scene>);
 							}
 							case Status.LOADING: {
@@ -253,7 +284,7 @@ const mapStateToProps = (StoreState) => {
 };
 const mapDispatchToProps = (dispatch) => {
 	return {
-		onLoadSaveData:(SaveDataInfo)=>{
+		onLoadSaveData: (SaveDataInfo) => {
 			dispatch(Actions.ReloadStoreSection(SaveDataInfo));
 		},
 		onLoadSectionRes: (Chapter, Branch, Section) => {
@@ -271,8 +302,8 @@ const mapDispatchToProps = (dispatch) => {
 		onSaveCurrentState: (FreezeState) => {
 			dispatch(Actions.SaveGameViewState(FreezeState));
 		},
-		onClearGameViewState: () => {
-			dispatch(Actions.ClearGameViewPrevState());
+		onFinishedReload: () => {
+			dispatch(Actions.FinishedReload());
 		}
 	};
 };

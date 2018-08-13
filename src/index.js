@@ -15,8 +15,7 @@ ReactDOM.render(
                     <Route exact path='/' component={WelcomeView} />
                     <Route path='/savedata/:type' component={SaveDataView} />
                     <Route path='/chapters' component={AllChapterView} />
-                    <Route path='/section' component={GameView} />
-                    <Route path='/settings' component={Settings} />
+                    <Route path='/section/:load' component={GameView} />
                     <Route path='/NewSettings' component={Settings} />
                     <Redirect to='/' />
                 </Switch>

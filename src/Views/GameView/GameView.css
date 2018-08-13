@@ -45,12 +45,3 @@
   transition: opacity 500ms ease-in;
 }
 
-div.SelectionFlow{
-        position: absolute;
-        top: 30%;
-        width: 100%;
-        height: 100%;
-        z-index: 1002;
-        overflow: auto;
-        text-align: center;
-}

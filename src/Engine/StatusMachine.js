@@ -44,7 +44,7 @@ function GetAllChapter(){
     return (AllChapter);
 }
 
-EventHandler.on(EventsType.ENTER_NEXT_SECTION, (dispatch, actionCtor, ErrorCtor) => {
+EventHandler.on(EventsType.ENTER_NEXT_SECTION, (dispatch, actionCtor) => {
     let NowSection = CurrentSectionIndex;
     if (NowSection < CurrentChapter.Branch.Sections.length - 1) {
         CurrentSectionIndex++;

@@ -19,6 +19,7 @@ import {
     PAUSE_GAMEVIEW,
     SAVE_GAMEVIEW_STATE,
     CLEAR_GAMEVIEW_STATE,
+    FINISHED_RELOAD,
     LOAD_SAVEDATA
 } from '../Events';
 
@@ -63,9 +64,14 @@ export const LeaveGameView = () =>({
 export const PauseGameView = () =>({
   type:PAUSE_GAMEVIEW
 });
-export const ClearGameViewPrevState = () => ({
-  type:CLEAR_GAMEVIEW_STATE
+export const FinishedReload = () => ({
+  type:FINISHED_RELOAD
 })
+
+export const ClearGameViewState = () =>({
+  type:CLEAR_GAMEVIEW_STATE
+});
+
 export const GetSelectedSection = (Chapter,Branch,Section) => {
   return (dispatch)=>{
     //Chapter是AllChapter扫了文件夹的Obj,Branch和Section都是数字

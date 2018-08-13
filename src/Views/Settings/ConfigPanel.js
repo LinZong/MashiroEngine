@@ -44,7 +44,7 @@ class ConfigPanel extends React.Component {
 								<Radio.Group value={this.state.Settings.SettingElement[SelectedCol][idx].Value}
 									buttonStyle="solid" onChange={(value) => this.ApplySettings(value, idx,SelectedCol)}>
 									{Item.Selection.map((e, index) => {
-										return (<Radio.Button value={e.Value}>{e.Title}</Radio.Button>);
+										return (<Radio.Button key={index} value={e.Value}>{e.Title}</Radio.Button>);
 									})}
 								</Radio.Group>
 							</div>);
@@ -58,7 +58,7 @@ class ConfigPanel extends React.Component {
 								<Select defaultValue={this.state.Settings.SettingElement[SelectedCol][idx].Value} style={{ width: 200 }}
 									onChange={(value) => this.ApplySettings(value, idx,SelectedCol)}>
 									{Item.Selection.map((e, index) => {
-										return (<Select.Option value={e.Value}>{e.Title}</Select.Option>);
+										return (<Select.Option key={index} value={e.Value}>{e.Title}</Select.Option>);
 									})}
 								</Select>
 							</div>);

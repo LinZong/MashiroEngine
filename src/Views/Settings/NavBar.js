@@ -52,7 +52,7 @@ class NavBar extends React.Component {
 							<span className="nav-text"><Tooltip title="您无需按下这个傻逼的按钮，一切动作将会自动保存">保存</Tooltip></span>
 						</Menu.Item>
 						<Menu.Item Key="8">
-							<NavLink className="nav-text" to='/section'>
+							<NavLink className="nav-text" to='/section/prev'>
 								<Icon type="to-top" />
 								回到游戏
 							</NavLink>

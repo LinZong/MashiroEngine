@@ -46,4 +46,6 @@ StoryMatrix.prototype = {
 	},
 	Array: function () { return this._Array }
 }
+
+
 module.exports = { StoryMatrix };

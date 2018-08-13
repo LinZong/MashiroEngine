@@ -3,10 +3,12 @@ import './TextBoxView.css'
 import Typed from 'react-typed';
 import { Card, Button } from 'antd';
 import { NavLink } from 'react-router-dom';
+import ControlButton from './ControlButton/ControlButton';
 class TextBox extends Component {
     constructor() {
         super(...arguments);
         this.StopTyping = this.StopTyping.bind(this);
+        this.TypeSpeed = window.electron.remote.getGlobal('SettingsNode')['TEXT_SETTING']['SettingElement']['LeftCol'][0].Value;
     }
     componentWillUpdate() {
         this.typed.reset();
@@ -24,26 +26,23 @@ class TextBox extends Component {
         document.getElementById("Text").innerText = this.props.TextContent;
     }
     render() {
-        return (<div>
-            <p className="TextBox-title" id="SectionName">{this.props.SectionName}</p>
+        return (
             <div className="TextBox">
-                <Card className="TextBox-card" title={this.props.CharacterName} bordered={false} onMouseDown={() => this.props.MouseEventTrigger({ Mouse: true })}>
+                <Card className="TextBox-card" title={this.props.CharacterName} bordered={false} onClick={() => this.props.MouseEventTrigger({ Mouse: true })}>
                     <Typed
                         typedRef={(typed) => { this.typed = typed; }}
                         strings={[this.props.TextContent]}
-                        typeSpeed={20}
+                        typeSpeed={this.TypeSpeed}
                         showCursor={false}
                         preStringTyped={() => this.props.SetTypingStatus(1)}
                         onComplete={() => this.props.SetTypingStatus(0)}
                         onDestroy={() => this.props.SetTypingStatus(0)}>
                         <p className="TextBox-intro" id="Text" />
                     </Typed>
+                    <ControlButton />
                 </Card>
-                <NavLink to='/savedata/save'>
-                    <Button icon='arrow-left large' shape='circle' />
-                </NavLink>
             </div>
-        </div>);
+        );
     }
 }
 export default TextBox;

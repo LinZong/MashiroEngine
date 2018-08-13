@@ -1,25 +1,28 @@
 import * as ActionTypes from '../Events';
 import * as Status from '../Status';
-export default (state={}, action) => {
+export default (state = {}, action) => {
   switch (action.type) {
-    case ActionTypes.SET_SELECTED_PLAYING_SECTION:{
-      return {...state,status:Status.SUCCESS,Section:action.Section};
+    case ActionTypes.SET_SELECTED_PLAYING_SECTION: {
+      return { ...state, status: Status.SUCCESS, Section: action.Section };
     }
-    case ActionTypes.NOW_LOADING:{
-      return {...state,status:Status.LOADING};  
+    case ActionTypes.NOW_LOADING: {
+      return { ...state, status: Status.LOADING };
     }
-    case ActionTypes.LEAVE_GAMEVIEW:{
-      return {status:Status.LEAVED,Section:null,PrevState:null}
+    case ActionTypes.LEAVE_GAMEVIEW: {
+      return { status: Status.LEAVED, Section: null, PrevState: null }
     }
-    case ActionTypes.PAUSE_GAMEVIEW:{
-      return {...state,status:Status.LEAVED}
+    case ActionTypes.PAUSE_GAMEVIEW: {
+      return { ...state, status: Status.LEAVED }
     }
-    case ActionTypes.CLEAR_GAMEVIEW_STATE:{
-      return {...state,PrevState:null,status:Status.SUCCESS}
+    case ActionTypes.CLEAR_GAMEVIEW_STATE: {
+      return { ...state, PrevState: null, status: null }
     }
-    case ActionTypes.SAVE_GAMEVIEW_STATE:{
-      return {...state,PrevState:action.StateForSave};
+    case ActionTypes.FINISHED_RELOAD: {
+      return { ...state, PrevState: null, status: Status.SUCCESS }
     }
-    default:return state;
+    case ActionTypes.SAVE_GAMEVIEW_STATE: {
+      return { ...state, PrevState: action.StateForSave };
+    }
+    default: return state;
   }
 }

@@ -23,7 +23,7 @@ class AllChapterView extends React.Component {
                         <div>
                             {this.state.ChapterList.map((item, idx) =>
                                 (<Link Key={idx} to=
-                                    {{ pathname: '/section', state: { Chapter: item, Branch: 1, Section: 0, TextNodeBegin: 0 } }}>
+                                    {{ pathname: '/section/new', state: { Chapter: item, Branch: 1, Section: 0, TextNodeBegin: 0 } }}>
                                     <li>{item.Name}</li></Link>
                                 ))}
                                 <button onClick={()=>this.props.history.push('/',{Test:"Relax"})}>大概是返回吧</button>

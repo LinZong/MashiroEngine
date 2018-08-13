@@ -1,6 +1,6 @@
 import React from 'react'
 import { Col, message, Modal } from 'antd';
-
+import * as Actions from '../../../Engine/actions/SectionActions';
 import store from '../../../Store';
 import { withRouter } from 'react-router';
 import './SaveDataCard.css'
@@ -37,7 +37,8 @@ class SaveDataCard extends React.Component {
 		});
 	}
 	LoadSaveData() {
-		this.props.history.push('/section', { SaveInfo: this.props.data });
+		store.dispatch(Actions.ClearGameViewState());
+		this.props.history.push('/section/save', { SaveInfo: this.props.data });
 	}
 	SaveToSlot() {
 		let data = store.getState().GameView.PrevState;
