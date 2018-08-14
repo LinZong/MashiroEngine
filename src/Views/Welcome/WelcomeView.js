@@ -28,13 +28,13 @@ class WelcomeView extends React.Component {
             <aside className="menu welcomemenu">
                 <ul className="menu-list nav_ul">
                     <li>
-                        <NavLink to='/chapters'><li>初めから</li></NavLink>
+                        <NavLink to='/chapters'><li>从头开始(现在是测试所以可以随意选章节)</li></NavLink>
                     </li>
                     <li>
-                        <NavLink to='/savedata/load'><li>続きから</li></NavLink>
+                        <NavLink to='/savedata/load'><li>加载存档</li></NavLink>
                     </li>
                     <li>
-                        <a>フローチャート</a>
+                        <a>Flow-Chart</a>
                     </li>
                     <li>
                         <a>特典</a>
@@ -55,7 +55,7 @@ class WelcomeView extends React.Component {
                                 (response) => {
                                     if (response === 0) electron.remote.getCurrentWindow().close()
                                 });
-                        }}>終了</a>
+                        }}>退出游戏</a>
                     </li>
                 </ul>
             </aside>

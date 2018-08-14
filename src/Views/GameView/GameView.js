@@ -194,7 +194,7 @@ class GameView extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.Section && nextProps.GameViewStatus === Status.SUCCESS) { //检查现在应不应该把新资源应用上去。
-			if (nextProps.Section === this.props.Section && !this.props.location.state.SaveInfo) return;
+			if (nextProps.Section === this.props.Section && !safetouch(this.props.location.state).SaveInfo()) return;
 			let LoadType = this.props.match.params.load;
 			switch (LoadType) {
 				case 'next':
