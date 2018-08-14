@@ -32,8 +32,8 @@ function createWindow() {
 	require('./src/Engine/StatusMachine');//加载全部章节
 	BrowserWindow.addDevToolsExtension('./DevExtensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.3_0/');
 	
-	mainWindow = new BrowserWindow(Options)
-	mainWindow.loadURL("http://localhost:3000/");
+	mainWindow = new BrowserWindow(Options);
+	mainWindow.loadURL('http://localhost:3000/');
 	mainWindow.once('ready-to-show', () => {
 		mainWindow.show();
 	})

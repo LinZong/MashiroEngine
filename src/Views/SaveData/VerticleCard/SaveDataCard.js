@@ -9,12 +9,16 @@ const { CreateSaveData, DeleteSaveData } = require('../../../Engine/LoadSaveData
 class SaveDataCard extends React.Component {
 	constructor() {
 		super(...arguments);
-		this.state = { Exist: false, visible: false, Cover: null, SaveTimeStamp: null, Title: null };
-		if (this.props.data) this.state.Exist = true;
+		this.state = { 
+			Exist: false, 
+			visible: false, 
+			Cover: this.props.Cover, 
+			SaveTimeStamp: this.props.SaveTimeStamp, 
+			Title: this.props.Title 
+		};
 
-		this.state.Cover = this.props.Cover;
-		this.state.SaveTimeStamp = this.props.SaveTimeStamp;
-		this.state.Title = this.props.Title;
+		if (this.props.data) this.state.Exist = true;
+		
 		this.onClickSlot = this.onClickSlot.bind(this);
 		this.showModal = this.showModal.bind(this);
 		this.handleOk = this.handleOk.bind(this);
