@@ -54,8 +54,6 @@ function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
         CurrNode.TextProperty = Content;
         // CustomFunctionAdapter(CurrNode,MiddleWareCallback[0],StatusFlag);
         // TextBoxRender(CurrNode,MiddleWareCallback[1],StatusFlag);
-
-
         MiddleWare.map((item, idx) => ({ Func: item, Callback: MiddleWareCallback[idx] })).forEach(element => {
             element.Func(CurrNode, element.Callback, { Index: TextNodeIndexer, Flag: StatusFlag });
         });

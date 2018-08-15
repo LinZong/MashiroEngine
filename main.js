@@ -23,6 +23,8 @@ function createWindow() {
 		fullscreen:global.SettingsNode['IMAGE_SETTING']['SettingElement']['LeftCol'][0].Value,
 		alwaysOnTop:global.SettingsNode['IMAGE_SETTING']['SettingElement']['LeftCol'][3].Value,
 		resizable: true,
+		minWidth:1280,
+		minHeight:720,
 		show: false
 	};
 	if (global.Environment !== null || global.Environment !== undefined) {
@@ -31,9 +33,8 @@ function createWindow() {
 	}
 	require('./src/Engine/StatusMachine');//加载全部章节
 	BrowserWindow.addDevToolsExtension('./DevExtensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.3_0/');
-	
 	mainWindow = new BrowserWindow(Options);
-	mainWindow.loadURL('http://localhost:3000/');
+	mainWindow.loadURL('http://localhost:3000');
 	mainWindow.once('ready-to-show', () => {
 		mainWindow.show();
 	})

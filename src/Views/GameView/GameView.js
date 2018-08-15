@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import TransitionGroup from 'react-addons-css-transition-group';
 import * as Actions from '../../Engine/actions/SectionActions'
@@ -7,6 +8,8 @@ import { TextNodeInterpreter } from '../../Engine/LoadSection';
 import { Scene, TextBox, Loading, Selection } from '../index';
 import { GetRemoteUrlPath } from '../../Engine/Util';
 import safetouch from 'safe-touch';
+import Audio from '../Audio/Audio';
+import SaveDataView from '../SaveData/SaveDataView';
 import './GameView.css';
 const { CreateSaveData } = require('../../Engine/LoadSaveData');
 var ControlFunctionContext = React.createContext();
@@ -50,7 +53,8 @@ class GameView extends Component {
 			setState: this.setState,
 			SaveState: this.SaveState,//Q.Save
 			LoadSaveData: this.LoadSaveData,//这个是给Q.Load用的
-			SetTextBoxVisible: this.SetTextBoxVisible
+			SetTextBoxVisible: this.SetTextBoxVisible,
+			SetTypingStatus: this.GetTypingStatus
 		};
 	}
 	GetStatusFlag(StatusObj) {//Read-only
@@ -128,7 +132,16 @@ class GameView extends Component {
 	InitPreloadResources(PreloadResourcesObj) {
 		for (var key in PreloadResourcesObj) {
 			if (PreloadResourcesObj[key] !== null) {
-				PreloadResourcesObj[key] = GetRemoteUrlPath(PreloadResourcesObj[key]);
+				switch(key){
+					case "Scene":{
+						PreloadResourcesObj[key] = GetRemoteUrlPath(PreloadResourcesObj[key]);
+						break;
+					}
+					case "BGM":{
+						PreloadResourcesObj[key].Path = GetRemoteUrlPath(PreloadResourcesObj[key].Path,true);
+						break;
+					}
+				}
 			}
 		}
 		this.setState(PreloadResourcesObj);
@@ -253,6 +266,7 @@ class GameView extends Component {
 						(() => {
 							switch (this.props.GameViewStatus) {
 								case Status.SUCCESS: {
+									ReactDOM.render(<Audio BGM={this.state.BGM} />,document.getElementById('music'));
 									this.BlockKeyEventInAnimation(this.state.IsInSelection);
 									return (
 										<Scene key={2} BG={this.state.Scene} IsInSection={this.state.IsInSelection} onClick={this.ToggleTextBoxVisible}>
@@ -264,9 +278,8 @@ class GameView extends Component {
 													CharacterName={this.state.CharacterName}
 													TextContent={this.state.Text}
 													MouseEventTrigger={this.ChangeNode}
-													SetTypingStatus={this.GetTypingStatus}
-													GetStopTyping={this.SetStopTypingController}
 													visible={this.state.TextBoxVisible}
+													GetStopTyping={this.SetStopTypingController}
 												/>
 											}
 										</Scene>);
@@ -281,6 +294,7 @@ class GameView extends Component {
 							}
 						}).call(this, null)
 					}
+					
 				</TransitionGroup>
 			</ControlFunctionContext.Provider>
 		)
@@ -318,7 +332,6 @@ const mapDispatchToProps = (dispatch) => {
 		}
 	};
 };
-
 export default connect(mapStateToProps, mapDispatchToProps)(GameView);
 
 export { ControlFunctionContext };

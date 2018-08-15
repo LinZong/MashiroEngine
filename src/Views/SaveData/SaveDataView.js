@@ -11,7 +11,7 @@ class SaveDataView extends React.Component {
 		this.state={type:null,delete:false};
 	}
 	componentDidMount(){
-		this.setState({type:this.props.match.params.type});
+		this.setState({type:this.props.type || this.props.match.params.type});
 	}
 	render() {
 		return (

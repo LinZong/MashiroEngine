@@ -1,13 +1,14 @@
 import React from 'react';
 import { Layout, Menu, Icon, message, Tooltip } from 'antd';
 import { NavLink } from 'react-router-dom';
-import { IMAGE_SETTING, TEXT_SETTING,SOUND_SETTING,CONTROLLER_SETTING,INGAME_SETTING } from '../../Engine/actionTypes/SettingType';
+import savetouch from 'safe-touch';
+import { IMAGE_SETTING, TEXT_SETTING, SOUND_SETTING, CONTROLLER_SETTING, INGAME_SETTING } from '../../Engine/actionTypes/SettingType';
 const { Content, Footer, Sider } = Layout;
 
 class NavBar extends React.Component {
-	constructor(){
+	constructor() {
 		super(...arguments);
-		this.state={PanelPath:IMAGE_SETTING};
+		this.state = { PanelPath: IMAGE_SETTING };
 	}
 	render() {
 		return (
@@ -16,48 +17,52 @@ class NavBar extends React.Component {
 					breakpoint="lg"
 					collapsedWidth="0"
 				>
-					<Menu theme="dark" mode="inline" defaultSelectedKeys={[this.state.PanelPath]}>
-						<Menu.Item Key={IMAGE_SETTING}>
-							<NavLink className="nav-text" onClick={()=>this.setState({PanelPath:IMAGE_SETTING})} to={'/NewSettings/' + IMAGE_SETTING}>
+					<Menu theme="dark" mode="inline" defaultSelectedkeys={[this.state.PanelPath]}>
+						<Menu.Item key={IMAGE_SETTING}>
+							<NavLink className="nav-text" onClick={() => this.setState({ PanelPath: IMAGE_SETTING })} to={'/NewSettings/' + IMAGE_SETTING}>
 								<Icon type="desktop" />
 								画面设置
 							</NavLink>
 						</Menu.Item>
-						<Menu.Item Key={TEXT_SETTING}>
-							<NavLink className="nav-text" onClick={()=>this.setState({PanelPath:TEXT_SETTING})} to={'/NewSettings/' + TEXT_SETTING}>
+						<Menu.Item key={TEXT_SETTING}>
+							<NavLink className="nav-text" onClick={() => this.setState({ PanelPath: TEXT_SETTING })} to={'/NewSettings/' + TEXT_SETTING}>
 								<Icon type="file-text" />
 								文本设置
 							</NavLink>
 						</Menu.Item>
-						<Menu.Item Key="3">
-							<Icon type="sound" />
-							<span className="nav-text">声音设置</span>
+						<Menu.Item key="3">
+							<NavLink className="nav-text" onClick={() => this.setState({ PanelPath: SOUND_SETTING })} to={'/NewSettings/Test'}>
+								<Icon type="sound" />
+								声音设置
+							</NavLink>
 						</Menu.Item>
-						<Menu.Item Key="4">
+						<Menu.Item key="4">
 							<Icon type="tool" />
 							<span className="nav-text">控制设置</span>
 						</Menu.Item>
-						<Menu.Item Key="5">
+						<Menu.Item key="5">
 							<Icon type="select" />
 							<span className="nav-text">游戏进行设置</span>
 						</Menu.Item>
-						<Menu.Item Key="6">
+						<Menu.Item key="6">
 							<Icon type="reload" />
 							<span className="nav-text">恢复初始设置</span>
 						</Menu.Item>
 					</Menu>
 					<Menu theme="dark" mode="inline" selectable={false}>
-						<Menu.Item Key="7" disabled>
+						<Menu.Item key="7" disabled>
 							<Icon type="save" />
 							<span className="nav-text"><Tooltip title="您无需按下这个傻逼的按钮，一切动作将会自动保存">保存</Tooltip></span>
 						</Menu.Item>
-						<Menu.Item Key="8">
-							<NavLink className="nav-text" to='/section/prev'>
-								<Icon type="to-top" />
-								回到游戏
+						{savetouch(this.props.match).params()
+							&&
+							<Menu.Item key="8">
+								<NavLink className="nav-text" to='/section/prev'>
+									<Icon type="to-top" />
+									回到游戏
 							</NavLink>
-						</Menu.Item>
-						<Menu.Item Key="9">
+							</Menu.Item>}
+						<Menu.Item key="9">
 							<NavLink className="nav-text" to='/'>
 								<Icon type="arrow-left" />
 								回到主菜单

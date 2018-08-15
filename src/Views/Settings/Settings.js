@@ -4,11 +4,10 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import { NavBar, ConfigPanel } from '.';
 import { IMAGE_SETTING } from '../../Engine/actionTypes/SettingType';
 
-
 const Settings = () => (
 <NavBar>
 	<Switch>
-		<Route path='/NewSettings/:id' component={ConfigPanel} />
+		<Route exact path='/NewSettings/:id' component={ConfigPanel} />
 		<Redirect path="/NewSettings" to={{ pathname: '/NewSettings/' + IMAGE_SETTING }} />
 	</Switch>
 </NavBar>);

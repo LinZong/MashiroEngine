@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { NavLink } from 'react-router-dom'
 import 'bulma/css/bulma.css'
 import './WelcomeView.css'
@@ -21,6 +22,7 @@ class WelcomeView extends React.Component {
         if(GameViewData.Section){
             store.dispatch(LeaveGameView());
         }
+        ReactDOM.unmountComponentAtNode(document.getElementById('music'));
     }
     render() {
         return (<div>

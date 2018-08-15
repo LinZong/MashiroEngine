@@ -4,6 +4,7 @@ import Typed from 'react-typed';
 import { Card, Button } from 'antd';
 import { NavLink } from 'react-router-dom';
 import ControlButton from './ControlButton/ControlButton';
+import { ControlFunctionContext } from '../GameView/GameView';
 class TextBox extends Component {
     constructor() {
         super(...arguments);
@@ -28,18 +29,23 @@ class TextBox extends Component {
     render() {
         return (
             <div className="TextBox">
-                <Card className="TextBox-card" style={{display:this.props.visible?'block':'none'}} title={this.props.CharacterName} bordered={false} onClick={() => this.props.MouseEventTrigger({ Mouse: true })}>
-                    <Typed
-                        typedRef={(typed) => { this.typed = typed; }}
-                        strings={[this.props.TextContent]}
-                        typeSpeed={this.TypeSpeed}
-                        showCursor={false}
-                        preStringTyped={() => this.props.SetTypingStatus(1)}
-                        onComplete={() => this.props.SetTypingStatus(0)}
-                        onDestroy={() => this.props.SetTypingStatus(0)}>
-                        <p className="TextBox-intro" id="Text" />
-                    </Typed>
-                    <ControlButton setVisible={this.props.setVisible}/>
+                <Card className="TextBox-card" style={{ display: this.props.visible ? 'block' : 'none' }} title={this.props.CharacterName} bordered={false} onClick={() => this.props.MouseEventTrigger({ Mouse: true })}>
+                    <ControlFunctionContext.Consumer>
+                        {Func => (
+                            <Typed
+                                typedRef={(typed) => { this.typed = typed; }}
+                                strings={[this.props.TextContent]}
+                                typeSpeed={this.TypeSpeed}
+                                showCursor={false}
+                                preStringTyped={() => Func.SetTypingStatus(1)}
+                                onComplete={() => Func.SetTypingStatus(0)}
+                                onDestroy={() => Func.SetTypingStatus(0)}>
+                                <p className="TextBox-intro" id="Text" />
+                            </Typed>
+                        )}
+
+                    </ControlFunctionContext.Consumer>
+                    <ControlButton setVisible={this.props.setVisible} />
                 </Card>
             </div>
         );
