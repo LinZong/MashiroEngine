@@ -35,6 +35,11 @@ class Audio extends React.Component {
 			this.ShowBGMChanged && this.openNotification(this.props.BGM.Name);
 			this.ShowBGMChanged = false;
 		}
+		if (this.props.Character) {
+			let node = document.getElementById('CharacterVoice');
+			node.volume = 1//这里应该去获取设置
+			node.play();
+		}
 		const SetArrayVolumeAndPlay = (arr) => {
 			arr.forEach(ele => {
 				let node = document.getElementById(ele.Name);
@@ -42,7 +47,6 @@ class Audio extends React.Component {
 				node.play();
 			})
 		};
-		this.props.Character && SetArrayVolumeAndPlay(this.props.Character);
 		this.props.Effects && SetArrayVolumeAndPlay(this.props.Effects);
 	}
 	componentDidMount() {
@@ -61,14 +65,14 @@ class Audio extends React.Component {
 			<div className="InGameSound">
 				{
 					this.props.BGM ?
-						<audio id="BGM" src={this.props.BGM.Path} autoPlay={false} onEnded={() => this.props.onEnded && this.props.OnEnded('BGM')} />
+						<audio key={0} id="BGM" src={this.props.BGM.Path} autoPlay={false} onEnded={() => this.props.onEnded && this.props.OnEnded('BGM')} />
 						:
 						null
 				}
 				{
-					this.props.Character ? this.props.Character.map((it, idx) => {
-						return <audio key={idx} id={it.Name} src={it.File} autoPlay={false} onEnded={() => this.props.onEnded && this.props.onEnded(it.Name)} />
-					}) : null
+					this.props.Character ? 
+						 <audio key={1} id="CharacterVoice" src={this.props.Character.File} autoPlay={false} onEnded={() => this.props.onEnded && this.props.onEnded(it.Name)} />
+					 : null
 				}
 				{
 					this.props.Effects ? this.props.Effects.map((it, idx) => {

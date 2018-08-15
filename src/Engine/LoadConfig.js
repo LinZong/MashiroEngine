@@ -48,7 +48,8 @@ function LoadGlobalConfig() {
             let handle = FileStream.readFileSync(p);
             global.SettingsNode[conf] = JSON.parse(handle);
         }
-        
+        let characterFile = FileStream.readFileSync(Environment.CharacterDir+'/CharacterInfo.json');
+        global.MyEngine.CharacterInfo = JSON.parse(characterFile);
     } catch (error) {
         throw error;
     }

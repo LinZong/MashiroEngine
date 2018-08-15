@@ -9,9 +9,7 @@ import { Scene, TextBox, Loading, Selection } from '../index';
 import { GetRemoteUrlPath } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
-import SaveDataView from '../SaveData/SaveDataView';
 import './GameView.css';
-const { CreateSaveData } = require('../../Engine/LoadSaveData');
 var ControlFunctionContext = React.createContext();
 class GameView extends Component {
 	constructor() {
@@ -22,6 +20,7 @@ class GameView extends Component {
 			SectionName: null,
 			CharacterName: null,
 			Text: null,
+			CharacterVoice:null,
 			SelectionArray: null,
 			IsInSelection: false,
 			TextBoxVisible: true
@@ -35,16 +34,23 @@ class GameView extends Component {
 		this.GetStatusFlag = this.GetStatusFlag.bind(this);
 		this.GetTypingStatus = this.GetTypingStatus.bind(this);
 		this.SetStopTypingController = this.SetStopTypingController.bind(this);
+
+
 		this.ApplySelectionToView = this.ApplySelectionToView.bind(this);
+		this.ApplyTextToView=this.ApplyTextToView.bind(this);
+		this.ApplyCharacterVoice=this.ApplyCharacterVoice.bind(this);
+
+		
 		this.SaveState = this.SaveState.bind(this);
 		this.ToggleTextBoxVisible = this.ToggleTextBoxVisible.bind(this);
 		this.SetTextBoxVisible = this.SetTextBoxVisible.bind(this);
 		this.LoadSaveData = this.LoadSaveData.bind(this);
+		this.VoiceEnd=this.VoiceEnd.bind(this);
 		//当前节点状态
 		this.NeedNewSection = null;
 		this.NodeIndex = null;
 		//节点解析器的回调函数
-		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView, this.ApplySelectionToView, this.GetStatusFlag];
+		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView, this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
 		this.BlockKeyEvent = false;
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
@@ -128,6 +134,9 @@ class GameView extends Component {
 		else {
 			this.setState({ SelectionArray: NodeProps, IsInSelection: true });
 		}
+	}
+	ApplyCharacterVoice(VoiceProps){
+		this.setState({CharacterVoice:VoiceProps});
 	}
 	InitPreloadResources(PreloadResourcesObj) {
 		for (var key in PreloadResourcesObj) {
@@ -249,6 +258,9 @@ class GameView extends Component {
 		this.props.onLoadSaveData(SaveData);
 		this.setState(TmpInfo);
 	}
+	VoiceEnd(type){
+		console.log(type,'播放完了');
+	}
 	/*
 	 * 从GameView跳到存档界面的时候肯定是要保存先前状态的，这个时候存档机只需要读已经被snapshot的当前状态，写进文件就OK。
 	 */
@@ -266,7 +278,7 @@ class GameView extends Component {
 						(() => {
 							switch (this.props.GameViewStatus) {
 								case Status.SUCCESS: {
-									ReactDOM.render(<Audio BGM={this.state.BGM} />,document.getElementById('music'));
+									ReactDOM.render(<Audio BGM={this.state.BGM} Character={this.state.CharacterVoice} onEnd={this.VoiceEnd}/>,document.getElementById('music'));
 									this.BlockKeyEventInAnimation(this.state.IsInSelection);
 									return (
 										<Scene key={2} BG={this.state.Scene} IsInSection={this.state.IsInSelection} onClick={this.ToggleTextBoxVisible}>

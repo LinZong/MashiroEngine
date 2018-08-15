@@ -1,4 +1,5 @@
 const { NEXT_NODE, PREV_NODE, SET_NODE_INDEX } = require('./Events');
+const {GetRemoteUrlPath,GetCharacterAlias} = require('../Engine/Util');
 let TextNodeIndexer = null;
 function FindPrevNewModeTextNode(Section, EndIndexer) {
     while (Section.TextNodes[EndIndexer--].TextProperty.TextMode === 'append');
@@ -13,7 +14,7 @@ function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
     let NewPropertyObj = { ...NowPlayingSection.TextNodes[EndIndexer].TextProperty, Text: RollbackText, TextMode: 'new' };
     return NewPropertyObj;
 }
-var MiddleWare = [CustomFunctionAdapter, TextBoxRender, SelectionRender, ParseStatusFlag];
+var MiddleWare = [CustomFunctionAdapter, TextBoxRender, SelectionRender, SoundRender,ParseStatusFlag];
 //This callback should match the MiddleWareList correctly.
 
 function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
@@ -55,7 +56,7 @@ function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
         // CustomFunctionAdapter(CurrNode,MiddleWareCallback[0],StatusFlag);
         // TextBoxRender(CurrNode,MiddleWareCallback[1],StatusFlag);
         MiddleWare.map((item, idx) => ({ Func: item, Callback: MiddleWareCallback[idx] })).forEach(element => {
-            element.Func(CurrNode, element.Callback, { Index: TextNodeIndexer, Flag: StatusFlag });
+            element.Func(CurrNode, element.Callback, { Header:NowPlayingSection.Header,Index: TextNodeIndexer, Flag: StatusFlag });
         });
         return;
     }
@@ -89,6 +90,20 @@ function SelectionRender(TextNodeObj, callback, StatusObj) {
         else callback(null);
     }
 }
+
+function SoundRender(TextNodeObj, callback, StatusObj){
+    //现在还没有更换背景音的功能.
+    if (typeof callback === 'function') {
+        if (TextNodeObj.TextProperty&&TextNodeObj.TextProperty.Voice) {
+            let name = GetCharacterAlias(TextNodeObj.TextProperty.CharacterName);
+            let file = GetRemoteUrlPath(StatusObj.Header.VoicePath+'/'+name+'/'+TextNodeObj.TextProperty.Voice,true);
+            let Voice = {Name:name,File:file};
+            callback(Voice);
+        }
+        else callback();
+    }
+}
+
 function ParseStatusFlag(TextNodeObj, callback, StatusObj) {
     if (typeof callback === 'function') {
         callback(StatusObj);

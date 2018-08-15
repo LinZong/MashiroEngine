@@ -1,6 +1,7 @@
 //返回远程调用的url路径,Only use in render process
 //Because main process don't need this relax function.
 const Path = require('path');
+var CharacterInfo=null;
 function GetRemoteUrlPath(OriginalPath,NoUrl){
     if(OriginalPath===null||OriginalPath===undefined||OriginalPath==="null"||OriginalPath==="undefined"){
         return null;
@@ -28,4 +29,10 @@ function ExtendJson(Def, User) {
 	ApplyNode(Def.SettingElement.RightCol, User.SettingElement.RightCol, Res.SettingElement.RightCol);
 	return Res;
 }
-module.exports =  {GetRemoteUrlPath,ExtendJson};
+function GetCharacterAlias(CharacterName){
+	if(!CharacterInfo){
+		CharacterInfo=window.electron.remote.getGlobal('MyEngine').CharacterInfo;
+	}
+	return CharacterInfo[CharacterName];
+}
+module.exports =  {GetRemoteUrlPath,ExtendJson,GetCharacterAlias};
