@@ -13,6 +13,7 @@ ReactDOM.render(
             <div>
                 <Switch>
                     <Route exact path='/' component={WelcomeView} />
+                    <Route path='/savedata/:type/:from' component={SaveDataView} />
                     <Route path='/savedata/:type' component={SaveDataView} />
                     <Route path='/chapters' component={AllChapterView} />
                     <Route path='/section/:load' component={GameView} />

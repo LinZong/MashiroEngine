@@ -50,12 +50,11 @@ function CreateSaveData(FolderIndex, StateJsonObj,callback,errcallback) {
 		fs.mkdirSync(fullpath);
 	}
 	//保存图片
-	let png = CoverImgBuffer.toPNG();
 	const ep = new eventproxy();
 	ep.all('save_screenshot','save_state',function(data1,data2){
-		callback({ Cover: fullpath + '/Cover.png', State: RemoveBuffer });
+		callback({ Cover: fullpath + '/Cover.jpg', State: RemoveBuffer });
 	})
-	fs.writeFile(fullpath + '/Cover.png', png, (err) => {
+	fs.writeFile(fullpath + '/Cover.jpg', CoverImgBuffer.toJPEG(100), (err) => {
 		if (err) return errcallback(err);
 		else ep.emit('save_screenshot','截屏保存完成');
 	});

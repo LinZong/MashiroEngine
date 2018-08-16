@@ -70,7 +70,7 @@ class ConfigPanel extends React.Component {
 				switch (Item.Type) {
 					case "RadioGroup": {
 						return (
-							<div Key={idx} style={{ textAlign: "center" }}>
+							<div key={idx} style={{ textAlign: "center" }}>
 								<Divider orientation="left">{Item.Description ?
 									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
 									(Item.Title)}</Divider>
@@ -84,7 +84,7 @@ class ConfigPanel extends React.Component {
 					}
 					case "Select": {
 						return (
-							<div Key={idx} style={{ textAlign: "center" }}>
+							<div key={idx} style={{ textAlign: "center" }}>
 								<Divider orientation="left">{Item.Description ?
 									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
 									(Item.Title)}</Divider>
@@ -98,7 +98,7 @@ class ConfigPanel extends React.Component {
 					}
 					case "Slider": {
 						return (
-							<div Key={idx} style={{ textAlign: "center" }}>
+							<div key={idx} style={{ textAlign: "center" }}>
 								<Divider orientation="left">{Item.Description ?
 									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
 									(Item.Title)}</Divider>

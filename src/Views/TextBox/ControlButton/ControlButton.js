@@ -3,6 +3,7 @@ import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { Button, Tooltip, Popover,message} from 'antd';
 import { ControlFunctionContext } from '../../GameView/GameView';
+import { IMAGE_SETTING } from '../../../Engine/actionTypes/SettingType';
 const ButtonGroup = Button.Group;
 const { GetQuickSaveData, CreateQuickSaveData } = require('../../../Engine/LoadSaveData');
 class ControlButtion extends React.Component {
@@ -65,9 +66,9 @@ class ControlButtion extends React.Component {
 								<Tooltip title="创建快速保存">
 									<Button icon='cloud-download-o large' onClick={this.DoQuickSave} />
 								</Tooltip>
-								<Tooltip title="加载存档"><NavLink to='/savedata/load'><Button icon='cloud-upload large' /></NavLink></Tooltip>
-								<Tooltip title="创建存档"><NavLink to='/savedata/save'><Button icon='cloud-download large' /></NavLink></Tooltip>
-								<Tooltip title="设置"><NavLink to='/NewSettings'><Button icon='tool large' /></NavLink></Tooltip>
+								<Tooltip title="加载存档"><NavLink to='/savedata/load/ingame'><Button icon='cloud-upload large' /></NavLink></Tooltip>
+								<Tooltip title="创建存档"><NavLink to='/savedata/save/ingame'><Button icon='cloud-download large' /></NavLink></Tooltip>
+								<Tooltip title="设置"><NavLink to='/NewSettings/'><Button icon='tool large' /></NavLink></Tooltip>
 								<Tooltip title="回到标题页"><NavLink to='/'><Button icon='desktop large' /></NavLink></Tooltip>
 							</ButtonGroup>
 							<br />
