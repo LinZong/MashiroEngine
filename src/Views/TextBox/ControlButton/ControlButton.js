@@ -68,7 +68,7 @@ class ControlButtion extends React.Component {
 								</Tooltip>
 								<Tooltip title="加载存档"><NavLink to='/savedata/load/ingame'><Button icon='cloud-upload large' /></NavLink></Tooltip>
 								<Tooltip title="创建存档"><NavLink to='/savedata/save/ingame'><Button icon='cloud-download large' /></NavLink></Tooltip>
-								<Tooltip title="设置"><NavLink to='/NewSettings/'><Button icon='tool large' /></NavLink></Tooltip>
+								<Tooltip title="设置"><NavLink to={{pathname:'/NewSettings/'+IMAGE_SETTING,state:{ingame:true}}} ><Button icon='tool large' /></NavLink></Tooltip>
 								<Tooltip title="回到标题页"><NavLink to='/'><Button icon='desktop large' /></NavLink></Tooltip>
 							</ButtonGroup>
 							<br />

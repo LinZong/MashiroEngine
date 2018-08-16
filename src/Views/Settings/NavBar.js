@@ -1,6 +1,7 @@
 import React from 'react';
 import { Layout, Menu, Icon, message, Tooltip } from 'antd';
 import { NavLink } from 'react-router-dom';
+import {withRouter}from'react-router';
 import { IMAGE_SETTING, TEXT_SETTING, SOUND_SETTING, CONTROLLER_SETTING, INGAME_SETTING } from '../../Engine/actionTypes/SettingType';
 const { Content, Footer, Sider } = Layout;
 
@@ -53,12 +54,15 @@ class NavBar extends React.Component {
 							<Icon type="save" />
 							<span className="nav-text"><Tooltip title="您无需按下这个傻逼的按钮，一切动作将会自动保存">保存</Tooltip></span>
 						</Menu.Item>
-						<Menu.Item key="8">
-							<NavLink className="nav-text" to='/section/prev'>
-								<Icon type="to-top" />
-								回到游戏
+
+						{this.props.InGame && 
+							<Menu.Item key="8">
+								<NavLink className="nav-text" to='/section/prev'>
+									<Icon type="to-top" />
+									回到游戏
 							</NavLink>
-						</Menu.Item>
+							</Menu.Item>
+						}
 						<Menu.Item key="9">
 							<NavLink className="nav-text" to='/'>
 								<Icon type="arrow-left" />
@@ -81,4 +85,4 @@ class NavBar extends React.Component {
 }
 
 
-export default NavBar;
+export default withRouter(NavBar);

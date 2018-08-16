@@ -1,11 +1,11 @@
 aside.welcomemenu{
     
     width: 300px;
-    top: 30%;
+    top: 28vh;
     position:absolute;
     display: block;
     font-size: 2rem;
-    left: 4%;
+    left: 4vw;
     overflow: hidden;
     font-family: Microsoft Yahei;
     height: 450px;
