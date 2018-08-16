@@ -20,7 +20,7 @@ class GameView extends Component {
 			SectionName: null,
 			CharacterName: null,
 			Text: null,
-			CharacterVoice:null,
+			CharacterVoice: null,
 			SelectionArray: null,
 			IsInSelection: false,
 			TextBoxVisible: true
@@ -37,15 +37,15 @@ class GameView extends Component {
 
 
 		this.ApplySelectionToView = this.ApplySelectionToView.bind(this);
-		this.ApplyTextToView=this.ApplyTextToView.bind(this);
-		this.ApplyCharacterVoice=this.ApplyCharacterVoice.bind(this);
+		this.ApplyTextToView = this.ApplyTextToView.bind(this);
+		this.ApplyCharacterVoice = this.ApplyCharacterVoice.bind(this);
 
-		
+
 		this.SaveState = this.SaveState.bind(this);
 		this.ToggleTextBoxVisible = this.ToggleTextBoxVisible.bind(this);
 		this.SetTextBoxVisible = this.SetTextBoxVisible.bind(this);
 		this.LoadSaveData = this.LoadSaveData.bind(this);
-		this.VoiceEnd=this.VoiceEnd.bind(this);
+		this.VoiceEnd = this.VoiceEnd.bind(this);
 		//当前节点状态
 		this.NeedNewSection = null;
 		this.NodeIndex = null;
@@ -54,13 +54,17 @@ class GameView extends Component {
 		this.BlockKeyEvent = false;
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
+		//The New Context API is excited!
 		this.ControlFunction = {
 			GetNewTextNode: this.GetNewTextNode,
 			setState: this.setState,
 			SaveState: this.SaveState,//Q.Save
 			LoadSaveData: this.LoadSaveData,//这个是给Q.Load用的
 			SetTextBoxVisible: this.SetTextBoxVisible,
-			SetTypingStatus: this.GetTypingStatus
+			SetTypingStatus: this.GetTypingStatus,
+			GetNewTextNode:this.GetNewTextNode,
+			GetNextSection:this.props.onLoadNextSection,
+			GetPrevSection:this.props.onLoadPrevSection
 		};
 	}
 	GetStatusFlag(StatusObj) {//Read-only
@@ -135,19 +139,19 @@ class GameView extends Component {
 			this.setState({ SelectionArray: NodeProps, IsInSelection: true });
 		}
 	}
-	ApplyCharacterVoice(VoiceProps){
-		this.setState({CharacterVoice:VoiceProps});
+	ApplyCharacterVoice(VoiceProps) {
+		this.setState({ CharacterVoice: VoiceProps });
 	}
 	InitPreloadResources(PreloadResourcesObj) {
 		for (var key in PreloadResourcesObj) {
 			if (PreloadResourcesObj[key] !== null) {
-				switch(key){
-					case "Scene":{
+				switch (key) {
+					case "Scene": {
 						PreloadResourcesObj[key] = GetRemoteUrlPath(PreloadResourcesObj[key]);
 						break;
 					}
-					case "BGM":{
-						PreloadResourcesObj[key].Path = GetRemoteUrlPath(PreloadResourcesObj[key].Path,true);
+					case "BGM": {
+						PreloadResourcesObj[key].Path = GetRemoteUrlPath(PreloadResourcesObj[key].Path, true);
 						break;
 					}
 				}
@@ -258,8 +262,8 @@ class GameView extends Component {
 		this.props.onLoadSaveData(SaveData);
 		this.setState(TmpInfo);
 	}
-	VoiceEnd(type){
-		console.log(type,'播放完了');
+	VoiceEnd(type) {
+		console.log(type, '播放完了');
 	}
 	/*
 	 * 从GameView跳到存档界面的时候肯定是要保存先前状态的，这个时候存档机只需要读已经被snapshot的当前状态，写进文件就OK。
@@ -278,21 +282,22 @@ class GameView extends Component {
 						(() => {
 							switch (this.props.GameViewStatus) {
 								case Status.SUCCESS: {
-									ReactDOM.render(<Audio BGM={this.state.BGM} Character={this.state.CharacterVoice} onEnd={this.VoiceEnd}/>,document.getElementById('music'));
+									ReactDOM.render(<Audio BGM={this.state.BGM} Character={this.state.CharacterVoice} onEnd={this.VoiceEnd} />, document.getElementById('music'));
 									this.BlockKeyEventInAnimation(this.state.IsInSelection);
 									return (
-										<Scene key={2} BG={this.state.Scene} IsInSection={this.state.IsInSelection} onClick={this.ToggleTextBoxVisible}>
+										<Scene key={2} BG={this.state.Scene} EnableMask={this.state.IsInSelection} onClick={this.ToggleTextBoxVisible}>
 											{this.state.IsInSelection ?
 												<Selection SelectionArray={this.state.SelectionArray} onLoadSectionRes={this.props.onLoadSectionRes} />
-												:
-												<TextBox
-													SectionName={this.props.Section.Header.SectionName}
-													CharacterName={this.state.CharacterName}
-													TextContent={this.state.Text}
-													MouseEventTrigger={this.ChangeNode}
-													visible={this.state.TextBoxVisible}
-													GetStopTyping={this.SetStopTypingController}
-												/>
+												: null
+											}
+											<TextBox
+												SectionName={this.props.Section.Header.SectionName}
+												CharacterName={this.state.CharacterName}
+												TextContent={this.state.Text}
+												MouseEventTrigger={this.ChangeNode}
+												visible={this.state.TextBoxVisible}
+												GetStopTyping={this.SetStopTypingController}
+											/>
 											}
 										</Scene>);
 								}
@@ -306,7 +311,7 @@ class GameView extends Component {
 							}
 						}).call(this, null)
 					}
-					
+
 				</TransitionGroup>
 			</ControlFunctionContext.Provider>
 		)
@@ -327,8 +332,11 @@ const mapDispatchToProps = (dispatch) => {
 		onLoadSectionRes: (Chapter, Branch, Section) => {
 			dispatch(Actions.GetSelectedSection(Chapter, Branch, Section));
 		},
-		onLoadNextSection: () => {
-			dispatch(Actions.GetNextSection());
+		onLoadNextSection: (SkipLoading) => {
+			dispatch(Actions.GetNextSection(SkipLoading));
+		},
+		onLoadPrevSection: (SkipLoading) => {
+			dispatch(Actions.GetPrevSection(SkipLoading));
 		},
 		onPauseGameView: () => {
 			dispatch(Actions.PauseGameView());

@@ -26,6 +26,9 @@ class TextBox extends Component {
         this.typed.destroy();
         document.getElementById("Text").innerText = this.props.TextContent;
     }
+    shouldComponentUpdate(nextProps,nextState){
+        return nextProps.TextContent!==this.props.TextContent;
+    }
     render() {
         return (
             <div className="TextBox">

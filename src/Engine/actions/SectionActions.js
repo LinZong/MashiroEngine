@@ -78,13 +78,18 @@ export const GetSelectedSection = (Chapter,Branch,Section) => {
     EventHandler.emit(GET_SELECTED_PLAYING_SECTION,dispatch,SetSelectedSection,Chapter,Branch,Section);
   }
 };
-export const GetNextSection = () => {
+export const GetNextSection = (SkipLoading) => {
   return (dispatch)=>{
-    dispatch(Loading());
-    setTimeout(()=>{EventHandler.emit(ENTER_NEXT_SECTION,dispatch,SetSelectedSection);},2000);
+    SkipLoading&&dispatch(Loading());
+    setTimeout(()=>{EventHandler.emit(ENTER_NEXT_SECTION,dispatch,SetSelectedSection);},SkipLoading?0:2000);
   }
 };
-
+export const GetPrevSection = (SkipLoading) => {
+  return (dispatch)=>{
+    SkipLoading&&dispatch(Loading());
+    setTimeout(()=>{EventHandler.emit(ENTER_PREV_SECTION,dispatch,SetSelectedSection);},SkipLoading?0:2000);
+  }
+};
 export const ReloadStoreSection = (SaveDataInfo) => {
   return (dispatch)=>{
     EventHandler.emit(LOAD_SAVEDATA,SaveDataInfo,dispatch,SetSelectedSection);

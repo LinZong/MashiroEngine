@@ -32,6 +32,10 @@ EventHandler.on(EventsType.GET_SELECTED_PLAYING_SECTION, (dispatch, actionCtor, 
                 break;
             }
         }
+        if (SelectedSection === -1) {
+            //寻找最后一个Section
+            SelectedSection = TmpChapter.Branch.Sections.length - 1;
+        }
         CurrentChapter = TmpChapter;//是一个存章节信息的Object
         CurrentSectionIndex = SelectedSection;//选择了的Section数组Index
         CurrentBranch = SelectedBranch;//选择的Branch号
@@ -39,7 +43,7 @@ EventHandler.on(EventsType.GET_SELECTED_PLAYING_SECTION, (dispatch, actionCtor, 
     }
 });
 
-function GetAllChapter(){
+function GetAllChapter() {
     if (AllChapter === null) AllChapter = window.electron.remote.getGlobal('MyEngine').StatusMachine.AllChapter;
     return (AllChapter);
 }
@@ -55,6 +59,18 @@ EventHandler.on(EventsType.ENTER_NEXT_SECTION, (dispatch, actionCtor) => {
     }
 });
 
+
+EventHandler.on(EventsType.ENTER_PREV_SECTION, (dispatch, actionCtor) => {
+    let NowSection = CurrentSectionIndex;
+    if (NowSection > 0) {
+        CurrentSectionIndex--;
+        DispatchSectionJson(dispatch, actionCtor)(CurrentChapter, NowSection - 1);
+    }
+    else {
+        EventHandler.emit(EventsType.ENTER_PREV_CHAPTER, dispatch, actionCtor);
+    }
+});
+
 EventHandler.on(EventsType.ENTER_NEXT_CHAPTER, (dispatch, actionCtor) => {
     let CurrChapterIndex = CurrentChapter.Index;
     let AllChapterLength = AllChapter.length;
@@ -62,11 +78,20 @@ EventHandler.on(EventsType.ENTER_NEXT_CHAPTER, (dispatch, actionCtor) => {
         EventHandler.emit(EventsType.GET_SELECTED_PLAYING_SECTION, dispatch, actionCtor, AllChapter[CurrChapterIndex + 1], CurrentBranch, 0);
     }
 });
+
+EventHandler.on(EventsType.ENTER_PREV_CHAPTER, (dispatch, actionCtor) => {
+    let CurrChapterIndex = CurrentChapter.Index;
+    if (CurrChapterIndex > 0) {
+        EventHandler.emit(EventsType.GET_SELECTED_PLAYING_SECTION, dispatch, actionCtor, AllChapter[CurrChapterIndex - 1], CurrentBranch, -1);
+        //-1的意思是向前找到最后一个Section
+    }
+});
+
 EventHandler.on(EventsType.LOAD_SAVEDATA, (SaveDataInfo, dispatch, actionCtor) => {
     CurrentChapter = SaveDataInfo.PrevInfo.CurrentChapter;
     CurrentBranch = SaveDataInfo.PrevInfo.CurrentBranch;
     CurrentSectionIndex = SaveDataInfo.PrevInfo.CurrentSectionIndex;
-    AllChapter=SaveDataInfo.PrevInfo.AllChapter;
+    AllChapter = SaveDataInfo.PrevInfo.AllChapter;
     DispatchSectionJson(dispatch, actionCtor)(CurrentChapter, CurrentSectionIndex);
 });
 
@@ -75,5 +100,5 @@ EventHandler.on(EventsType.LOAD_SAVEDATA, (SaveDataInfo, dispatch, actionCtor) =
 function GetGlobalVar() {
     return { AllChapter, CurrentChapter, CurrentBranch, CurrentSectionIndex };
 }
-module.exports = { EventHandler, GetGlobalVar,GetAllChapter };
+module.exports = { EventHandler, GetGlobalVar, GetAllChapter };
 

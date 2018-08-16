@@ -23,9 +23,9 @@ function GetAllSaveData() {
 		let stat = fs.statSync(fullpath);
 		if (stat.isDirectory()) {
 			//探测存档是否完整
-			if (fs.existsSync(fullpath + '/State.json') && fs.existsSync(fullpath + '/Cover.png')) {
+			if (fs.existsSync(fullpath + '/State.json') && fs.existsSync(fullpath + '/Cover.jpg')) {
 				let data = fs.readFileSync(fullpath + '/State.json');
-				savearr[parseInt(subdir, 10)] = { State: JSON.parse(data), Cover: fullpath + '/Cover.png' };
+				savearr[parseInt(subdir, 10)] = { State: JSON.parse(data), Cover: fullpath + '/Cover.jpg' };
 			}
 		}
 	});
