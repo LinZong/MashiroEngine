@@ -1,15 +1,4 @@
-// import React from 'react';
-
-// class Audio extends React.Component{
-
-// 	render(){
-// 		return <audio id="AudioObj" src={this.props.BGM} autoPlay={true} />
-// 	}
-// }
-
-// export default Audio;
 import React from 'react';
-import { createPortal } from "react-dom";
 import { notification } from 'antd';
 class Audio extends React.Component {
 	constructor() {
@@ -70,9 +59,9 @@ class Audio extends React.Component {
 						null
 				}
 				{
-					this.props.Character ? 
-						 <audio key={1} id="CharacterVoice" src={this.props.Character.File} autoPlay={false} onEnded={() => this.props.onEnded && this.props.onEnded(it.Name)} />
-					 : null
+					this.props.Character ?
+						<audio key={1} id="CharacterVoice" src={this.props.Character.File} autoPlay={false} onEnded={() => this.props.onEnded && this.props.onEnded(it.Name)} />
+						: null
 				}
 				{
 					this.props.Effects ? this.props.Effects.map((it, idx) => {
@@ -82,10 +71,4 @@ class Audio extends React.Component {
 			</div>);
 	}
 }
-// export default ({BGM,Character,Effects,onEnded}) =>
-// 	createPortal(
-// 		<Audio BGM={BGM} Character={Character} Effects={Effects} onEnded={onEnded} />,
-// 		document.getElementById('music')
-// 	);
-
 export default Audio;

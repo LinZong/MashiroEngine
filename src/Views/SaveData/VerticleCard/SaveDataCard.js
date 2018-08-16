@@ -9,16 +9,16 @@ const { CreateSaveData, DeleteSaveData } = require('../../../Engine/LoadSaveData
 class SaveDataCard extends React.Component {
 	constructor() {
 		super(...arguments);
-		this.state = { 
-			Exist: false, 
-			visible: false, 
-			Cover: this.props.Cover, 
-			SaveTimeStamp: this.props.SaveTimeStamp, 
-			Title: this.props.Title 
+		this.state = {
+			Exist: false,
+			visible: false,
+			Cover: this.props.Cover,
+			SaveTimeStamp: this.props.SaveTimeStamp,
+			Title: this.props.Title
 		};
 
 		if (this.props.data) this.state.Exist = true;
-		
+
 		this.onClickSlot = this.onClickSlot.bind(this);
 		this.showModal = this.showModal.bind(this);
 		this.handleOk = this.handleOk.bind(this);
@@ -47,11 +47,13 @@ class SaveDataCard extends React.Component {
 	SaveToSlot() {
 		let data = store.getState().GameView.PrevState;
 		const closehandle = message.loading("正在保存");
-		CreateSaveData(this.props.Index, data).then((ok) => {
+		CreateSaveData(this.props.Index, data, (ok) => {
 			closehandle();
-			message.success('成功保存存档',1);
+			message.success('成功保存存档', 1);
 			this.setState({ Cover: ok.Cover, SaveTimeStamp: ok.State.TimeStamp, Title: ok.State.Text, Exist: true });
-		}, (reason) => message.error(reason));
+		},(err)=>{
+			console.log('存档失败',err);
+		});
 	}
 	showModal() {
 		if (!this.state.visible)
@@ -93,7 +95,6 @@ class SaveDataCard extends React.Component {
 			this.ActionFunc = this.ActionArr[2];
 			this.showModal();
 		}
-
 	}
 	render() {
 		return (
@@ -108,7 +109,7 @@ class SaveDataCard extends React.Component {
 				</Modal>
 				<Col span={12}>
 					<div className="ScreenShotImg">
-						<img alt="这是当前游戏画面的截图" src={"file:///" + this.state.Cover+"?"+Math.random()} style={{ width: '100%' }} />
+						<img alt="这是当前游戏画面的截图" src={"file:///" + this.state.Cover + "?" + Math.random()} style={{ width: '100%' }} />
 					</div>
 				</Col>
 				<Col span={12}>

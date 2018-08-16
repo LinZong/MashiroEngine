@@ -2,6 +2,7 @@
  * 以下的函数都应运行在渲染进程
  */
 const Q = require('q');
+const eventproxy = require('eventproxy');
 function GetFsAndSaveDir() {
 	let remote = window.electron.remote;
 	let _fs = remote.require('fs');
@@ -39,8 +40,7 @@ function GetQuickSaveData() {
 	}
 	return null;
 }
-function CreateSaveData(FolderIndex, StateJsonObj) {
-	var deferrer = Q.defer();
+function CreateSaveData(FolderIndex, StateJsonObj,callback,errcallback) {
 	let CoverImgBuffer = StateJsonObj.Image;
 	let RemoveBuffer = Object.assign({}, StateJsonObj);
 	delete RemoveBuffer['Image'];
@@ -51,17 +51,19 @@ function CreateSaveData(FolderIndex, StateJsonObj) {
 	}
 	//保存图片
 	let png = CoverImgBuffer.toPNG();
+	const ep = new eventproxy();
+	ep.all('save_screenshot','save_state',function(data1,data2){
+		callback({ Cover: fullpath + '/Cover.png', State: RemoveBuffer });
+	})
 	fs.writeFile(fullpath + '/Cover.png', png, (err) => {
-		if (err) deferrer.reject(err);
-		else console.log('截屏保存完成')
+		if (err) return errcallback(err);
+		else ep.emit('save_screenshot','截屏保存完成');
 	});
 	let json = JSON.stringify(RemoveBuffer);
 	fs.writeFile(fullpath + '/State.json', json, (err) => {
-		if (err) deferrer.reject(err);
-		else console.log('存档文件保存完成');
+		if (err) return errcallback(err);
+		else ep.emit('save_state','存档文件保存完成');
 	});
-	deferrer.resolve({ Cover: fullpath + '/Cover.png', State: RemoveBuffer });
-	return deferrer.promise;
 }
 function CreateQuickSaveData(StateJsonObj) {
 	var deferrer = Q.defer();
@@ -75,9 +77,8 @@ function CreateQuickSaveData(StateJsonObj) {
 	let json = JSON.stringify(RemoveBuffer);
 	fs.writeFile(fullpath + '/State.json', json, (err) => {
 		if (err) deferrer.reject(err);
-		else console.log('快速存档文件保存完成');
+		else deferrer.resolve({ State: RemoveBuffer });
 	});
-	deferrer.resolve({ State: RemoveBuffer });
 	return deferrer.promise;
 }
 function DeleteSaveData(FolderIndex) {
