@@ -298,7 +298,7 @@ class GameView extends Component {
 												visible={this.state.TextBoxVisible}
 												GetStopTyping={this.SetStopTypingController}
 											/>
-											}
+											
 										</Scene>);
 								}
 								case Status.LOADING: {
