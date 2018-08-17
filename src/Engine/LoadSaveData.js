@@ -13,7 +13,7 @@ function GetFsAndSaveDir() {
 function GetAllSaveData() {
 	const { fs, SaveDataPath } = GetFsAndSaveDir();
 	let savearr = [];
-	for (let i = 0; i < 9; ++i) {
+	for (let i = 0; i < 81; ++i) {
 		savearr[i] = null;
 	}
 	let dirarr = fs.readdirSync(SaveDataPath);

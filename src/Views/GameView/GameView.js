@@ -63,8 +63,8 @@ class GameView extends Component {
 			SetTextBoxVisible: this.SetTextBoxVisible,
 			SetTypingStatus: this.GetTypingStatus,
 			GetNewTextNode:this.GetNewTextNode,
-			GetNextSection:this.props.onLoadNextSection,
-			GetPrevSection:this.props.onLoadPrevSection
+			GetNextSection:(skip)=>{this.props.match.params.load='next';this.props.onLoadNextSection(skip)},
+			GetPrevSection:(skip)=>{this.props.match.params.load='next';this.props.onLoadPrevSection(skip)}
 		};
 	}
 	GetStatusFlag(StatusObj) {//Read-only
@@ -103,7 +103,7 @@ class GameView extends Component {
 	}
 	GetNewTextNode(Type) {
 		if (this.NeedNewSection === 1 && Type === 1) {
-			this.props.onLoadNextSection();
+			this.props.onLoadNextSection.call(this,null);
 		}
 		/* 按照国际惯例不允许Load Prev Section */
 		else {
@@ -333,6 +333,7 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(Actions.GetSelectedSection(Chapter, Branch, Section));
 		},
 		onLoadNextSection: (SkipLoading) => {
+			console.log(this);
 			dispatch(Actions.GetNextSection(SkipLoading));
 		},
 		onLoadPrevSection: (SkipLoading) => {
