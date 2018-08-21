@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './TextBoxView.css'
 import Typed from 'react-typed';
-import { Card, Button } from 'antd';
-import { NavLink } from 'react-router-dom';
+import { Card } from 'antd';
 import ControlButton from './ControlButton/ControlButton';
 import { ControlFunctionContext } from '../GameView/GameView';
 class TextBox extends Component {

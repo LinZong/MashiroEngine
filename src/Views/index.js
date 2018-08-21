@@ -6,6 +6,6 @@ import Loading from './Loading/Loading';
 import { Settings } from './Settings/index';
 import Selection from './Selection/Selection';
 import SaveDataView from './SaveData/SaveDataView';
-
+import PlainText from './PlainText/PlainText';
 import WelcomeView from './Welcome/WelcomeView';
-export { GameView, AllChapterView, Scene, TextBox, Loading, Settings, WelcomeView, SaveDataView,Selection };
+export { GameView, AllChapterView, Scene, TextBox, Loading, Settings, WelcomeView, PlainText,SaveDataView,Selection };

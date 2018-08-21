@@ -5,7 +5,7 @@ import TransitionGroup from 'react-addons-css-transition-group';
 import * as Actions from '../../Engine/actions/SectionActions'
 import * as Status from '../../Engine/Status'
 import { TextNodeInterpreter } from '../../Engine/LoadSection';
-import { Scene, TextBox, Loading, Selection } from '../index';
+import { Scene, TextBox, Loading, Selection, PlainText } from '../index';
 import { GetRemoteUrlPath } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
@@ -23,6 +23,8 @@ class GameView extends Component {
 			CharacterVoice: null,
 			SelectionArray: null,
 			IsInSelection: false,
+			IsPlainText: false,
+			IsPlainTextRollback: false,
 			TextBoxVisible: true
 		};
 		//游戏画面控制函数
@@ -39,18 +41,19 @@ class GameView extends Component {
 		this.ApplySelectionToView = this.ApplySelectionToView.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
 		this.ApplyCharacterVoice = this.ApplyCharacterVoice.bind(this);
-
+		this.ApplyPlainTextToView=this.ApplyPlainTextToView.bind(this);
 
 		this.SaveState = this.SaveState.bind(this);
 		this.ToggleTextBoxVisible = this.ToggleTextBoxVisible.bind(this);
 		this.SetTextBoxVisible = this.SetTextBoxVisible.bind(this);
 		this.LoadSaveData = this.LoadSaveData.bind(this);
 		this.VoiceEnd = this.VoiceEnd.bind(this);
-		//当前节点状态
+		this.TextEnd = this.TextEnd.bind(this);
+		//当前节点状态;
 		this.NeedNewSection = null;
 		this.NodeIndex = null;
 		//节点解析器的回调函数
-		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView, this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
+		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView, this.ApplyPlainTextToView,this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
 		this.BlockKeyEvent = false;
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
@@ -62,9 +65,9 @@ class GameView extends Component {
 			LoadSaveData: this.LoadSaveData,//这个是给Q.Load用的
 			SetTextBoxVisible: this.SetTextBoxVisible,
 			SetTypingStatus: this.GetTypingStatus,
-			GetNewTextNode:this.GetNewTextNode,
-			GetNextSection:(skip)=>{this.props.match.params.load='next';this.props.onLoadNextSection(skip)},
-			GetPrevSection:(skip)=>{this.props.match.params.load='next';this.props.onLoadPrevSection(skip)}
+			GetNewTextNode: this.GetNewTextNode,
+			GetNextSection: (skip) => { this.props.match.params.load = 'next'; this.props.onLoadNextSection(skip) },
+			GetPrevSection: (skip) => { this.props.match.params.load = 'next'; this.props.onLoadPrevSection(skip) }
 		};
 	}
 	GetStatusFlag(StatusObj) {//Read-only
@@ -103,7 +106,7 @@ class GameView extends Component {
 	}
 	GetNewTextNode(Type) {
 		if (this.NeedNewSection === 1 && Type === 1) {
-			this.props.onLoadNextSection.call(this,null);
+			this.props.onLoadNextSection.call(this, null);
 		}
 		/* 按照国际惯例不允许Load Prev Section */
 		else {
@@ -122,11 +125,18 @@ class GameView extends Component {
 	}
 	ApplyTextToView(NodeProps) {
 		let NextTextContent = NodeProps.TextContent;
-		if (NextTextContent.TextMode === 'new') {
-			this.setState(NextTextContent);
-		} else if (NextTextContent.TextMode === 'append') {
-			this.setState({ ...NextTextContent, Text: this.state.Text + NextTextContent.Text });
-		}
+		//if (NextTextContent.TextMode === 'new') {
+		this.setState({ ...NextTextContent, IsPlainText: false });
+		// } else if (NextTextContent.TextMode === 'append') {
+		// 	this.setState({ ...NextTextContent, Text: this.state.Text + NextTextContent.Text });
+		// }
+	}
+	ApplyPlainTextToView(NodeProps) {
+		this.setState({
+			Text: NodeProps.TextContent,
+			IsPlainTextRollback: NodeProps.Rollback,
+			IsPlainText: true
+		})
 	}
 	ApplySelectionToView(NodeProps) {
 		if (NodeProps === null) {
@@ -265,6 +275,9 @@ class GameView extends Component {
 	VoiceEnd(type) {
 		console.log(type, '播放完了');
 	}
+	TextEnd() {
+
+	}
 	/*
 	 * 从GameView跳到存档界面的时候肯定是要保存先前状态的，这个时候存档机只需要读已经被snapshot的当前状态，写进文件就OK。
 	 */
@@ -273,10 +286,10 @@ class GameView extends Component {
 			<ControlFunctionContext.Provider value={this.ControlFunction}>
 				<TransitionGroup
 					transitionName="GameViewFade"
-					transitionEnterTimeout={500}
-					transitionLeave={false}
+					transitionEnterTimeout={700}
+					transitionLeave={true}
 					transitionAppear={true}
-					transitionAppearTimeout={500}
+					transitionAppearTimeout={700}
 				>
 					{
 						(() => {
@@ -285,20 +298,29 @@ class GameView extends Component {
 									ReactDOM.render(<Audio BGM={this.state.BGM} Character={this.state.CharacterVoice} onEnd={this.VoiceEnd} />, document.getElementById('music'));
 									this.BlockKeyEventInAnimation(this.state.IsInSelection);
 									return (
-										<Scene key={2} BG={this.state.Scene} EnableMask={this.state.IsInSelection} onClick={this.ToggleTextBoxVisible}>
-											{this.state.IsInSelection ?
-												<Selection SelectionArray={this.state.SelectionArray} onLoadSectionRes={this.props.onLoadSectionRes} />
-												: null
+										<Scene key={2} BG={this.state.Scene} EnableMask={this.state.IsInSelection || this.state.IsPlainText} onClick={this.ToggleTextBoxVisible}>
+											{
+												this.state.IsPlainText ?
+													<PlainText
+														CurrentText={this.state.Text}
+														MouseEventTrigger={this.ChangeNode}
+														GetStopTyping={this.SetStopTypingController}
+														Rollback={this.state.IsPlainTextRollback}
+													/>
+													: this.state.IsInSelection ?
+														<Selection SelectionArray={this.state.SelectionArray} onLoadSectionRes={this.props.onLoadSectionRes} />
+														:
+														<TextBox
+															SectionName={this.props.Section.Header.SectionName}
+															CharacterName={this.state.CharacterName}
+															TextContent={this.state.Text}
+															MouseEventTrigger={this.ChangeNode}
+															visible={this.state.TextBoxVisible}
+															GetStopTyping={this.SetStopTypingController}
+														/>
 											}
-											<TextBox
-												SectionName={this.props.Section.Header.SectionName}
-												CharacterName={this.state.CharacterName}
-												TextContent={this.state.Text}
-												MouseEventTrigger={this.ChangeNode}
-												visible={this.state.TextBoxVisible}
-												GetStopTyping={this.SetStopTypingController}
-											/>
-											
+
+
 										</Scene>);
 								}
 								case Status.LOADING: {

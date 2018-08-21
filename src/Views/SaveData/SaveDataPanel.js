@@ -14,9 +14,14 @@ class SaveDataPanel extends React.Component {
 			<Col span={8} key={idx+begin}><SaveDataCard  type={this.props.type} key={idx + begin} Index={idx + begin} Cover={it.Cover} SaveTimeStamp={it.State.TimeStamp} Title={it.State.Text} data={it.State}/></Col>
 			: <Col span={8} key={idx+begin} ><SaveDataCard type={this.props.type} key={idx + begin} Index={idx + begin} Cover={this.PlaceHolder} SaveTimeStamp={"存档不存在"} Title={"所以也没办法显示文本"} /></Col>);
 	}
-
+	componentWillMount(){
+		this.AllSaveData = GetAllSaveData();
+	}
+	componentWillUpdate(){
+		this.AllSaveData = GetAllSaveData();
+	}
 	render() {
-		const AllSaveData = GetAllSaveData();
+		const AllSaveData = this.AllSaveData;
 		return (
 			<div style={{ margin: '24px 0', background: '#fff', padding: 16 }}>
 				<Row gutter={16} style={{ marginBottom: "16px" }}>

@@ -28,20 +28,20 @@
 }
 .GameViewFade-enter.GameViewFade-enter-active {
   opacity: 1;
-  transition: opacity 500ms ease-in;
+  transition: opacity 700ms ease-in;
 }
 .GameViewFade-appear {
   opacity: 0.01;
 }
 .GameViewFade-appear.GameViewFade-appear-active {
   opacity: 1;
-  transition: opacity 500ms ease-in;
+  transition: opacity 700ms ease-in;
 }
 .GameViewFade-leave {
   opacity: 1;
 }
 .GameViewFade-leave.GameViewFade-leave-active {
   opacity: 0.01;
-  transition: opacity 500ms ease-in;
+  transition: opacity 700ms ease-in;
 }
 

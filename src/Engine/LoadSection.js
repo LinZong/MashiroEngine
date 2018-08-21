@@ -1,20 +1,20 @@
 const { NEXT_NODE, PREV_NODE, SET_NODE_INDEX } = require('./Events');
-const {GetRemoteUrlPath,GetCharacterAlias} = require('../Engine/Util');
+const { GetRemoteUrlPath, GetCharacterAlias } = require('../Engine/Util');
 let TextNodeIndexer = null;
-function FindPrevNewModeTextNode(Section, EndIndexer) {
-    while (Section.TextNodes[EndIndexer--].TextProperty.TextMode === 'append');
-    return EndIndexer + 1;
-}
-function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
-    let LastNewIndex = FindPrevNewModeTextNode(NowPlayingSection, EndIndexer);
-    let RollbackText = "";
-    for (var i = LastNewIndex; i <= TextNodeIndexer; ++i) {
-        RollbackText += NowPlayingSection.TextNodes[i].TextProperty.Text;
-    }
-    let NewPropertyObj = { ...NowPlayingSection.TextNodes[EndIndexer].TextProperty, Text: RollbackText, TextMode: 'new' };
-    return NewPropertyObj;
-}
-var MiddleWare = [CustomFunctionAdapter, TextBoxRender, SelectionRender, SoundRender,ParseStatusFlag];
+// function FindPrevNewModeTextNode(Section, EndIndexer) {
+//     while (Section.TextNodes[EndIndexer--].TextProperty.TextMode === 'append');
+//     return EndIndexer + 1;
+// }
+// function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
+//     let LastNewIndex = FindPrevNewModeTextNode(NowPlayingSection, EndIndexer);
+//     let RollbackText = "";
+//     for (var i = LastNewIndex; i <= TextNodeIndexer; ++i) {
+//         RollbackText += NowPlayingSection.TextNodes[i].TextProperty.Text;
+//     }
+//     let NewPropertyObj = { ...NowPlayingSection.TextNodes[EndIndexer].TextProperty, Text: RollbackText, TextMode: 'new' };
+//     return NewPropertyObj;
+// }
+var MiddleWare = [CustomFunctionAdapter, TextBoxRender, PlainTextRender, SelectionRender, SoundRender, ParseStatusFlag];
 //This callback should match the MiddleWareList correctly.
 
 function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
@@ -47,16 +47,17 @@ function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
         StatusFlag = 1;
     }
     if (0 <= TextNodeIndexer && TextNodeIndexer < NowPlayingSection.TextNodes.length) {
-        let Content = ev.type === PREV_NODE || (ev.type === SET_NODE_INDEX && NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty.TextMode === 'append') ?
-            MakeRollBackProperty(NowPlayingSection, TextNodeIndexer) :
-            NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty;
+        // let Content = ev.type === PREV_NODE || (ev.type === SET_NODE_INDEX && NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty.TextMode === 'append') ?
+        //     MakeRollBackProperty(NowPlayingSection, TextNodeIndexer) :
+        //     NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty;
         //SectionName:NowPlayingSection.Header.SectionName,
+        let Content = NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty;
         let CurrNode = NowPlayingSection.TextNodes[TextNodeIndexer];
         CurrNode.TextProperty = Content;
         // CustomFunctionAdapter(CurrNode,MiddleWareCallback[0],StatusFlag);
         // TextBoxRender(CurrNode,MiddleWareCallback[1],StatusFlag);
         MiddleWare.map((item, idx) => ({ Func: item, Callback: MiddleWareCallback[idx] })).forEach(element => {
-            element.Func(CurrNode, element.Callback, { Header:NowPlayingSection.Header,Index: TextNodeIndexer, Flag: StatusFlag });
+            element.Func(CurrNode, element.Callback, { Header: NowPlayingSection.Header, Index: TextNodeIndexer, Flag: StatusFlag, ActionType: ev.type });
         });
         return;
     }
@@ -64,7 +65,7 @@ function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
 
 
 function CustomFunctionAdapter(TextNodeObj, callback, StatusObj) {
-    if (TextNodeObj.ExecuteFunction !== undefined) {
+    if (TextNodeObj.ExecuteFunction) {
         let FuncArray = TextNodeObj.ExecuteFunction;
         FuncArray.forEach(element => {
             // let Func = global.CustomScripts[element.Name];
@@ -75,8 +76,18 @@ function CustomFunctionAdapter(TextNodeObj, callback, StatusObj) {
 }
 
 function TextBoxRender(TextNodeObj, callback, StatusObj) {
-    if (TextNodeObj.TextProperty !== undefined) {
+    if (TextNodeObj.TextProperty) {
         let TextContentForApply = { TextContent: TextNodeObj.TextProperty };
+        if (typeof callback === 'function') {
+            callback(TextContentForApply);
+        }
+    }
+}
+function PlainTextRender(TextNodeObj, callback, StatusObj) {
+    if (TextNodeObj.PlainText){
+        let TextContentForApply =   {   TextContent: TextNodeObj.PlainText, 
+                                        Rollback: StatusObj.ActionType === PREV_NODE ? true : false 
+                                    };  
         if (typeof callback === 'function') {
             callback(TextContentForApply);
         }
@@ -84,20 +95,20 @@ function TextBoxRender(TextNodeObj, callback, StatusObj) {
 }
 function SelectionRender(TextNodeObj, callback, StatusObj) {
     if (typeof callback === 'function') {
-        if (TextNodeObj.Selection !== undefined) {
+        if (TextNodeObj.Selection) {
             callback(TextNodeObj.Selection);
         }
         else callback(null);
     }
 }
 
-function SoundRender(TextNodeObj, callback, StatusObj){
+function SoundRender(TextNodeObj, callback, StatusObj) {
     //现在还没有更换背景音的功能.
     if (typeof callback === 'function') {
-        if (TextNodeObj.TextProperty&&TextNodeObj.TextProperty.Voice) {
+        if (TextNodeObj.TextProperty && TextNodeObj.TextProperty.Voice) {
             let name = GetCharacterAlias(TextNodeObj.TextProperty.CharacterName);
-            let file = GetRemoteUrlPath(StatusObj.Header.VoicePath+'/'+name+'/'+TextNodeObj.TextProperty.Voice,true);
-            let Voice = {Name:name,File:file};
+            let file = GetRemoteUrlPath(StatusObj.Header.VoicePath + '/' + name + '/' + TextNodeObj.TextProperty.Voice, true);
+            let Voice = { Name: name, File: file };
             callback(Voice);
         }
         else callback();
