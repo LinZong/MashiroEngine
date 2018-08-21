@@ -1,11 +1,21 @@
 div.PlainText{
+	height: 100%;
+    width: 51.2vw;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+div#ScrollWrapper
+{
 	position: absolute;
 	top: 10vh;
-	max-width: 50vw;
+    max-width: 50vw;
+    max-height: 80vh;
 	height: 100%;
-	z-index: 1002;
 	overflow: hidden;
     left: 25vw;
     color: white;
-    font-size: 1.6em;
+    font-size: 1.6em; 
+    display: block;
+    overflow: hidden;
+    z-index: 1002
 }
