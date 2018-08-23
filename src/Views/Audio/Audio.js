@@ -19,7 +19,7 @@ class Audio extends React.Component {
 	SetAllVolume() {
 		if (this.props.BGM) {
 			let node = document.getElementById('BGM');
-			node.volume = 1//这里应该去获取设置
+			node.volume = window.electron.remote.getGlobal('SettingsNode')['SOUND_SETTING']['SettingElement']['LeftCol'][0].Value/100;//这里应该去获取设置
 			node.play();
 			this.ShowBGMChanged && this.openNotification(this.props.BGM.Name);
 			this.ShowBGMChanged = false;
@@ -32,7 +32,7 @@ class Audio extends React.Component {
 		const SetArrayVolumeAndPlay = (arr) => {
 			arr.forEach(ele => {
 				let node = document.getElementById(ele.Name);
-				node.volume = 0.9//这个也是要查设置
+				node.volume = window.electron.remote.getGlobal('SettingsNode')['SOUND_SETTING']['SettingElement']['LeftCol'][1].Value/100//这个也是要查设置
 				node.play();
 			})
 		};

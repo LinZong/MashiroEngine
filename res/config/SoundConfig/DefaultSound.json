@@ -1,0 +1,16 @@
+{
+	"SettingName": "SoundConfig",
+	"SettingElement": {
+		"LeftCol": [
+			{
+				"Name": "BGMVolume",
+				"Value": 100
+			},
+			{
+				"Name": "EffectsVolume",
+				"Value": 90
+			}
+		],
+		"RightCol": []
+	}
+}

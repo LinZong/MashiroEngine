@@ -31,6 +31,7 @@ function ExtendJson(Def, User) {
 }
 Array.prototype.top = function () { return this.length > 0 ? this[this.length - 1] : undefined };
 Array.prototype.isEmpty=function(){return this.length===0};
+Array.prototype.empty=function(){while(this.length>0)this.pop(); return this;};
 function GetCharacterAlias(CharacterName) {
 	if (!CharacterInfo) {
 		CharacterInfo = window.electron.remote.getGlobal('MyEngine').CharacterInfo;

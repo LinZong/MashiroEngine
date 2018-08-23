@@ -155,8 +155,8 @@ class GameView extends Component {
 	InitPreloadResources(PreloadResourcesObj,Rollback,NewSection) {
 		const {Scene,BGM} = this.state;
 		if(NewSection){
-			while(Scene.length>0) Scene.pop();
-			while(BGM.length>0) BGM.pop();
+			Scene.empty();
+			BGM.empty();
 		}
 		for (var key in PreloadResourcesObj) {
 			if (PreloadResourcesObj[key]) {

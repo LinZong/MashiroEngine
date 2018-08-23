@@ -45,6 +45,11 @@ class ConfigPanel extends React.Component {
 				electron.remote.getCurrentWindow().setAlwaysOnTop(Value);
 				break;		
 			}
+			case 'BGMVolume':{
+				let node = document.getElementById('BGM');
+				node&&(node.volume=Value/100);
+				break;
+			}
 		}
 		refObj.SettingElement[SelectedCol][idx].Value = Value;
 		this.setState({ Settings: refObj, Changed: true });

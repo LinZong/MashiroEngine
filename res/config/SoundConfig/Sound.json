@@ -1,0 +1,24 @@
+{
+	"SettingName": "SoundConfig",
+	"SettingOptions": {
+		"LeftCol": [
+			{
+				"Name": "BGMVolume",
+				"Title": "背景音乐音量",
+				"Type": "Slider",
+				"Min": 1,
+				"Max": 100,
+				"Description": "顾名思义，还看个啥解释"
+			},
+			{
+				"Name": "EffectsVolume",
+				"Title": "特殊效果音音量",
+				"Type": "Slider",
+				"Min": 1,
+				"Max": 100,
+				"Description": "比如什么打雷下雨啊"
+			}
+		],
+		"RightCol": []
+	}
+}

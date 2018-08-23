@@ -25,6 +25,8 @@ function LoadGlobalConfig() {
         Environment.Config = {};
         Environment.Config[IMAGE_SETTING] = {};
         Environment.Config[TEXT_SETTING] = {};
+        Environment.Config[SOUND_SETTING] = {};
+
         Environment.Config[IMAGE_SETTING].Desc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Elements);
         Environment.Config[IMAGE_SETTING].Def = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Default);
         Environment.Config[IMAGE_SETTING].User = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.User);
@@ -33,6 +35,10 @@ function LoadGlobalConfig() {
         Environment.Config[TEXT_SETTING].Desc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Elements);
         Environment.Config[TEXT_SETTING].Def = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Default);
         Environment.Config[TEXT_SETTING].User = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.User);
+
+        Environment.Config[SOUND_SETTING].Desc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Sound.Elements);
+        Environment.Config[SOUND_SETTING].Def = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Sound.Default);
+        Environment.Config[SOUND_SETTING].User = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Sound.User);
 
 
         //占坑，以后肯定是要加载全局UI 资源的(Default or usersettings)
@@ -71,7 +77,9 @@ function PathResolver(SettingType){
             break;
         }
         case SOUND_SETTING: {
-            TargetPath = ConfigPathNode.ImageConfigPath;
+            TargetPath.Desc = ConfigPathNode[SOUND_SETTING].Desc;
+            TargetPath.Default = ConfigPathNode[SOUND_SETTING].Def;
+            TargetPath.User = ConfigPathNode[SOUND_SETTING].User;
             break;
         }
         case CONTROLLER_SETTING: {

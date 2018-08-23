@@ -23,6 +23,11 @@
                     "Elements":"./TextConfig/Text.json",
                     "Default":"./TextConfig/DefaultText.json",
                     "User":"./TextConfig/UserText.json"
+                },
+                "Sound":{
+                    "Elements":"./SoundConfig/Sound.json",
+                    "Default":"./SoundConfig/DefaultSound.json",
+                    "User":"./SoundConfig/UserSound.json"
                 }
             }
         }
