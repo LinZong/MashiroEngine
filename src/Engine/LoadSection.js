@@ -1,19 +1,18 @@
 const { NEXT_NODE, PREV_NODE, SET_NODE_INDEX } = require('./Events');
 const { GetRemoteUrlPath, GetCharacterAlias } = require('../Engine/Util');
 let TextNodeIndexer = null;
-// function FindPrevNewModeTextNode(Section, EndIndexer) {
-//     while (Section.TextNodes[EndIndexer--].TextProperty.TextMode === 'append');
-//     return EndIndexer + 1;
-// }
-// function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
-//     let LastNewIndex = FindPrevNewModeTextNode(NowPlayingSection, EndIndexer);
-//     let RollbackText = "";
-//     for (var i = LastNewIndex; i <= TextNodeIndexer; ++i) {
-//         RollbackText += NowPlayingSection.TextNodes[i].TextProperty.Text;
-//     }
-//     let NewPropertyObj = { ...NowPlayingSection.TextNodes[EndIndexer].TextProperty, Text: RollbackText, TextMode: 'new' };
-//     return NewPropertyObj;
-// }
+function FindPrevPlainText(Section, EndIndexer) {
+    while (EndIndexer>=0&&Section.TextNodes[EndIndexer--].hasOwnProperty('PlainText'));
+    return EndIndexer + 1;
+}
+function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
+    let LastNewIndex = FindPrevPlainText(NowPlayingSection, EndIndexer);
+    let RollbackPlainText = new Array();
+    for (var i = LastNewIndex; i <= TextNodeIndexer; ++i) {
+        RollbackPlainText.push(NowPlayingSection.TextNodes[i].PlainText);
+    }
+    return RollbackPlainText;
+}
 var MiddleWare = [CustomFunctionAdapter, TextBoxRender, PlainTextRender, SelectionRender, SoundRender, ParseStatusFlag];
 //This callback should match the MiddleWareList correctly.
 
@@ -51,9 +50,10 @@ function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
         //     MakeRollBackProperty(NowPlayingSection, TextNodeIndexer) :
         //     NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty;
         //SectionName:NowPlayingSection.Header.SectionName,
-        let Content = NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty;
-        let CurrNode = NowPlayingSection.TextNodes[TextNodeIndexer];
-        CurrNode.TextProperty = Content;
+        let CurrNode = Object.assign({},NowPlayingSection.TextNodes[TextNodeIndexer]);
+        if(ev.type===PREV_NODE&&NowPlayingSection.TextNodes[TextNodeIndexer]['PlainText']){
+            CurrNode.PlainText = MakeRollBackProperty(NowPlayingSection, TextNodeIndexer);
+        }
         // CustomFunctionAdapter(CurrNode,MiddleWareCallback[0],StatusFlag);
         // TextBoxRender(CurrNode,MiddleWareCallback[1],StatusFlag);
         MiddleWare.map((item, idx) => ({ Func: item, Callback: MiddleWareCallback[idx] })).forEach(element => {

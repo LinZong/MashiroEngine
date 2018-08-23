@@ -1,7 +1,7 @@
 div.PlainText{
 	height: 100%;
-    width: 51.2vw;
-    overflow-y: auto;
+    width: 100%;
+    overflow-y:auto;
     overflow-x: hidden;
 }
 div#ScrollWrapper
@@ -19,3 +19,4 @@ div#ScrollWrapper
     overflow: hidden;
     z-index: 1002
 }
+::-webkit-scrollbar{width:0px}

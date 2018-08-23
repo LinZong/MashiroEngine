@@ -6,15 +6,15 @@ class PlainText extends React.Component {
 	constructor() {
 		super(...arguments);
 		this.state = {
-			TextArray: [this.props.CurrentText]
+			TextArray: typeof this.props.CurrentText === 'object' ? this.props.CurrentText : [this.props.CurrentText]
 		}
 		this.StopTyping = this.StopTyping.bind(this);
-		this.ScrollToEnd=this.ScrollToEnd.bind(this);
+		this.ScrollToEnd = this.ScrollToEnd.bind(this);
 		this.TypeSpeed = window.electron.remote.getGlobal('SettingsNode')['TEXT_SETTING']['SettingElement']['LeftCol'][0].Value;
 		this.ScrollIntervalHandle = null;
 	}
-	ScrollToEnd(){
-		this.DocumentRoot.scrollTop=this.DocumentRoot.scrollHeight;
+	ScrollToEnd() {
+		this.DocumentRoot.scrollTop = this.DocumentRoot.scrollHeight;
 	}
 	componentDidMount() {
 		this.props.GetStopTyping(this.StopTyping);
@@ -22,15 +22,21 @@ class PlainText extends React.Component {
 	}
 	componentWillReceiveProps(nextProps, nextState) {
 		if (nextProps.CurrentText !== this.props.CurrentText) {
-			let New = this.state.TextArray;
-			if (nextProps.Rollback) {
-				New.pop();
-				this.setState({ TextArray: New });
+			if (typeof nextProps.CurrentText === 'object'&&nextProps.Rollback) {
+				this.setState({ TextArray: nextProps.CurrentText });
+				//表明此时要回退
 			}
 			else {
-				New.push(nextProps.CurrentText);
-				this.setState({ TextArray: New })
-			};
+				let New = this.state.TextArray;
+				if (nextProps.Rollback) {
+					New.pop();
+					this.setState({ TextArray: New });
+				}
+				else {
+					New.push(nextProps.CurrentText);
+					this.setState({ TextArray: New })
+				};
+			}
 		}
 	}
 	StopTyping() {
@@ -45,10 +51,12 @@ class PlainText extends React.Component {
 		}
 		clearInterval(this.ScrollIntervalHandle);
 	}
+	componentDidUpdate(){
+		this.ScrollToEnd();
+	}
 	render() {
 		return (
 			<ControlFunctionContext.Consumer>
-
 				{Func =>
 					<div id="ScrollWrapper">
 						<div className="PlainText" onClick={() => this.props.MouseEventTrigger({ Mouse: true })}>
@@ -63,9 +71,9 @@ class PlainText extends React.Component {
 											showCursor={false}
 											preStringTyped={() => {
 												Func.SetTypingStatus(1)
-												this.ScrollIntervalHandle=setInterval(()=>{
+												this.ScrollIntervalHandle = setInterval(() => {
 													this.ScrollToEnd();
-												},50);
+												}, 50);
 											}}
 											onComplete={() => {
 												this.ScrollToEnd();
@@ -80,7 +88,6 @@ class PlainText extends React.Component {
 							}
 						</div>
 					</div>}
-
 			</ControlFunctionContext.Consumer>
 		);
 	}
