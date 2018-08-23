@@ -13,7 +13,7 @@ function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
     }
     return RollbackPlainText;
 }
-var MiddleWare = [CustomFunctionAdapter, TextBoxRender, PlainTextRender, SelectionRender, SoundRender, ParseStatusFlag];
+var MiddleWare = [CustomFunctionAdapter, GameViewElementRender,TextBoxRender, PlainTextRender, SelectionRender, SoundRender, ParseStatusFlag];
 //This callback should match the MiddleWareList correctly.
 
 function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
@@ -114,6 +114,17 @@ function SoundRender(TextNodeObj, callback, StatusObj) {
         else callback();
     }
 }
+
+
+function GameViewElementRender(TextNodeObj, callback, StatusObj) {
+    //现在还没有更换背景音的功能.
+    if (typeof callback === 'function') {
+        if (TextNodeObj.ChangeElement) {
+            callback(TextNodeObj.ChangeElement,StatusObj.ActionType === PREV_NODE,false);//调用那个东西去应用Scene和BGM  Character的话有了再做。
+        }
+    }
+}
+
 
 function ParseStatusFlag(TextNodeObj, callback, StatusObj) {
     if (typeof callback === 'function') {

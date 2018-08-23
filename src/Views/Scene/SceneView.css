@@ -1,7 +1,8 @@
 
-div.Scene{
+div.SceneBackground{
     box-sizing:content-box; 
     width: 100%;
+    position: absolute;
     height: -webkit-fill-available;
     /* 背景图垂直、水平均居中 */
     background-position: center center;
@@ -11,7 +12,7 @@ div.Scene{
     background-attachment: fixed;
     /* 让背景图基于容器大小伸缩 */
     background-size: cover;
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(0, 0, 0);
   }
 
 div.SelectionMask {
@@ -42,3 +43,26 @@ div.SelectionMaskOn {
     filter: alpha(opacity = 70);
 }
 
+.SceneBGFade-enter{
+    opacity: 0.01;
+  }
+  .SceneBGFade-enter.SceneBGFade-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+  }
+  .SceneBGFade-appear {
+    opacity: 0.01;
+  }
+  .SceneBGFade-appear.SceneBGFade-appear-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+  }
+  .SceneBGFade-leave {
+    opacity: 1;
+  }
+  .SceneBGFade-leave.SceneBGFade-leave-active {
+    opacity: 0.01;
+    transition: opacity 500ms ease-in;
+  }
+  
+  

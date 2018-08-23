@@ -6,7 +6,7 @@ import * as Actions from '../../Engine/actions/SectionActions'
 import * as Status from '../../Engine/Status'
 import { TextNodeInterpreter } from '../../Engine/LoadSection';
 import { Scene, TextBox, Loading, Selection, PlainText } from '../index';
-import { GetRemoteUrlPath } from '../../Engine/Util';
+import { GetRemoteUrlPath,copy} from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
 import './GameView.css';
@@ -15,8 +15,8 @@ class GameView extends Component {
 	constructor() {
 		super(...arguments);
 		this.state = {
-			Scene: null,
-			BGM: null,
+			Scene: [],
+			BGM: [],
 			SectionName: null,
 			CharacterName: null,
 			Text: null,
@@ -53,7 +53,7 @@ class GameView extends Component {
 		this.NeedNewSection = null;
 		this.NodeIndex = null;
 		//节点解析器的回调函数
-		this.MiddleWareCallbackFuncArr = [null, this.ApplyTextToView, this.ApplyPlainTextToView,this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
+		this.MiddleWareCallbackFuncArr = [null, this.InitPreloadResources,this.ApplyTextToView, this.ApplyPlainTextToView,this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
 		this.BlockKeyEvent = false;
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
@@ -152,22 +152,39 @@ class GameView extends Component {
 	ApplyCharacterVoice(VoiceProps) {
 		this.setState({ CharacterVoice: VoiceProps });
 	}
-	InitPreloadResources(PreloadResourcesObj) {
+	InitPreloadResources(PreloadResourcesObj,Rollback,NewSection) {
+		const {Scene,BGM} = this.state;
+		if(NewSection){
+			while(Scene.length>0) Scene.pop();
+			while(BGM.length>0) BGM.pop();
+		}
 		for (var key in PreloadResourcesObj) {
-			if (PreloadResourcesObj[key] !== null) {
+			if (PreloadResourcesObj[key]) {
 				switch (key) {
 					case "Scene": {
-						PreloadResourcesObj[key] = GetRemoteUrlPath(PreloadResourcesObj[key]);
+						if(Rollback&&Scene.length>1){
+							Scene.pop();
+							break;
+						}
+						Scene.push(GetRemoteUrlPath(PreloadResourcesObj[key]));
 						break;
 					}
 					case "BGM": {
-						PreloadResourcesObj[key].Path = GetRemoteUrlPath(PreloadResourcesObj[key].Path, true);
+						if(Rollback&&BGM.length>1){
+							BGM.pop();
+							break;
+						}
+						//ApplyObj[key].Path = GetRemoteUrlPath(PreloadResourcesObj[key].Path, true);
+						let BGMObj = copy(PreloadResourcesObj[key],{});//进行深复制
+						BGMObj.Path = GetRemoteUrlPath(BGMObj.Path, true);
+						BGM.push(BGMObj);
 						break;
 					}
 				}
 			}
+			
 		}
-		this.setState(PreloadResourcesObj);
+		this.setState({Scene,BGM});
 	}
 	BlockKeyEventInAnimation(event) {
 		this.BlockKeyEvent = event;
@@ -237,14 +254,14 @@ class GameView extends Component {
 				case 'new': {
 					let InitIndex = this.props.Section ? 0 :
 						safetouch(this.props.location.state)().TextNodeBegin;
-					this.InitPreloadResources(nextProps.Section.PreloadResources);
+					this.InitPreloadResources(nextProps.Section.PreloadResources,false,true);
 					TextNodeInterpreter(nextProps.Section,
 						Actions.SetNodeIndex(InitIndex),
 						this.MiddleWareCallbackFuncArr);
 					break;
 				}
 				case 'save': {
-					this.InitPreloadResources(nextProps.Section.PreloadResources);
+					this.InitPreloadResources(nextProps.Section.PreloadResources,false,true);
 					let InitIndex = this.props.location.state.SaveInfo.NodeIndex;
 					this.props.location.state.SaveInfo = undefined;//读过一次就删掉了
 					TextNodeInterpreter(nextProps.Section,
@@ -295,10 +312,10 @@ class GameView extends Component {
 						(() => {
 							switch (this.props.GameViewStatus) {
 								case Status.SUCCESS: {
-									ReactDOM.render(<Audio BGM={this.state.BGM} Character={this.state.CharacterVoice} onEnd={this.VoiceEnd} />, document.getElementById('music'));
+									ReactDOM.render(<Audio BGM={this.state.BGM.top()} Character={this.state.CharacterVoice} onEnd={this.VoiceEnd} />, document.getElementById('music'));
 									this.BlockKeyEventInAnimation(this.state.IsInSelection);
 									return (
-										<Scene key={2} BG={this.state.Scene} EnableMask={this.state.IsInSelection || this.state.IsPlainText} onClick={this.ToggleTextBoxVisible}>
+										<Scene key={2} BG={this.state.Scene.top()} EnableMask={this.state.IsInSelection || this.state.IsPlainText} onClick={this.ToggleTextBoxVisible}>
 											{
 												this.state.IsPlainText ?
 													<PlainText

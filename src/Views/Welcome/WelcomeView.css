@@ -1,6 +1,5 @@
 aside.welcomemenu{
-    
-    width: 300px;
+    width: 20vw;
     top: 28vh;
     position:absolute;
     display: block;
@@ -8,14 +7,13 @@ aside.welcomemenu{
     left: 4vw;
     overflow: hidden;
     font-family: Microsoft Yahei;
-    height: 450px;
+    height: 60vh;
     margin-top: 20px auto;
     z-index: 1
 }
 
 .nav_ul{
     height: 100%;
-    width: 320px;
     overflow-y: auto;
     overflow-x: hidden;
 }
