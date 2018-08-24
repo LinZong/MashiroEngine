@@ -1,5 +1,6 @@
 import React from 'react';
 import { notification } from 'antd';
+const {GetSettingValue}=require('../../Engine/LoadConfig');
 class Audio extends React.Component {
 	constructor() {
 		super(...arguments);
@@ -19,7 +20,7 @@ class Audio extends React.Component {
 	SetAllVolume() {
 		if (this.props.BGM) {
 			let node = document.getElementById('BGM');
-			node.volume = window.electron.remote.getGlobal('SettingsNode')['SOUND_SETTING']['SettingElement']['LeftCol'][0].Value/100;//这里应该去获取设置
+			node.volume = GetSettingValue('BGMVolume')/100;
 			node.play();
 			this.ShowBGMChanged && this.openNotification(this.props.BGM.Name);
 			this.ShowBGMChanged = false;
@@ -32,7 +33,7 @@ class Audio extends React.Component {
 		const SetArrayVolumeAndPlay = (arr) => {
 			arr.forEach(ele => {
 				let node = document.getElementById(ele.Name);
-				node.volume = window.electron.remote.getGlobal('SettingsNode')['SOUND_SETTING']['SettingElement']['LeftCol'][1].Value/100//这个也是要查设置
+				node.volume = GetSettingValue('EffectsVolume')/100;
 				node.play();
 			})
 		};
@@ -45,6 +46,9 @@ class Audio extends React.Component {
 		if (nextProps.BGM !== this.props.BGM) {
 			this.ShowBGMChanged = true;
 		}
+	}
+	shouldComponentUpdate(nextProps,nextState){
+		return this.props.BGM!==nextProps.BGM||this.props.Character!==nextProps.Character;
 	}
 	componentDidUpdate() {
 		this.SetAllVolume();
@@ -60,7 +64,7 @@ class Audio extends React.Component {
 				}
 				{
 					this.props.Character ?
-						<audio key={1} id="CharacterVoice" src={this.props.Character.File} autoPlay={false} onEnded={() => this.props.onEnded && this.props.onEnded(it.Name)} />
+						<audio key={1} id="CharacterVoice" src={this.props.Character.File} autoPlay={false} onEnded={() => this.props.onEnded && this.props.onEnded(this.props.Character.File)} />
 						: null
 				}
 				{

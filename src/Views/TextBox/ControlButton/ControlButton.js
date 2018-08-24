@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { Button, Tooltip, Popover,message} from 'antd';
@@ -77,7 +78,10 @@ class ControlButtion extends React.Component {
 								<Tooltip title="回到上一个小节"><Button icon='fast-backward large' onClick={()=>Func.GetPrevSection(true)}/></Tooltip>
 								<Tooltip title="上一句文本"><Button icon='step-backward large' onClick={()=>Func.GetNewTextNode(-1)}/></Tooltip>
 								<Tooltip title="Backlog"><Button icon='caret-left large' /></Tooltip>
-								<Tooltip title="Auto-Mode"><Button icon='caret-right large' /></Tooltip>
+								<Tooltip title={classNames('AutoMode',{'On':this.props.AutoMode,'Off':!this.props.AutoMode})}>
+									<Button icon={classNames({'caret-right':this.props.AutoMode,'right':!this.props.AutoMode},'large')} 
+											onClick={()=>Func.SetAutoModeStatus(!this.props.AutoMode)}/>
+								</Tooltip>
 								<Tooltip title="下一句文本"><Button icon='step-forward large' onClick={()=>Func.GetNewTextNode(1)}/></Tooltip>
 								<Tooltip title="下一小节"><Button icon='fast-forward large' onClick={()=>Func.GetNextSection(true)}/></Tooltip>
 								<Tooltip title="下个选择肢"><Button icon='forward large' /></Tooltip>

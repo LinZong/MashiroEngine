@@ -120,4 +120,27 @@ function SaveUserConfig(SettingType,ConfigObj){
     });
     return deferrer.promise;
 }
-module.exports = { LoadGlobalConfig, LoadUserConfig,SaveUserConfig };
+
+function GetSettingValue(SettingName,NewValue){
+    let Config =  window.electron.remote.getGlobal('SettingsNode');
+    if(Config){
+        for(let name in Config){
+            let element = Config[name].SettingElement;
+            for(let key in element){
+                for(let i=0;i<element[key].length;++i){
+                    if(element[key][i].Name===SettingName){
+                        if(NewValue){
+                            let PrevValue = element[key][i].Value;
+                            element[key][i].Value = NewValue;
+                            return PrevValue;
+                        }
+                        return element[key][i].Value;
+                    }
+                }
+            }
+        }
+    }
+    return undefined;
+}
+
+module.exports = { LoadGlobalConfig, LoadUserConfig,SaveUserConfig ,GetSettingValue};

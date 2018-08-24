@@ -6,10 +6,11 @@ import * as Actions from '../../Engine/actions/SectionActions'
 import * as Status from '../../Engine/Status'
 import { TextNodeInterpreter } from '../../Engine/LoadSection';
 import { Scene, TextBox, Loading, Selection, PlainText } from '../index';
-import { GetRemoteUrlPath,copy} from '../../Engine/Util';
+import { GetRemoteUrlPath,copy } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
 import './GameView.css';
+const {GetSettingValue} = require('../../Engine/LoadConfig');
 var ControlFunctionContext = React.createContext();
 class GameView extends Component {
 	constructor() {
@@ -25,7 +26,8 @@ class GameView extends Component {
 			IsInSelection: false,
 			IsPlainText: false,
 			IsPlainTextRollback: false,
-			TextBoxVisible: true
+			TextBoxVisible: true,
+			AutoMode:false
 		};
 		//游戏画面控制函数
 		this.ChangeNode = this.ChangeNode.bind(this);
@@ -50,11 +52,13 @@ class GameView extends Component {
 		this.VoiceEnd = this.VoiceEnd.bind(this);
 		this.TextEnd = this.TextEnd.bind(this);
 		//当前节点状态;
+		this.TextEndTimeOut = null;
 		this.NeedNewSection = null;
 		this.NodeIndex = null;
 		//节点解析器的回调函数
 		this.MiddleWareCallbackFuncArr = [null, this.InitPreloadResources,this.ApplyTextToView, this.ApplyPlainTextToView,this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
 		this.BlockKeyEvent = false;
+		this.AutoModeNextNodeDelay = GetSettingValue('AutoModeNextNodeDelay');
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
 		//The New Context API is excited!
@@ -66,6 +70,9 @@ class GameView extends Component {
 			SetTextBoxVisible: this.SetTextBoxVisible,
 			SetTypingStatus: this.GetTypingStatus,
 			GetNewTextNode: this.GetNewTextNode,
+			VoiceEnd:this.VoiceEnd,
+			TextEnd:this.TextEnd,
+			SetAutoModeStatus:(AutoModeBoolean)=>this.setState({AutoMode:AutoModeBoolean}),
 			GetNextSection: (skip) => { this.props.match.params.load = 'next'; this.props.onLoadNextSection(skip) },
 			GetPrevSection: (skip) => { this.props.match.params.load = 'next'; this.props.onLoadPrevSection(skip) }
 		};
@@ -84,6 +91,7 @@ class GameView extends Component {
 			this.TypingController.Stopper();
 			return;
 		}
+		this.TextEndTimeOut&&clearTimeout(this.TextEndTimeOut)&&(this.TextEndTimeOut=null);
 		if (event.Mouse) {
 			this.GetNewTextNode(1);
 		}
@@ -261,7 +269,6 @@ class GameView extends Component {
 					break;
 				}
 				case 'save': {
-					this.InitPreloadResources(nextProps.Section.PreloadResources,false,true);
 					let InitIndex = this.props.location.state.SaveInfo.NodeIndex;
 					this.props.location.state.SaveInfo = undefined;//读过一次就删掉了
 					TextNodeInterpreter(nextProps.Section,
@@ -293,7 +300,9 @@ class GameView extends Component {
 		console.log(type, '播放完了');
 	}
 	TextEnd() {
-
+		if(this.state.AutoMode){
+			this.TextEndTimeOut = setTimeout(()=>this.GetNewTextNode(1),this.AutoModeNextNodeDelay);
+		}
 	}
 	/*
 	 * 从GameView跳到存档界面的时候肯定是要保存先前状态的，这个时候存档机只需要读已经被snapshot的当前状态，写进文件就OK。
@@ -334,6 +343,7 @@ class GameView extends Component {
 															MouseEventTrigger={this.ChangeNode}
 															visible={this.state.TextBoxVisible}
 															GetStopTyping={this.SetStopTypingController}
+															AutoMode={this.state.AutoMode}
 														/>
 											}
 
@@ -372,7 +382,6 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(Actions.GetSelectedSection(Chapter, Branch, Section));
 		},
 		onLoadNextSection: (SkipLoading) => {
-			console.log(this);
 			dispatch(Actions.GetNextSection(SkipLoading));
 		},
 		onLoadPrevSection: (SkipLoading) => {

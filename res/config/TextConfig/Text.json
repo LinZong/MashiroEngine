@@ -28,6 +28,13 @@
 				]
 			},
 			{
+				"Name":"AutoModeNextNodeDelay",
+				"Title":"自动模式文本切换延迟(ms)",
+				"Type":"Slider",
+				"Min":0,
+				"Max":100000
+			},
+			{
 				"Name":"SkipModeAfterSelection",
 				"Title":"选择选项后Skip模式状态",
 				"Type":"RadioGroup",

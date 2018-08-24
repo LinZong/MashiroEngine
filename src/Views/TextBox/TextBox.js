@@ -26,7 +26,7 @@ class TextBox extends Component {
         document.getElementById("Text").innerText = this.props.TextContent;
     }
     shouldComponentUpdate(nextProps,nextState){
-        return nextProps.TextContent!==this.props.TextContent||nextProps.visible!==this.props.visible;
+        return nextProps.TextContent!==this.props.TextContent||nextProps.visible!==this.props.visible||nextProps.AutoMode!==this.props.AutoMode;
     }
     render() {
         return (
@@ -40,14 +40,15 @@ class TextBox extends Component {
                                 typeSpeed={this.TypeSpeed}
                                 showCursor={false}
                                 preStringTyped={() => Func.SetTypingStatus(1)}
-                                onComplete={() => Func.SetTypingStatus(0)}
-                                onDestroy={() => Func.SetTypingStatus(0)}>
+                                onComplete={() => {Func.SetTypingStatus(0);Func.TextEnd();}}
+                                onDestroy={() => {Func.SetTypingStatus(0);}}>
                                 <p className="TextBox-intro" id="Text" />
                             </Typed>
                         )}
 
                     </ControlFunctionContext.Consumer>
-                    <ControlButton setVisible={this.props.setVisible} />
+                    <ControlButton setVisible={this.props.setVisible} 
+                                    AutoMode={this.props.AutoMode}/>
                 </Card>
             </div>
         );
