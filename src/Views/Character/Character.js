@@ -10,7 +10,9 @@ class Character extends React.Component {
 		this.state={EnterTransition:false};
 	}
 	componentWillReceiveProps(nextProps){
-		this.setState({EnterTransition:(nextProps.CharacterList.length!==0&&this.props.CharacterList.length===0)});
+		if(nextProps.CharacterList&&this.props.CharacterList){
+			this.setState({EnterTransition:(nextProps.CharacterList.length!==0&&this.props.CharacterList.length===0)});
+		}
 	}
 	render() {
 		return (

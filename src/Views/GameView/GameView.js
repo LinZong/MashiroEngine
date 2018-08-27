@@ -50,7 +50,7 @@ class GameView extends Component {
 		this.VoiceEnd = this.VoiceEnd.bind(this);
 		this.TextEnd = this.TextEnd.bind(this);
 		//当前节点状态;
-		this.TextEndTimeOut = null;
+		this.AutoModeCancelation = null;
 		this.NeedNewSection = null;
 		this.NodeIndex = null;
 		//节点解析器的回调函数
@@ -89,7 +89,7 @@ class GameView extends Component {
 			this.TypingController.Stopper();
 			return;
 		}
-		this.TextEndTimeOut&&clearTimeout(this.TextEndTimeOut)&&(this.TextEndTimeOut=null);
+		this.AutoModeCancelation&&clearTimeout(this.AutoModeCancelation)&&(this.AutoModeCancelation=null);
 		if (event.Mouse) {
 			this.GetNewTextNode(1);
 		}
@@ -264,6 +264,7 @@ class GameView extends Component {
 		if (nextProps.Section && nextProps.GameViewStatus === Status.SUCCESS) { //检查现在应不应该把新资源应用上去。
 			if (nextProps.Section === this.props.Section && !safetouch(this.props.location.state).SaveInfo()) return;
 			let LoadType = this.props.match.params.load;
+			clearTimeout(this.AutoModeCancelation);
 			switch (LoadType) {
 				case 'next':
 				case 'new': {
@@ -308,7 +309,7 @@ class GameView extends Component {
 	}
 	TextEnd() {
 		if(this.state.AutoMode){
-			this.TextEndTimeOut = setTimeout(()=>this.GetNewTextNode(1),this.AutoModeNextNodeDelay);
+			this.AutoModeCancelation = setTimeout(()=>this.GetNewTextNode(1),this.AutoModeNextNodeDelay);
 		}
 	}
 	/*
