@@ -5,7 +5,7 @@ import TransitionGroup from 'react-addons-css-transition-group';
 import * as Actions from '../../Engine/actions/SectionActions'
 import * as Status from '../../Engine/Status'
 import { TextNodeInterpreter } from '../../Engine/LoadSection';
-import { Scene, TextBox, Loading, Selection, PlainText } from '../index';
+import { Scene, TextBox, Loading, Selection, PlainText,Character } from '../index';
 import { GetRemoteUrlPath,copy } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
@@ -18,8 +18,7 @@ class GameView extends Component {
 		this.state = {
 			Scene: [],
 			BGM: [],
-			SectionName: null,
-			CharacterName: null,
+			Character:[],
 			Text: null,
 			CharacterVoice: null,
 			SelectionArray: null,
@@ -38,7 +37,6 @@ class GameView extends Component {
 		this.GetStatusFlag = this.GetStatusFlag.bind(this);
 		this.GetTypingStatus = this.GetTypingStatus.bind(this);
 		this.SetStopTypingController = this.SetStopTypingController.bind(this);
-
 
 		this.ApplySelectionToView = this.ApplySelectionToView.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
@@ -161,10 +159,11 @@ class GameView extends Component {
 		this.setState({ CharacterVoice: VoiceProps });
 	}
 	InitPreloadResources(PreloadResourcesObj,Rollback,NewSection) {
-		const {Scene,BGM} = this.state;
+		const {Scene,BGM,Character} = this.state;
 		if(NewSection){
 			Scene.empty();
 			BGM.empty();
+			Character.empty();
 		}
 		for (var key in PreloadResourcesObj) {
 			if (PreloadResourcesObj[key]) {
@@ -182,10 +181,18 @@ class GameView extends Component {
 							BGM.pop();
 							break;
 						}
-						//ApplyObj[key].Path = GetRemoteUrlPath(PreloadResourcesObj[key].Path, true);
 						let BGMObj = copy(PreloadResourcesObj[key],{});//进行深复制
 						BGMObj.Path = GetRemoteUrlPath(BGMObj.Path, true);
 						BGM.push(BGMObj);
+						break;
+					}
+					case "Character": {
+						if(Rollback&&Character.length>1){
+							Character.pop();
+							break;
+						}
+						let CharacterObj = Array.from(PreloadResourcesObj[key],(ele)=>({...ele,Path:GetRemoteUrlPath(ele.Path)}));//进行数组深复制
+						Character.push(CharacterObj);
 						break;
 					}
 				}
@@ -326,6 +333,10 @@ class GameView extends Component {
 									return (
 										<Scene key={2} BG={this.state.Scene.top()} EnableMask={this.state.IsInSelection || this.state.IsPlainText} onClick={this.ToggleTextBoxVisible}>
 											{
+												//这里放Character
+												<Character CharacterList={this.state.Character.top()} />
+											}
+											{
 												this.state.IsPlainText ?
 													<PlainText
 														CurrentText={this.state.Text}
@@ -346,7 +357,6 @@ class GameView extends Component {
 															AutoMode={this.state.AutoMode}
 														/>
 											}
-
 
 										</Scene>);
 								}

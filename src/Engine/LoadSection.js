@@ -2,7 +2,7 @@ const { NEXT_NODE, PREV_NODE, SET_NODE_INDEX } = require('./Events');
 const { GetRemoteUrlPath, GetCharacterAlias } = require('../Engine/Util');
 let TextNodeIndexer = null;
 function FindPrevPlainText(Section, EndIndexer) {
-    while (EndIndexer>=0&&Section.TextNodes[EndIndexer--].hasOwnProperty('PlainText'));
+    while (EndIndexer >= 0 && Section.TextNodes[EndIndexer--].hasOwnProperty('PlainText'));
     return EndIndexer + 1;
 }
 function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
@@ -13,7 +13,7 @@ function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
     }
     return RollbackPlainText;
 }
-var MiddleWare = [CustomFunctionAdapter, GameViewElementRender,TextBoxRender, PlainTextRender, SelectionRender, SoundRender, ParseStatusFlag];
+var MiddleWare = [CustomFunctionAdapter, GameViewElementRender, TextBoxRender, PlainTextRender, SelectionRender, SoundRender, ParseStatusFlag];
 //This callback should match the MiddleWareList correctly.
 
 function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
@@ -46,13 +46,16 @@ function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
         StatusFlag = 1;
     }
     if (0 <= TextNodeIndexer && TextNodeIndexer < NowPlayingSection.TextNodes.length) {
-        // let Content = ev.type === PREV_NODE || (ev.type === SET_NODE_INDEX && NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty.TextMode === 'append') ?
-        //     MakeRollBackProperty(NowPlayingSection, TextNodeIndexer) :
-        //     NowPlayingSection.TextNodes[TextNodeIndexer].TextProperty;
-        //SectionName:NowPlayingSection.Header.SectionName,
-        let CurrNode = Object.assign({},NowPlayingSection.TextNodes[TextNodeIndexer]);
-        if(ev.type===PREV_NODE&&NowPlayingSection.TextNodes[TextNodeIndexer]['PlainText']){
-            CurrNode.PlainText = MakeRollBackProperty(NowPlayingSection, TextNodeIndexer);
+        let CurrNode = Object.assign({}, NowPlayingSection.TextNodes[TextNodeIndexer]);
+        CurrNode.ForceRollback = false;
+        if (ev.type === PREV_NODE) {
+            if (NowPlayingSection.TextNodes[TextNodeIndexer]['PlainText']) {
+                CurrNode.PlainText = MakeRollBackProperty(NowPlayingSection, TextNodeIndexer);
+            }
+            if (NowPlayingSection.TextNodes[TextNodeIndexer + 1]['ChangeElement']) {
+                CurrNode.ForceRollback = true;
+                CurrNode.ChangeElement = Object.assign({}, NowPlayingSection.TextNodes[TextNodeIndexer + 1]['ChangeElement']);
+            }
         }
         // CustomFunctionAdapter(CurrNode,MiddleWareCallback[0],StatusFlag);
         // TextBoxRender(CurrNode,MiddleWareCallback[1],StatusFlag);
@@ -84,10 +87,11 @@ function TextBoxRender(TextNodeObj, callback, StatusObj) {
     }
 }
 function PlainTextRender(TextNodeObj, callback, StatusObj) {
-    if (TextNodeObj.PlainText){
-        let TextContentForApply =   {   TextContent: TextNodeObj.PlainText, 
-                                        Rollback: StatusObj.ActionType === PREV_NODE ? true : false 
-                                    };  
+    if (TextNodeObj.PlainText) {
+        let TextContentForApply = {
+            TextContent: TextNodeObj.PlainText,
+            Rollback: StatusObj.ActionType === PREV_NODE ? true : false
+        };
         if (typeof callback === 'function') {
             callback(TextContentForApply);
         }
@@ -119,8 +123,11 @@ function SoundRender(TextNodeObj, callback, StatusObj) {
 function GameViewElementRender(TextNodeObj, callback, StatusObj) {
     //现在还没有更换背景音的功能.
     if (typeof callback === 'function') {
-        if (TextNodeObj.ChangeElement) {
-            callback(TextNodeObj.ChangeElement,StatusObj.ActionType === PREV_NODE,false);//调用那个东西去应用Scene和BGM  Character的话有了再做。
+        if (TextNodeObj.ChangeElement&&StatusObj.ActionType===PREV_NODE&&!TextNodeObj.ForceRollback) {
+            return ;
+        }
+        else if(TextNodeObj.ChangeElement||(StatusObj.ActionType===PREV_NODE&&TextNodeObj.ForceRollback)){
+            callback(TextNodeObj.ChangeElement, TextNodeObj.ForceRollback, false);
         }
     }
 }

@@ -1,0 +1,31 @@
+.CharacterFade-enter{
+	opacity: 0.01;
+  }
+  .CharacterFade-enter.CharacterFade-enter-active {
+	opacity: 1;
+	transition: opacity 400ms linear;
+  }
+  .CharacterFade-appear {
+	opacity: 0.01;
+  }
+  .CharacterFade-appear.CharacterFade-appear-active {
+	opacity: 1;
+	transition: opacity 400ms linear;
+  }
+  .CharacterFade-leave {
+	opacity: 1;
+  }
+  .CharacterFade-leave.CharacterFade-leave-active {
+	opacity: 0.01;
+	transition: opacity 400ms linear;
+  }
+  
+  
+  div.CharacterImage{
+    box-sizing:content-box; 
+    width: 100%;
+    height: -webkit-fill-available;
+    background-position: center center;
+    background-repeat: no-repeat;
+    position: absolute;
+  }

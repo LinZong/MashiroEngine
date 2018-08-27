@@ -8,4 +8,5 @@ import Selection from './Selection/Selection';
 import SaveDataView from './SaveData/SaveDataView';
 import PlainText from './PlainText/PlainText';
 import WelcomeView from './Welcome/WelcomeView';
-export { GameView, AllChapterView, Scene, TextBox, Loading, Settings, WelcomeView, PlainText,SaveDataView,Selection };
+import Character from './Character/Character';
+export { GameView, AllChapterView, Scene, TextBox, Loading, Settings, WelcomeView, PlainText,SaveDataView,Selection ,Character};
