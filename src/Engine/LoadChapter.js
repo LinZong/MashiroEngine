@@ -12,8 +12,7 @@ function LoadAllChapters(ChapterDir) {
         ChapterList = ChapterList.sort((a, b) => a.Name > b.Name);
         return ChapterList;
     } catch (error) {
-        console.log("Cannot load all chapters.");
-        console.log(error);
+        console.log("Cannot load all chapters.",error);
     }
 }
 function LoadChapterRes(Path, Branch) {

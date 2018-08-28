@@ -5,12 +5,12 @@ import TransitionGroup from 'react-addons-css-transition-group';
 import * as Actions from '../../Engine/actions/SectionActions'
 import * as Status from '../../Engine/Status'
 import { TextNodeInterpreter } from '../../Engine/LoadSection';
-import { Scene, TextBox, Loading, Selection, PlainText,Character } from '../index';
-import { GetRemoteUrlPath,copy } from '../../Engine/Util';
+import { Scene, TextBox, Loading, Selection,Backlog, PlainText, Character } from '../index';
+import { GetRemoteUrlPath, copy } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
 import './GameView.css';
-const {GetSettingValue} = require('../../Engine/LoadConfig');
+const { GetSettingValue } = require('../../Engine/LoadConfig');
 var ControlFunctionContext = React.createContext();
 class GameView extends Component {
 	constructor() {
@@ -18,22 +18,21 @@ class GameView extends Component {
 		this.state = {
 			Scene: [],
 			BGM: [],
-			Character:[],
+			Character: [],
 			Text: null,
 			CharacterVoice: null,
 			SelectionArray: null,
-			IsInSelection: false,
-			IsPlainText: false,
+			NowMode: '',
 			IsPlainTextRollback: false,
 			TextBoxVisible: true,
-			AutoMode:false
+			AutoMode: false
 		};
 		//游戏画面控制函数
 		this.ChangeNode = this.ChangeNode.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
 		this.GetNewTextNode = this.GetNewTextNode.bind(this);
 		this.InitPreloadResources = this.InitPreloadResources.bind(this);
-		this.BlockKeyEventInAnimation = this.BlockKeyEventInAnimation.bind(this);
+		this.BlockKeyEvent = this.BlockKeyEvent.bind(this);
 		this.GetStatusFlag = this.GetStatusFlag.bind(this);
 		this.GetTypingStatus = this.GetTypingStatus.bind(this);
 		this.SetStopTypingController = this.SetStopTypingController.bind(this);
@@ -41,7 +40,7 @@ class GameView extends Component {
 		this.ApplySelectionToView = this.ApplySelectionToView.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
 		this.ApplyCharacterVoice = this.ApplyCharacterVoice.bind(this);
-		this.ApplyPlainTextToView=this.ApplyPlainTextToView.bind(this);
+		this.ApplyPlainTextToView = this.ApplyPlainTextToView.bind(this);
 
 		this.SaveState = this.SaveState.bind(this);
 		this.ToggleTextBoxVisible = this.ToggleTextBoxVisible.bind(this);
@@ -54,8 +53,8 @@ class GameView extends Component {
 		this.NeedNewSection = null;
 		this.NodeIndex = null;
 		//节点解析器的回调函数
-		this.MiddleWareCallbackFuncArr = [null, this.InitPreloadResources,this.ApplyTextToView, this.ApplyPlainTextToView,this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
-		this.BlockKeyEvent = false;
+		this.MiddleWareCallbackFuncArr = [null, this.InitPreloadResources, this.ApplyTextToView, this.ApplyPlainTextToView, this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
+		this.IsBlockKey = false;
 		this.AutoModeNextNodeDelay = GetSettingValue('AutoModeNextNodeDelay');
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
@@ -67,10 +66,10 @@ class GameView extends Component {
 			LoadSaveData: this.LoadSaveData,//这个是给Q.Load用的
 			SetTextBoxVisible: this.SetTextBoxVisible,
 			SetTypingStatus: this.GetTypingStatus,
-			GetNewTextNode: this.GetNewTextNode,
-			VoiceEnd:this.VoiceEnd,
-			TextEnd:this.TextEnd,
-			SetAutoModeStatus:(AutoModeBoolean)=>this.setState({AutoMode:AutoModeBoolean}),
+			VoiceEnd: this.VoiceEnd,
+			TextEnd: this.TextEnd,
+			OpenBacklog: () => { this.setState({ NowMode: 'backlog' }) },
+			SetAutoModeStatus: (AutoModeBoolean) => this.setState({ AutoMode: AutoModeBoolean }),
 			GetNextSection: (skip) => { this.props.match.params.load = 'next'; this.props.onLoadNextSection(skip) },
 			GetPrevSection: (skip) => { this.props.match.params.load = 'next'; this.props.onLoadPrevSection(skip) }
 		};
@@ -84,12 +83,12 @@ class GameView extends Component {
 		this.NodeIndex = StatusObj.Index;
 	}
 	ChangeNode(event) {
-		if (this.BlockKeyEvent === true) return;
+		if (this.IsBlockKey) return;
 		else if (this.TypingController.IsTyping === 1) {
 			this.TypingController.Stopper();
 			return;
 		}
-		this.AutoModeCancelation&&clearTimeout(this.AutoModeCancelation)&&(this.AutoModeCancelation=null);
+		this.AutoModeCancelation && clearTimeout(this.AutoModeCancelation) && (this.AutoModeCancelation = null);
 		if (event.Mouse) {
 			this.GetNewTextNode(1);
 		}
@@ -104,6 +103,11 @@ class GameView extends Component {
 				case 37:
 				case 38: {
 					this.GetNewTextNode(-1);
+					break;
+				}
+				case 27: {//这个是用来退出特定模式
+					if(this.state.NowMode==='backlog')
+						this.setState({ NowMode: 'text' });
 					break;
 				}
 				default: break;
@@ -132,7 +136,7 @@ class GameView extends Component {
 	ApplyTextToView(NodeProps) {
 		let NextTextContent = NodeProps.TextContent;
 		//if (NextTextContent.TextMode === 'new') {
-		this.setState({ ...NextTextContent, IsPlainText: false });
+		this.setState({ ...NextTextContent, NowMode: 'text' });
 		// } else if (NextTextContent.TextMode === 'append') {
 		// 	this.setState({ ...NextTextContent, Text: this.state.Text + NextTextContent.Text });
 		// }
@@ -141,26 +145,26 @@ class GameView extends Component {
 		this.setState({
 			Text: NodeProps.TextContent,
 			IsPlainTextRollback: NodeProps.Rollback,
-			IsPlainText: true
+			NowMode: 'plaintext'
 		})
 	}
 	ApplySelectionToView(NodeProps) {
 		if (NodeProps === null) {
 			if (this.state.IsInSelection !== false) {
-				this.setState({ IsInSelection: false, SelectionArray: null });
+				this.setState({ SelectionArray: null });
 			}
 			else return;
 		}
 		else {
-			this.setState({ SelectionArray: NodeProps, IsInSelection: true });
+			this.setState({ SelectionArray: NodeProps, NowMode: 'selection' });
 		}
 	}
 	ApplyCharacterVoice(VoiceProps) {
 		this.setState({ CharacterVoice: VoiceProps });
 	}
-	InitPreloadResources(PreloadResourcesObj,Rollback,NewSection) {
-		const {Scene,BGM,Character} = this.state;
-		if(NewSection){
+	InitPreloadResources(PreloadResourcesObj, Rollback, NewSection) {
+		const { Scene, BGM, Character } = this.state;
+		if (NewSection) {
 			Scene.empty();
 			BGM.empty();
 			Character.empty();
@@ -169,7 +173,7 @@ class GameView extends Component {
 			if (PreloadResourcesObj[key]) {
 				switch (key) {
 					case "Scene": {
-						if(Rollback&&Scene.length>1){
+						if (Rollback && Scene.length > 1) {
 							Scene.pop();
 							break;
 						}
@@ -177,32 +181,32 @@ class GameView extends Component {
 						break;
 					}
 					case "BGM": {
-						if(Rollback&&BGM.length>1){
+						if (Rollback && BGM.length > 1) {
 							BGM.pop();
 							break;
 						}
-						let BGMObj = copy(PreloadResourcesObj[key],{});//进行深复制
+						let BGMObj = copy(PreloadResourcesObj[key], {});//进行深复制
 						BGMObj.Path = GetRemoteUrlPath(BGMObj.Path, true);
 						BGM.push(BGMObj);
 						break;
 					}
 					case "Character": {
-						if(Rollback&&Character.length>1){
+						if (Rollback && Character.length > 1) {
 							Character.pop();
 							break;
 						}
-						let CharacterObj = Array.from(PreloadResourcesObj[key],(ele)=>({...ele,Path:GetRemoteUrlPath(ele.Path)}));//进行数组深复制
+						let CharacterObj = Array.from(PreloadResourcesObj[key], (ele) => ({ ...ele, Path: GetRemoteUrlPath(ele.Path) }));//进行数组深复制
 						Character.push(CharacterObj);
 						break;
 					}
 				}
 			}
-			
+
 		}
-		this.setState({Scene,BGM});
+		this.setState({ Scene, BGM });
 	}
-	BlockKeyEventInAnimation(event) {
-		this.BlockKeyEvent = event;
+	BlockKeyEvent(event) {
+		this.IsBlockKey = event;
 	}
 	GetTypingStatus(StatusCode) {
 		//1是正在执行打字机效果，0是执行完成
@@ -264,13 +268,13 @@ class GameView extends Component {
 		if (nextProps.Section && nextProps.GameViewStatus === Status.SUCCESS) { //检查现在应不应该把新资源应用上去。
 			if (nextProps.Section === this.props.Section && !safetouch(this.props.location.state).SaveInfo()) return;
 			let LoadType = this.props.match.params.load;
-			clearTimeout(this.AutoModeCancelation);
+			clearTimeout(this.AutoModeCancelation);//去除上个section遗留的自动模式计时器
 			switch (LoadType) {
 				case 'next':
 				case 'new': {
 					let InitIndex = this.props.Section ? 0 :
 						safetouch(this.props.location.state)().TextNodeBegin;
-					this.InitPreloadResources(nextProps.Section.PreloadResources,false,true);
+					this.InitPreloadResources(nextProps.Section.PreloadResources, false, true);
 					TextNodeInterpreter(nextProps.Section,
 						Actions.SetNodeIndex(InitIndex),
 						this.MiddleWareCallbackFuncArr);
@@ -308,8 +312,8 @@ class GameView extends Component {
 		console.log(type, '播放完了');
 	}
 	TextEnd() {
-		if(this.state.AutoMode){
-			this.AutoModeCancelation = setTimeout(()=>this.GetNewTextNode(1),this.AutoModeNextNodeDelay);
+		if (this.state.AutoMode) {
+			this.AutoModeCancelation = setTimeout(() => this.GetNewTextNode(1), this.AutoModeNextNodeDelay);
 		}
 	}
 	/*
@@ -330,43 +334,51 @@ class GameView extends Component {
 							switch (this.props.GameViewStatus) {
 								case Status.SUCCESS: {
 									ReactDOM.render(<Audio BGM={this.state.BGM.top()} Character={this.state.CharacterVoice} onEnd={this.VoiceEnd} />, document.getElementById('music'));
-									this.BlockKeyEventInAnimation(this.state.IsInSelection);
+									this.BlockKeyEvent(this.state.NowMode === 'selection' || !this.state.TextBoxVisible);
 									return (
-										<Scene key={2} BG={this.state.Scene.top()} EnableMask={this.state.IsInSelection || this.state.IsPlainText} onClick={this.ToggleTextBoxVisible}>
+										<Scene key={2} BG={this.state.Scene.top()} EnableMask={this.state.NowMode !== 'text'} onClick={this.ToggleTextBoxVisible}>
 											{
 												//这里放Character
-												<Character CharacterList={this.state.Character.top()} />
-											}
+												<Character CharacterList={this.state.Character.top()} />}
 											{
-												this.state.IsPlainText ?
-													<PlainText
-														CurrentText={this.state.Text}
-														MouseEventTrigger={this.ChangeNode}
-														GetStopTyping={this.SetStopTypingController}
-														Rollback={this.state.IsPlainTextRollback}
-													/>
-													: this.state.IsInSelection ?
-														<Selection SelectionArray={this.state.SelectionArray} onLoadSectionRes={this.props.onLoadSectionRes} />
-														:
-														<TextBox
-															SectionName={this.props.Section.Header.SectionName}
-															CharacterName={this.state.CharacterName}
-															TextContent={this.state.Text}
-															MouseEventTrigger={this.ChangeNode}
-															visible={this.state.TextBoxVisible}
-															GetStopTyping={this.SetStopTypingController}
-															AutoMode={this.state.AutoMode}
-														/>
+												(() => {
+													switch (this.state.NowMode) {
+														case 'text': {
+															return <TextBox
+																SectionName={this.props.Section.Header.SectionName}
+																CharacterName={this.state.CharacterName}
+																TextContent={this.state.Text}
+																MouseEventTrigger={this.ChangeNode}
+																visible={this.state.TextBoxVisible}
+																GetStopTyping={this.SetStopTypingController}
+																AutoMode={this.state.AutoMode}
+															/>
+														}
+														case 'plaintext': {
+															return <PlainText
+																	CurrentText={this.state.Text}
+																	MouseEventTrigger={this.ChangeNode}
+																	GetStopTyping={this.SetStopTypingController}
+																	Rollback={this.state.IsPlainTextRollback}
+																/>
+														}
+														case 'selection': {
+															return <Selection SelectionArray={this.state.SelectionArray} onLoadSectionRes={this.props.onLoadSectionRes} />
+														}
+														case 'backlog':{
+															return <Backlog />
+														}
+													}
+												}).call(this, null)
 											}
-
 										</Scene>);
 								}
 								case Status.LOADING: {
-									this.BlockKeyEventInAnimation(true);
+									this.BlockKeyEvent(true);
 									return (<Loading key={1} LoadingImage={this.props.Section.LoadingImage} />);
 								}
 								default: {
-									return <p key={3}>{"Loading"}</p>;
+									return <p key={3}>Loading</p>;
 								}
 							}
 						}).call(this, null)

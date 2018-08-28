@@ -43,7 +43,7 @@ class SaveDataView extends React.Component {
 						</NavLink> : null}
 						</Menu.Item>
 						<Menu.Item key="4">
-							<Switch checkedChildren="delete" unCheckedChildren={this.state.type} onChange={(checked) => this.setState({ delete: checked })} />	,
+							<Switch checkedChildren="delete" unCheckedChildren={this.state.type} onChange={(checked) => this.setState({ delete: checked })} />
 						</Menu.Item>
 					</Menu>
 				</Header>

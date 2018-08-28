@@ -25,10 +25,10 @@ class WelcomeView extends React.Component {
         ReactDOM.unmountComponentAtNode(document.getElementById('music'));
     }
     render() {
-        return (<div>
+        return (<div className="WelcomeContainer">
             <div className="WelcomeBG" ref={this.welcomeRef} style={{ backgroundImage: "url(\"file:///../../../res/Resources/Theme/UIResources/Framework/WelcomeBG.png\")" }} />
             <aside className="menu welcomemenu">
-                <ul className="menu-list nav_ul">
+                <ul className="menu-list nav_ul" id="MenuButton">
                     <li>
                         <NavLink to='/chapters'><li>从头开始(现在是测试所以可以随意选章节)</li></NavLink>
                     </li>

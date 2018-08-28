@@ -152,6 +152,20 @@ function LoadSectionRes(ChapterNode, Indexer) {
         return null;
     }
 }
+
+function BacklogGenerator(NowPlayingSection){
+    let BacklogArr = [];
+    for(let i=0;i<=TextNodeIndexer;++i){
+        if(NowPlayingSection.TextNodes[i]['TextProperty']){
+            BacklogArr.push(NowPlayingSection.TextNodes[i]['TextProperty'].CharacterName+"  :  "+NowPlayingSection.TextNodes[i]['TextProperty'].Text);
+        }
+        if(NowPlayingSection.TextNodes[i]['PlainText']){
+            BacklogArr.push(NowPlayingSection.TextNodes[i]['PlainText']);
+        }
+    }
+    return BacklogArr;
+}
+
 // function CustomFunctionAdapter(ExecuteFunctionArray) {
 //     ExecuteFunctionArray.forEach(element => {
 //         let Func = global.CustomScripts[element.Name];
@@ -161,7 +175,7 @@ function LoadSectionRes(ChapterNode, Indexer) {
 // function LoadCustomScripts(ScriptsPath) {
 //     global.CustomScripts = require(ScriptsPath);
 // }
-module.exports = { TextNodeInterpreter, LoadSectionRes, MiddleWare };
+module.exports = { TextNodeInterpreter, LoadSectionRes, BacklogGenerator,MiddleWare };
 //渲染主进程同时维护着一个状态机，当LoadChapterRes发出事件的时候状态机定位到当前游玩的节点
 //节点没有在存档树上的时候就append节点，SectionResolver发出进入Section的时候
 //状态机根据当前的Chapter(Branch) Section状态修改状态树

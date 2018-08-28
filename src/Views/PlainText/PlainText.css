@@ -4,19 +4,40 @@ div.PlainText{
     overflow-y:auto;
     overflow-x: hidden;
 }
-div#ScrollWrapper
+div#ScrollWrapper,div.BacklogText
 {
 	position: absolute;
-	top: 10vh;
-    max-width: 50vw;
-    max-height: 80vh;
 	height: 100%;
 	overflow: hidden;
-    left: 25vw;
     color: white;
     font-size: 1.6em; 
     display: block;
-    overflow: hidden;
-    z-index: 1002
+    z-index: 1002;
+    top: 10vh;
+    width: 60vw;
+    height: 80vh;
+    left: 20vw;
 }
-::-webkit-scrollbar{width:0px}
+
+div#ScrollWrapper{
+    overflow: hidden;
+}
+div.BacklogText{
+    overflow: auto;
+}
+p#backlogtextp,p#plaintextp{
+    padding-bottom:1.12vh;
+}
+.BacklogContainer{
+    z-index: 1002;
+    position: absolute;
+    z-index: 1002;
+    color: white;
+}
+
+p#BacklogTitle{
+    position: absolute;
+    font-size: 3.2em;
+    left:3vw;
+    top: 3vh;
+}

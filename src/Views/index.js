@@ -9,4 +9,5 @@ import SaveDataView from './SaveData/SaveDataView';
 import PlainText from './PlainText/PlainText';
 import WelcomeView from './Welcome/WelcomeView';
 import Character from './Character/Character';
-export { GameView, AllChapterView, Scene, TextBox, Loading, Settings, WelcomeView, PlainText,SaveDataView,Selection ,Character};
+import Backlog from './Backlog/Backlog';
+export { GameView, AllChapterView, Scene, TextBox, Loading, Settings, WelcomeView, PlainText,SaveDataView,Selection ,Backlog,Character};

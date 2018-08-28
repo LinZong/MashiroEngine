@@ -77,7 +77,7 @@ class ControlButtion extends React.Component {
 								<Tooltip title="回到上一个选择肢"><Button icon='backward large' /></Tooltip>
 								<Tooltip title="回到上一个小节"><Button icon='fast-backward large' onClick={()=>Func.GetPrevSection(true)}/></Tooltip>
 								<Tooltip title="上一句文本"><Button icon='step-backward large' onClick={()=>Func.GetNewTextNode(-1)}/></Tooltip>
-								<Tooltip title="Backlog"><Button icon='caret-left large' /></Tooltip>
+								<Tooltip title="Backlog"><Button icon='caret-left large' onClick={Func.OpenBacklog}/></Tooltip>
 								<Tooltip title={classNames('AutoMode',{'On':this.props.AutoMode,'Off':!this.props.AutoMode})}>
 									<Button icon={classNames({'caret-right':this.props.AutoMode,'right':!this.props.AutoMode},'large')} 
 											onClick={()=>Func.SetAutoModeStatus(!this.props.AutoMode)}/>

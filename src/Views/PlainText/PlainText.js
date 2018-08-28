@@ -22,7 +22,7 @@ class PlainText extends React.Component {
 	}
 	componentWillReceiveProps(nextProps, nextState) {
 		if (nextProps.CurrentText !== this.props.CurrentText) {
-			if (typeof nextProps.CurrentText === 'object'&&nextProps.Rollback) {
+			if (typeof nextProps.CurrentText === 'object' && nextProps.Rollback) {
 				this.setState({ TextArray: nextProps.CurrentText });
 				//表明此时要回退
 			}
@@ -51,7 +51,7 @@ class PlainText extends React.Component {
 		}
 		clearInterval(this.ScrollIntervalHandle);
 	}
-	componentDidUpdate(){
+	componentDidUpdate() {
 		this.ScrollToEnd();
 	}
 	render() {
@@ -62,7 +62,7 @@ class PlainText extends React.Component {
 						<div className="PlainText" onClick={() => this.props.MouseEventTrigger({ Mouse: true })}>
 							{
 								this.state.TextArray.map((it, idx) => {
-									return idx < this.state.TextArray.length - 1 || this.props.Rollback ? (<p key={idx}>{it}</p>) : (
+									return idx < this.state.TextArray.length - 1 || (this.props.Rollback || this.props.DisableTypeEffect) ? (<p key={idx} id="plaintextp">{it}</p>) : (
 										<Typed
 											typedRef={(typed) => { this.typed = typed; }}
 											key={idx}

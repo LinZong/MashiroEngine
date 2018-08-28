@@ -7,7 +7,7 @@ class Audio extends React.Component {
 		//on ended on play , BGM ,character(is array),effects
 		this.SetAllVolume = this.SetAllVolume.bind(this);
 		this.openNotification = this.openNotification.bind(this);
-		this.ShowBGMChanged = 1;
+		this.ShowBGMChanged = true;
 	}
 	openNotification(name) {
 		const args = {
@@ -58,7 +58,7 @@ class Audio extends React.Component {
 			<div className="InGameSound">
 				{
 					this.props.BGM ?
-						<audio key={0} id="BGM" src={this.props.BGM.Path} autoPlay={false} onEnded={() => this.props.onEnded && this.props.OnEnded('BGM')} />
+						<audio key={0} id="BGM" src={this.props.BGM.Path} autoPlay={false} loop={true} onEnded={() => this.props.onEnded && this.props.OnEnded('BGM')} />
 						:
 						null
 				}
