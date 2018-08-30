@@ -26,7 +26,7 @@ class SaveDataCard extends React.Component {
 		this.LoadSaveData = this.LoadSaveData.bind(this);
 		this.DeleteSaveData = this.DeleteSaveData.bind(this);
 		this.SaveToSlot = this.SaveToSlot.bind(this);
-		this.preventBrowserCache=this.preventBrowserCache.bind(this);
+		this.preventBrowserCache = this.preventBrowserCache.bind(this);
 		this.AlertTextArr = ['确定要加载这个存档?', '确定要删除这个存档?', '确定要覆盖这个存档?', '确定要在此新建存档?'];
 		this.ActionArr = [this.LoadSaveData, this.DeleteSaveData, this.SaveToSlot];
 		this.AlertText = null;
@@ -52,8 +52,8 @@ class SaveDataCard extends React.Component {
 			closehandle();
 			message.success('成功保存存档', 1);
 			this.setState({ Cover: ok.Cover, SaveTimeStamp: ok.State.TimeStamp, Title: ok.State.Text, Exist: true });
-		},(err)=>{
-			console.log('存档失败',err);
+		}, (err) => {
+			console.log('存档失败', err);
 		});
 	}
 	showModal() {
@@ -76,10 +76,13 @@ class SaveDataCard extends React.Component {
 		});
 	}
 	onClickSlot(event) {
-		if (this.props.type.delete && this.state.Exist) {
-			this.AlertText = this.AlertTextArr[1];
-			this.ActionFunc = this.ActionArr[1];
-			this.showModal();
+		if (this.props.type.delete) {
+			if (this.state.Exist) {
+				this.AlertText = this.AlertTextArr[1];
+				this.ActionFunc = this.ActionArr[1];
+				this.showModal();
+			}
+			else return;
 		}
 		else if (this.props.type.type === 'load' && this.state.Exist) {
 			this.AlertText = this.AlertTextArr[0];
@@ -97,8 +100,8 @@ class SaveDataCard extends React.Component {
 			this.showModal();
 		}
 	}
-	preventBrowserCache(state){
-		return state===this.PlaceHolder?state:state+"?"+Math.random();
+	preventBrowserCache(state) {
+		return state === this.PlaceHolder ? state : state + "?" + Math.random();
 	}
 	render() {
 		return (
