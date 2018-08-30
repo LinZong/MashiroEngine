@@ -26,6 +26,7 @@ class SaveDataCard extends React.Component {
 		this.LoadSaveData = this.LoadSaveData.bind(this);
 		this.DeleteSaveData = this.DeleteSaveData.bind(this);
 		this.SaveToSlot = this.SaveToSlot.bind(this);
+		this.preventBrowserCache=this.preventBrowserCache.bind(this);
 		this.AlertTextArr = ['确定要加载这个存档?', '确定要删除这个存档?', '确定要覆盖这个存档?', '确定要在此新建存档?'];
 		this.ActionArr = [this.LoadSaveData, this.DeleteSaveData, this.SaveToSlot];
 		this.AlertText = null;
@@ -96,6 +97,9 @@ class SaveDataCard extends React.Component {
 			this.showModal();
 		}
 	}
+	preventBrowserCache(state){
+		return state===this.PlaceHolder?state:state+"?"+Math.random();
+	}
 	render() {
 		return (
 			<div className="CardFramework" onClick={this.onClickSlot}>
@@ -109,7 +113,7 @@ class SaveDataCard extends React.Component {
 				</Modal>
 				<Col span={12}>
 					<div className="ScreenShotImg">
-						<img alt="这是当前游戏画面的截图" src={"file:///" + this.state.Cover + "?" + Math.random()} style={{ width: '100%' }} />
+						<img alt="这是当前游戏画面的截图" src={"file:///" + this.preventBrowserCache(this.state.Cover)} style={{ width: '100%' }} />
 					</div>
 				</Col>
 				<Col span={12}>

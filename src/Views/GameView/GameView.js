@@ -5,7 +5,7 @@ import TransitionGroup from 'react-addons-css-transition-group';
 import * as Actions from '../../Engine/actions/SectionActions'
 import * as Status from '../../Engine/Status'
 import { TextNodeInterpreter } from '../../Engine/LoadSection';
-import { Scene, TextBox, Loading, Selection,Backlog, PlainText, Character } from '../index';
+import { Scene, TextBox, Loading, Selection, Backlog, PlainText, Character } from '../index';
 import { GetRemoteUrlPath, copy } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
@@ -36,6 +36,8 @@ class GameView extends Component {
 		this.GetStatusFlag = this.GetStatusFlag.bind(this);
 		this.GetTypingStatus = this.GetTypingStatus.bind(this);
 		this.SetStopTypingController = this.SetStopTypingController.bind(this);
+		this.MoveSectionChecker = this.MoveSectionChecker.bind(this);
+
 
 		this.ApplySelectionToView = this.ApplySelectionToView.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
@@ -48,6 +50,7 @@ class GameView extends Component {
 		this.LoadSaveData = this.LoadSaveData.bind(this);
 		this.VoiceEnd = this.VoiceEnd.bind(this);
 		this.TextEnd = this.TextEnd.bind(this);
+
 		//当前节点状态;
 		this.AutoModeCancelation = null;
 		this.NeedNewSection = null;
@@ -70,8 +73,8 @@ class GameView extends Component {
 			TextEnd: this.TextEnd,
 			OpenBacklog: () => { this.setState({ NowMode: 'backlog' }) },
 			SetAutoModeStatus: (AutoModeBoolean) => this.setState({ AutoMode: AutoModeBoolean }),
-			GetNextSection: (skip) => { this.props.match.params.load = 'next'; this.props.onLoadNextSection(skip) },
-			GetPrevSection: (skip) => { this.props.match.params.load = 'next'; this.props.onLoadPrevSection(skip) }
+			GetNextSection: (skip) => { this.props.match.params.load = 'next'; this.MoveSectionChecker('next',skip) },
+			GetPrevSection: (skip) => { this.props.match.params.load = 'next'; this.MoveSectionChecker('prev',skip) }
 		};
 	}
 	GetStatusFlag(StatusObj) {//Read-only
@@ -106,7 +109,7 @@ class GameView extends Component {
 					break;
 				}
 				case 27: {//这个是用来退出特定模式
-					if(this.state.NowMode==='backlog')
+					if (this.state.NowMode === 'backlog')
 						this.setState({ NowMode: 'text' });
 					break;
 				}
@@ -148,6 +151,63 @@ class GameView extends Component {
 			NowMode: 'plaintext'
 		})
 	}
+	MoveSectionChecker(type,skip) {
+		const { Header, TextNodes } = this.props.Section;
+		let ChangeElementTag = [];
+		let TargetIndex = null;
+		//type==='next' or 'prev'
+		if (Header.Special && Header.Special.HaveSelection) {
+
+			switch(type){
+				case 'next':{
+					for (let i = this.NodeIndex; i < TextNodes.length; ++i) {
+						if (TextNodes[i].ChangeElement) {
+							ChangeElementTag.push(TextNodes[i].ChangeElement);
+						}
+						if (TextNodes[i].Selection) {
+							TargetIndex = i;
+							break;
+						}
+					}
+					if(TargetIndex){
+						this.InitPreloadResources(ChangeElementTag, false, false);
+		
+						return TextNodeInterpreter(this.props.Section, Actions.SetNodeIndex(TargetIndex), this.MiddleWareCallbackFuncArr);
+					}
+					else return this.props.onLoadNextSection(skip);
+				}
+				case 'prev':{
+					for (let i = this.NodeIndex; i > 0; i--) {
+						if (TextNodes[i].ChangeElement) {
+							ChangeElementTag.push(TextNodes[i].ChangeElement);
+						}
+						if (TextNodes[i].Selection) {
+							TargetIndex = i;
+							break;
+						}
+					}
+					if(TargetIndex){
+						this.InitPreloadResources(ChangeElementTag, false, false);
+						return TextNodeInterpreter(this.props.Section, Actions.SetNodeIndex(TargetIndex), this.MiddleWareCallbackFuncArr);
+					}
+					else return this.props.onLoadPrevSection(skip);
+				}
+				default: break;
+			}
+			/*
+				TO_DO:
+				计算这中间差了多少的场景变换，生成数组扔给ResourceLoader，让他负责处理好
+				再计算空降位置，TextNodeInterpreter更新过去。就可以了
+
+			    跳到下一个Section：
+				如果Section和Section之间没有Selection和Extra的话，那么直接跳跃
+				如果存在这两个其一，就往最靠近起始点的位置跳跃。 
+			*/
+		}
+		else {
+			 type === 'next' ? this.props.onLoadNextSection(skip) : this.props.onLoadPrevSection(skip);
+		}
+	}
 	ApplySelectionToView(NodeProps) {
 		if (NodeProps === null) {
 			if (this.state.IsInSelection !== false) {
@@ -162,46 +222,62 @@ class GameView extends Component {
 	ApplyCharacterVoice(VoiceProps) {
 		this.setState({ CharacterVoice: VoiceProps });
 	}
-	InitPreloadResources(PreloadResourcesObj, Rollback, NewSection) {
+	ResourceLoader(PreloadResourcesObj) {
+
+	}
+	InitPreloadResources(PreloadsObj, Rollback, NewSection) {
 		const { Scene, BGM, Character } = this.state;
 		if (NewSection) {
 			Scene.empty();
 			BGM.empty();
 			Character.empty();
 		}
-		for (var key in PreloadResourcesObj) {
-			if (PreloadResourcesObj[key]) {
-				switch (key) {
-					case "Scene": {
-						if (Rollback && Scene.length > 1) {
-							Scene.pop();
+
+		const Loader = (PreloadResourcesObj) => {
+			for (var key in PreloadResourcesObj) {
+				if (PreloadResourcesObj[key]) {
+					switch (key) {
+						case "Scene": {
+							if (Rollback && Scene.length > 1) {
+								Scene.pop();
+								break;
+							}
+							Scene.push(GetRemoteUrlPath(PreloadResourcesObj[key]));
 							break;
 						}
-						Scene.push(GetRemoteUrlPath(PreloadResourcesObj[key]));
-						break;
-					}
-					case "BGM": {
-						if (Rollback && BGM.length > 1) {
-							BGM.pop();
+						case "BGM": {
+							if (Rollback && BGM.length > 1) {
+								BGM.pop();
+								break;
+							}
+							let BGMObj = copy(PreloadResourcesObj[key], {});//进行深复制
+							BGMObj.Path = GetRemoteUrlPath(BGMObj.Path, true);
+							BGM.push(BGMObj);
 							break;
 						}
-						let BGMObj = copy(PreloadResourcesObj[key], {});//进行深复制
-						BGMObj.Path = GetRemoteUrlPath(BGMObj.Path, true);
-						BGM.push(BGMObj);
-						break;
-					}
-					case "Character": {
-						if (Rollback && Character.length > 1) {
-							Character.pop();
+						case "Character": {
+							if (Rollback && Character.length > 1) {
+								Character.pop();
+								break;
+							}
+							let CharacterObj = Array.from(PreloadResourcesObj[key], (ele) => ({ ...ele, Path: GetRemoteUrlPath(ele.Path) }));//进行数组深复制
+							Character.push(CharacterObj);
 							break;
 						}
-						let CharacterObj = Array.from(PreloadResourcesObj[key], (ele) => ({ ...ele, Path: GetRemoteUrlPath(ele.Path) }));//进行数组深复制
-						Character.push(CharacterObj);
-						break;
+						default: break;
 					}
 				}
-			}
 
+			}
+		};
+
+
+		if (PreloadsObj.constructor === Array) {
+			PreloadsObj.forEach((element) => {
+				Loader(element);
+			}, this);
+		}else{
+			Loader(PreloadsObj);
 		}
 		this.setState({ Scene, BGM });
 	}
@@ -356,16 +432,16 @@ class GameView extends Component {
 														}
 														case 'plaintext': {
 															return <PlainText
-																	CurrentText={this.state.Text}
-																	MouseEventTrigger={this.ChangeNode}
-																	GetStopTyping={this.SetStopTypingController}
-																	Rollback={this.state.IsPlainTextRollback}
-																/>
+																CurrentText={this.state.Text}
+																MouseEventTrigger={this.ChangeNode}
+																GetStopTyping={this.SetStopTypingController}
+																Rollback={this.state.IsPlainTextRollback}
+															/>
 														}
 														case 'selection': {
 															return <Selection SelectionArray={this.state.SelectionArray} onLoadSectionRes={this.props.onLoadSectionRes} />
 														}
-														case 'backlog':{
+														case 'backlog': {
 															return <Backlog />
 														}
 													}
