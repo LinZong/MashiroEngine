@@ -17,12 +17,13 @@ function LoadAllChapters(ChapterDir) {
 }
 function LoadChapterRes(Path, Branch) {
     let RebuildChapterInfo = null;
-    let fs = window.electron.remote.require('fs');//这个是在渲染进程做调用的，需要做远程调用。
-    if (!Path||!Branch) {
-        throw Error('Path or Branch cannot be null or undefined!');
+    let fs = global ? require('fs'):window.electron.remote.require('fs');//这个是在渲染进程做调用的，需要做远程调用。
+    if (!Path) {
+        throw Error('Path cannot be null or undefined!');
     }
     Path = Path + '/chapter.json';
     let ChapterInfo = JSON.parse(fs.readFileSync(Path));
+    if(!Branch) return ChapterInfo;
     let AllBranch = ChapterInfo.Branch;
     //Support find by tag or by name.
     for (let i = 0; i < AllBranch.length; i++) {

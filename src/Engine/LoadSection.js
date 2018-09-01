@@ -141,7 +141,7 @@ function ParseStatusFlag(TextNodeObj, callback, StatusObj) {
 
 
 function LoadSectionRes(ChapterNode, Indexer) {
-    let fs = window.electron.remote.require('fs');
+    let fs = global ? require('fs') : window.electron.remote.require('fs');
     let SectionJsonPath = ChapterNode.Branch.Sections[Indexer];
     try {
         let res = JSON.parse(fs.readFileSync(SectionJsonPath));

@@ -1,5 +1,6 @@
+
 function StoryMatrix(Length, initElement) {
-	this._Array = []
+	this._Array = [];
 	if (Length) {
 		this.build(Length, initElement);
 	}
@@ -35,6 +36,12 @@ StoryMatrix.prototype = {
 				this._Array[i].push(CreateElement(initElement));
 			}
 		}
+	},
+	place:function(x,y,element){
+		this._Array[x][y] = CreateElement(element);
+	},
+	touch:function(x,y){
+		return this._Array[x][y];
 	},
 	remove: function (removeLength) {
 		if(removeLength>this._Array.length) throw new Error("Cannot remove the number of elements that larger than array length.");

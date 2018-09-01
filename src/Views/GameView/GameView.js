@@ -367,6 +367,7 @@ class GameView extends Component {
 				case 'prev': {
 					break;
 				}
+				default: break;
 			}
 		}
 	}
@@ -444,6 +445,7 @@ class GameView extends Component {
 														case 'backlog': {
 															return <Backlog />
 														}
+														default :break;
 													}
 												}).call(this, null)
 											}
