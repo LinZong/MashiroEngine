@@ -10,7 +10,9 @@ import { GetRemoteUrlPath, copy } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
 import './GameView.css';
+import { message } from 'antd';
 const { GetSettingValue } = require('../../Engine/LoadConfig');
+const { GetGlobalVar } = require('../../Engine/StatusMachine');
 var ControlFunctionContext = React.createContext();
 class GameView extends Component {
 	constructor() {
@@ -36,8 +38,9 @@ class GameView extends Component {
 		this.GetStatusFlag = this.GetStatusFlag.bind(this);
 		this.GetTypingStatus = this.GetTypingStatus.bind(this);
 		this.SetStopTypingController = this.SetStopTypingController.bind(this);
+		this.SelectionFinder = this.SelectionFinder.bind(this);
 		this.MoveSectionChecker = this.MoveSectionChecker.bind(this);
-
+		this.MoveSelectionChecker = this.MoveSelectionChecker.bind(this);
 
 		this.ApplySelectionToView = this.ApplySelectionToView.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
@@ -61,6 +64,9 @@ class GameView extends Component {
 		this.AutoModeNextNodeDelay = GetSettingValue('AutoModeNextNodeDelay');
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
+
+		this.StoryLine = window.electron.remote.getGlobal('MyEngine').StatusMachine.StoryLine;
+
 		//The New Context API is excited!
 		this.ControlFunction = {
 			GetNewTextNode: this.GetNewTextNode,
@@ -73,8 +79,10 @@ class GameView extends Component {
 			TextEnd: this.TextEnd,
 			OpenBacklog: () => { this.setState({ NowMode: 'backlog' }) },
 			SetAutoModeStatus: (AutoModeBoolean) => this.setState({ AutoMode: AutoModeBoolean }),
-			GetNextSection: (skip) => { this.props.match.params.load = 'next'; this.MoveSectionChecker('next',skip) },
-			GetPrevSection: (skip) => { this.props.match.params.load = 'next'; this.MoveSectionChecker('prev',skip) }
+			GetNextSection: (skip) => { this.props.match.params.load = 'next'; this.MoveSectionChecker('next', skip) },
+			GetPrevSection: (skip) => { this.props.match.params.load = 'next'; this.MoveSectionChecker('prev', skip) },
+			GetNextSelection: (skip) => { this.props.match.params.load = 'next'; this.MoveSelectionChecker('next', skip) },
+			GetPrevSelection: (skip) => { this.props.match.params.load = 'next'; this.MoveSelectionChecker('prev', skip) }
 		};
 	}
 	GetStatusFlag(StatusObj) {//Read-only
@@ -151,16 +159,14 @@ class GameView extends Component {
 			NowMode: 'plaintext'
 		})
 	}
-	MoveSectionChecker(type,skip) {
-		const { Header, TextNodes } = this.props.Section;
+	SelectionFinder(Section, BeginSearchNodeIndex, type, onFoundCallback, onNotFoundCallback) {
+		const { Header, TextNodes } = Section;
 		let ChangeElementTag = [];
 		let TargetIndex = null;
-		//type==='next' or 'prev'
 		if (Header.Special && Header.Special.HaveSelection) {
-
-			switch(type){
-				case 'next':{
-					for (let i = this.NodeIndex; i < TextNodes.length; ++i) {
+			switch (type) {
+				case 'next': {
+					for (let i = BeginSearchNodeIndex; i < TextNodes.length; ++i) {
 						if (TextNodes[i].ChangeElement) {
 							ChangeElementTag.push(TextNodes[i].ChangeElement);
 						}
@@ -169,15 +175,15 @@ class GameView extends Component {
 							break;
 						}
 					}
-					if(TargetIndex){
-						this.InitPreloadResources(ChangeElementTag, false, false);
-		
-						return TextNodeInterpreter(this.props.Section, Actions.SetNodeIndex(TargetIndex), this.MiddleWareCallbackFuncArr);
+					if (TargetIndex) {
+						// this.InitPreloadResources(ChangeElementTag, false, false);
+						// return TextNodeInterpreter(this.props.Section, Actions.SetNodeIndex(TargetIndex), this.MiddleWareCallbackFuncArr);
+						return onFoundCallback(TargetIndex, ChangeElementTag);
 					}
-					else return this.props.onLoadNextSection(skip);
+					else return onNotFoundCallback(TargetIndex, ChangeElementTag);
 				}
-				case 'prev':{
-					for (let i = this.NodeIndex; i > 0; i--) {
+				case 'prev': {
+					for (let i = BeginSearchNodeIndex; i > 0; i--) {
 						if (TextNodes[i].ChangeElement) {
 							ChangeElementTag.push(TextNodes[i].ChangeElement);
 						}
@@ -186,27 +192,110 @@ class GameView extends Component {
 							break;
 						}
 					}
-					if(TargetIndex){
-						this.InitPreloadResources(ChangeElementTag, false, false);
-						return TextNodeInterpreter(this.props.Section, Actions.SetNodeIndex(TargetIndex), this.MiddleWareCallbackFuncArr);
+					if (TargetIndex) {
+						return onFoundCallback(TargetIndex, ChangeElementTag);
 					}
-					else return this.props.onLoadPrevSection(skip);
+					else return onNotFoundCallback(TargetIndex, ChangeElementTag);
 				}
 				default: break;
 			}
-			/*
-				TO_DO:
-				计算这中间差了多少的场景变换，生成数组扔给ResourceLoader，让他负责处理好
-				再计算空降位置，TextNodeInterpreter更新过去。就可以了
-
-			    跳到下一个Section：
-				如果Section和Section之间没有Selection和Extra的话，那么直接跳跃
-				如果存在这两个其一，就往最靠近起始点的位置跳跃。 
-			*/
 		}
 		else {
-			 type === 'next' ? this.props.onLoadNextSection(skip) : this.props.onLoadPrevSection(skip);
+			return onNotFoundCallback(TargetIndex, ChangeElementTag)
 		}
+	}
+	MoveSectionChecker(type, skip) {
+		this.props.location.state.JumpType = type;
+		this.SelectionFinder(this.props.Section, this.NodeIndex, type, (target, elementChange) => {
+			this.InitPreloadResources(elementChange, false, false);
+			TextNodeInterpreter(this.props.Section, Actions.SetNodeIndex(target), this.MiddleWareCallbackFuncArr);
+		}, () => {
+			//type === 'next' ? this.props.onLoadNextSection(skip) : this.props.onLoadPrevSection(skip);
+			const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
+			const MatArr = this.StoryLine.get(CurrentBranch);
+			switch (type) {
+				case "next": {
+					let i = CurrentChapter.Index;
+					let j = CurrentSectionIndex;
+					if (j < MatArr[i].length() - 1) {
+						if (MatArr[i].touch(j, j + 1) === 1) {
+							if (MatArr[i].touch(j + 1, j + 1)) {
+								return this.props.onLoadSectionRes(i, CurrentBranch, j + 1);
+							}
+						}
+					}
+					message.warn("在本章节中找不到可以向后跳转的小节了",1);
+					break;
+				}
+				case "prev": {
+					let i = CurrentChapter.Index;
+					let j = CurrentSectionIndex;
+					if (j > 0) {
+						if (MatArr[i].touch(j - 1, j) === 1) {
+							if (MatArr[i].touch(j - 1, j - 1)) {
+								return this.props.onLoadSectionRes(i, CurrentBranch, j - 1);
+							}
+						}
+					}
+					message.warn("在本章节中找不到可以向前跳转的小节了",1);
+					break;
+				}
+				default: break;
+			}
+		});
+
+		/*
+			计算这中间差了多少的场景变换，生成数组扔给ResourceLoader，让他负责处理好
+			再计算空降位置，TextNodeInterpreter更新过去。就可以了
+
+			跳到下一个Section：
+			如果Section和Section之间没有Selection和Extra的话，那么直接跳跃
+			如果存在这两个其一，就往最靠近起始点的位置跳跃。 
+		*/
+	}
+	MoveSelectionChecker(type) {
+		//This function is used to navigate to the correct next selection.
+		const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
+		const MatArr = this.StoryLine.get(CurrentBranch);
+		this.props.location.state.JumpType = type;
+		this.SelectionFinder(this.props.Section, this.NodeIndex, type, (target, elementChange) => {
+			this.InitPreloadResources(elementChange, false, false);
+			TextNodeInterpreter(this.props.Section, Actions.SetNodeIndex(target), this.MiddleWareCallbackFuncArr);
+		}, () => {
+			//找不到的话就需要遍历矩阵
+			switch (type) {
+				case "next": {
+					for (let i = CurrentChapter.Index; i < MatArr.length; ++i) {
+						let JBegin = (i === CurrentChapter.Index ? CurrentSectionIndex + 1 : 1);
+						for (let j = JBegin; j < MatArr[i].length(); ++j) {
+							if (MatArr[i].touch(j - 1, j) === 1) {
+								if (MatArr[i].touch(j, j).selection) {
+									this.props.match.params.load = 'select';
+									this.props.onLoadSectionRes(i, CurrentBranch, j);
+								}
+							}
+						}
+					}
+					break;
+				}
+				case "prev": {
+					for (let i = CurrentChapter.Index; i >= 0; i--) {
+						let JBegin = (i === CurrentChapter.Index ? CurrentSectionIndex : MatArr[i].length() - 1);
+						for (let j = JBegin; j > 0; --j) {
+							if (MatArr[i].touch(j - 1, j) === 1) {
+								if (MatArr[i].touch(j, j).selection) {
+									this.props.match.params.load = 'select';
+									this.props.onLoadSectionRes(i, CurrentBranch, j);
+								}
+							}
+						}
+					}
+					break;
+				}
+				default: break;
+			}
+		});
+
 	}
 	ApplySelectionToView(NodeProps) {
 		if (NodeProps === null) {
@@ -221,9 +310,6 @@ class GameView extends Component {
 	}
 	ApplyCharacterVoice(VoiceProps) {
 		this.setState({ CharacterVoice: VoiceProps });
-	}
-	ResourceLoader(PreloadResourcesObj) {
-
 	}
 	InitPreloadResources(PreloadsObj, Rollback, NewSection) {
 		const { Scene, BGM, Character } = this.state;
@@ -270,13 +356,11 @@ class GameView extends Component {
 
 			}
 		};
-
-
 		if (PreloadsObj.constructor === Array) {
 			PreloadsObj.forEach((element) => {
 				Loader(element);
 			}, this);
-		}else{
+		} else {
 			Loader(PreloadsObj);
 		}
 		this.setState({ Scene, BGM });
@@ -295,7 +379,7 @@ class GameView extends Component {
 		let FreezeState = { ...this.state, NodeIndex: this.NodeIndex };
 		delete FreezeState['load'];
 		const contents = window.electron.remote.getCurrentWindow().webContents;
-		const PrevInfo = require('../../Engine/StatusMachine').GetGlobalVar();
+		const PrevInfo = GetGlobalVar();
 		let now = new Date();
 		FreezeState = { ...FreezeState, PrevInfo, TimeStamp: now.toLocaleString() };
 		contents.capturePage((image) => {
@@ -332,6 +416,7 @@ class GameView extends Component {
 				this.props.onFinishedReload();//加载完了之后退出。
 				break;
 			}
+			default: break;
 		}
 		window.addEventListener('keydown', this.ChangeNode);
 	}
@@ -354,6 +439,14 @@ class GameView extends Component {
 					TextNodeInterpreter(nextProps.Section,
 						Actions.SetNodeIndex(InitIndex),
 						this.MiddleWareCallbackFuncArr);
+					break;
+				}
+				case 'select': {
+					this.SelectionFinder(nextProps.Section, nextProps.Section.TextNodes.length - 1, nextProps.location.state.JumpType, (target, elementChange) => {
+						this.InitPreloadResources(nextProps.Section.PreloadResources, false, true);//先初始化默认资源
+						this.InitPreloadResources(elementChange, false, false);//再计算资源变更
+						TextNodeInterpreter(nextProps.Section, Actions.SetNodeIndex(target), this.MiddleWareCallbackFuncArr);
+					});
 					break;
 				}
 				case 'save': {
@@ -445,7 +538,7 @@ class GameView extends Component {
 														case 'backlog': {
 															return <Backlog />
 														}
-														default :break;
+														default: break;
 													}
 												}).call(this, null)
 											}

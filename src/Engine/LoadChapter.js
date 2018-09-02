@@ -17,7 +17,7 @@ function LoadAllChapters(ChapterDir) {
 }
 function LoadChapterRes(Path, Branch) {
     let RebuildChapterInfo = null;
-    let fs = global ? require('fs'):window.electron.remote.require('fs');//这个是在渲染进程做调用的，需要做远程调用。
+    let fs = (this===global) ? require('fs') : window.electron.remote.require('fs');//这个是在渲染进程做调用的，需要做远程调用。
     if (!Path) {
         throw Error('Path cannot be null or undefined!');
     }

@@ -1,27 +1,39 @@
-const { LoadGlobalConfig } = require('../src/Engine/LoadConfig');
 const { LoadAllChapters, LoadChapterRes } = require('../src/Engine/LoadChapter');
 const { LoadSectionRes } = require('../src/Engine/LoadSection');
 const { StoryMatrix } = require('../src/Engine/StoryMatrix');
-LoadGlobalConfig();
+
 
 let AllChapter = LoadAllChapters("D:\\electron-and-react\\electron-react\\res\\Resources\\Chapter");
-
 let BranchSet = new Set([]);
+let StoryLineMap = new Map();
 
-for (let ele of AllChapter) {
-    let res = LoadChapterRes(ele.Path);
+for (let i = 0; i < AllChapter.length; ++i) {
+    let res = LoadChapterRes(AllChapter[i].Path);
     for (let index = 0; index < res.Branch.length; index++) {
         BranchSet.add(res.Branch[index].BranchTag);
+        if(!StoryLineMap.has(res.Branch[index].BranchTag)){
+            StoryLineMap.set(res.Branch[index].BranchTag,[]);
+        }
+        StoryLineMap.get(res.Branch[index].BranchTag).push(i);
     }
 }
-let StoryLineArray = [new StoryMatrix(2), new StoryMatrix(3), new StoryMatrix(10)];
+
+for(let i of StoryLineMap.keys()){//i is Branch, j is the index of AllChapter Array.
+    let arr = [];
+    let chapterarr = StoryLineMap.get(i);
+    for(let j=0;j<chapterarr.length;++j){
+        let res = LoadChapterRes(AllChapter[j].Path,i);
+        arr[j] = new StoryMatrix(res.Branch.Sections.length);
+    }
+    StoryLineMap.set(i,arr);
+}
 
 function GetSectionName(chNum, br, secBegin = 0) {
     let ch = LoadChapterRes(AllChapter[chNum].Path, br);
     let sections = ch.Branch.Sections;
     for (let i = secBegin; i < sections.length; ++i) {
         let sec = LoadSectionRes(ch, i);
-        StoryLineArray[chNum].place(i, i, sec.Header.SectionName);
+        StoryLineMap.get(br)[chNum].place(i, i, sec.Header.SectionName);
         if (sec.Header.Special.HaveSelection) {
             let selection = null;
             for (let j = 0; j < sec.TextNodes.length; ++j) {
@@ -31,11 +43,11 @@ function GetSectionName(chNum, br, secBegin = 0) {
                 }
             }
             if (selection) {
-                StoryLineArray[chNum].place(i, i, { SectionName: sec.Header.SectionName, selection })
+                StoryLineMap.get(br)[chNum].place(i, i, { SectionName: sec.Header.SectionName, selection })
                 for (let k = 0; k < selection.length; ++k) {
                     const { Chapter, Branch, Section } = selection[k].JumpTo;
                     if (Chapter === chNum) {
-                        StoryLineArray[chNum].place(i, Section, 1);
+                        StoryLineMap.get(br)[chNum].place(i, Section, 1);
                     }
                     GetSectionName(Chapter, Branch, Section);
                 }
@@ -43,10 +55,17 @@ function GetSectionName(chNum, br, secBegin = 0) {
         }
         else {
             if (i < sections.length - 1) {
-                StoryLineArray[chNum].place(i, i + 1, 1);//表明连通边
+                StoryLineMap.get(br)[chNum].place(i, i + 1, 1);//表明连通边
             }
         }
     }
 }
-GetSectionName(0, 1);
-console.log(StoryLineArray);
+
+for(let brVal of BranchSet.values()){
+    for(let i=0;i<AllChapter.length;++i){
+        if(StoryLineMap.get(brVal)[i]){
+            GetSectionName(i,brVal);
+        }
+    }
+}
+
