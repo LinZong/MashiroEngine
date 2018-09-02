@@ -29,7 +29,7 @@ class GameView extends Component {
 			TextBoxVisible: true,
 			AutoMode: false
 		};
-		//游戏画面控制函数
+			//游戏画面控制函数
 		this.ChangeNode = this.ChangeNode.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
 		this.GetNewTextNode = this.GetNewTextNode.bind(this);
@@ -53,7 +53,7 @@ class GameView extends Component {
 		this.LoadSaveData = this.LoadSaveData.bind(this);
 		this.VoiceEnd = this.VoiceEnd.bind(this);
 		this.TextEnd = this.TextEnd.bind(this);
-
+		this.PlayerStoryLine = [];
 		//当前节点状态;
 		this.AutoModeCancelation = null;
 		this.NeedNewSection = null;
@@ -215,29 +215,45 @@ class GameView extends Component {
 			const MatArr = this.StoryLine.get(CurrentBranch);
 			switch (type) {
 				case "next": {
-					let i = CurrentChapter.Index;
-					let j = CurrentSectionIndex;
-					if (j < MatArr[i].length() - 1) {
-						if (MatArr[i].touch(j, j + 1) === 1) {
-							if (MatArr[i].touch(j + 1, j + 1)) {
-								return this.props.onLoadSectionRes(i, CurrentBranch, j + 1);
+					// let i = CurrentChapter.Index;
+					// let j = CurrentSectionIndex;
+					// if (j < MatArr[i].length() - 1) {
+					// 	if (MatArr[i].touch(j, j + 1) === 1) {
+					// 		if (MatArr[i].touch(j + 1, j + 1)) {
+					// 			return this.props.onLoadSectionRes(i, CurrentBranch, j + 1);
+					// 		}
+					// 	}
+					// }
+					for (let i = CurrentChapter.Index; i < MatArr.length; ++i) {
+						let jBegin = (i === CurrentChapter.Index ? CurrentSectionIndex : 0);
+						for (let j = jBegin; j < MatArr[i].length() - 1; ++j) {
+							if (MatArr[i].touch(j, j + 1) === 1) {
+								if (MatArr[i].touch(j + 1, j + 1)) {
+									return this.props.onLoadSectionRes(i, CurrentBranch, j + 1);
+								}
 							}
 						}
 					}
-					message.warn("在本章节中找不到可以向后跳转的小节了",1);
+					//message.warn("在本章节中找不到可以向后跳转的小节了", 1);
 					break;
 				}
 				case "prev": {
-					let i = CurrentChapter.Index;
-					let j = CurrentSectionIndex;
-					if (j > 0) {
-						if (MatArr[i].touch(j - 1, j) === 1) {
-							if (MatArr[i].touch(j - 1, j - 1)) {
-								return this.props.onLoadSectionRes(i, CurrentBranch, j - 1);
-							}
-						}
+					// let i = CurrentChapter.Index;
+					// let j = CurrentSectionIndex;
+					// if (j > 0) {
+					// 	if (MatArr[i].touch(j - 1, j) === 1) {
+					// 		if (MatArr[i].touch(j - 1, j - 1)) {
+					// 			return this.props.onLoadSectionRes(i, CurrentBranch, j - 1);
+					// 		}
+					// 	}
+					// }
+					
+					if (this.PlayerStoryLine.length > 1) {
+						console.log('即将离开',this.PlayerStoryLine.pop());
+						const { Chapter, Branch, Section } = this.PlayerStoryLine.pop();
+						return this.props.onLoadSectionRes(Chapter, Branch, Section);
 					}
-					message.warn("在本章节中找不到可以向前跳转的小节了",1);
+					message.warn("在本章节中找不到可以向前跳转的小节了", 1);
 					break;
 				}
 				default: break;
@@ -273,29 +289,41 @@ class GameView extends Component {
 									this.props.match.params.load = 'select';
 									this.props.onLoadSectionRes(i, CurrentBranch, j);
 								}
-							}
-						}
-					}
-					break;
-				}
-				case "prev": {
-					for (let i = CurrentChapter.Index; i >= 0; i--) {
-						let JBegin = (i === CurrentChapter.Index ? CurrentSectionIndex : MatArr[i].length() - 1);
-						for (let j = JBegin; j > 0; --j) {
-							if (MatArr[i].touch(j - 1, j) === 1) {
-								if (MatArr[i].touch(j, j).selection) {
-									this.props.match.params.load = 'select';
-									this.props.onLoadSectionRes(i, CurrentBranch, j);
+								else{
+									this.PlayerStoryLine.push({Chapter:i,Branch:CurrentBranch,Section:j,Selection:false});
 								}
 							}
 						}
 					}
 					break;
 				}
+				case "prev": {
+					// for (let i = CurrentChapter.Index; i >= 0; i--) {
+					// 	let JBegin = (i === CurrentChapter.Index ? CurrentSectionIndex : MatArr[i].length() - 1);
+					// 	for (let j = JBegin; j > 0; --j) {
+					// 		if (MatArr[i].touch(j - 1, j) === 1) {
+					// 			if (MatArr[i].touch(j, j).selection) {
+					// 				this.props.match.params.load = 'select';
+					// 				this.props.onLoadSectionRes(i, CurrentBranch, j);
+					// 			}
+					// 		}
+					// 	}
+					// }
+					
+					if(this.PlayerStoryLine.length>1){
+						console.log('即将离开',this.PlayerStoryLine.pop());
+						let result = this.PlayerStoryLine.pop();
+						while(!result.Selection&&this.PlayerStoryLine.length>1){
+							result = this.PlayerStoryLine.pop();
+						}
+						const { Chapter,Branch,Section} = result;
+						this.props.onLoadSectionRes(Chapter,Branch,Section);
+					}
+					break;
+				}
 				default: break;
 			}
 		});
-
 	}
 	ApplySelectionToView(NodeProps) {
 		if (NodeProps === null) {
@@ -376,7 +404,7 @@ class GameView extends Component {
 		this.TypingController.Stopper = ControllerFunc;
 	}
 	SaveState() {
-		let FreezeState = { ...this.state, NodeIndex: this.NodeIndex };
+		let FreezeState = { ...this.state, NodeIndex: this.NodeIndex ,PlayerStoryLine:this.PlayerStoryLine};
 		delete FreezeState['load'];
 		const contents = window.electron.remote.getCurrentWindow().webContents;
 		const PrevInfo = GetGlobalVar();
@@ -433,6 +461,11 @@ class GameView extends Component {
 			switch (LoadType) {
 				case 'next':
 				case 'new': {
+
+					const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
+					const HaveSelection = safetouch(nextProps).Header.Special.HaveSelection;
+					this.PlayerStoryLine.push({Chapter:CurrentChapter.Index,Branch:CurrentBranch,Section:CurrentSectionIndex,Selection:HaveSelection});
+
 					let InitIndex = this.props.Section ? 0 :
 						safetouch(this.props.location.state)().TextNodeBegin;
 					this.InitPreloadResources(nextProps.Section.PreloadResources, false, true);
@@ -442,6 +475,10 @@ class GameView extends Component {
 					break;
 				}
 				case 'select': {
+					const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
+
+					this.PlayerStoryLine.push({Chapter:CurrentChapter.Index,Branch:CurrentBranch,Section:CurrentSectionIndex,Selection:true});
+
 					this.SelectionFinder(nextProps.Section, nextProps.Section.TextNodes.length - 1, nextProps.location.state.JumpType, (target, elementChange) => {
 						this.InitPreloadResources(nextProps.Section.PreloadResources, false, true);//先初始化默认资源
 						this.InitPreloadResources(elementChange, false, false);//再计算资源变更
@@ -477,6 +514,7 @@ class GameView extends Component {
 		delete TmpInfo['PrevInfo'];
 		this.props.onLoadSaveData(SaveData);
 		this.setState(TmpInfo);
+		this.PlayerStoryLine = SaveData.PlayerStoryLine;
 	}
 	VoiceEnd(type) {
 		console.log(type, '播放完了');

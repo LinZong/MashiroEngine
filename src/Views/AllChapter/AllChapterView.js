@@ -34,7 +34,7 @@ class AllChapterView extends React.Component {
             }
             default: return (null);
         }
-//原来Link也可以这样写hhh
+//原来Link也可以这样写hhh 
     }
 }
 export default (AllChapterView);
