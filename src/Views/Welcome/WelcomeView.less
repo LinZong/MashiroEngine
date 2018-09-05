@@ -1,0 +1,99 @@
+aside.welcomemenu{
+    width: 20vw;
+    top: 28vh;
+    position:absolute;
+    display: block;
+    font-size: 2rem;
+    left: 4vw;
+    overflow: hidden;
+    font-family: Microsoft Yahei;
+    height: 60vh;
+    margin-top: 20px auto;
+    z-index: 1001;
+    background-color: rgba(255, 255, 255, 0.6)
+}
+
+.nav_ul{
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.menu-list a {
+    border-radius: 2px;
+    color:#4a4a4a;
+    display: block;
+    padding: 0.5em 0.75em;
+  }
+  .menu-list a:hover {
+    background-color: whitesmoke;
+    color: #363633;
+    opacity: 0.8;
+  }
+  
+div.WelcomeBG{
+    .bg-mixin();
+    z-index: 1000;
+    position: absolute;
+  }
+div#WelcomePics{
+    .bg-mixin();
+    z-index: 1002;
+    position: absolute;
+}
+div.WelcomeRoot{
+    background-color: black;
+    .fullscreen-mixin();
+}
+
+div.WelcomeContainer{
+    display: none;
+    z-index: 1000;
+}
+div.PlainText::-webkit-scrollbar {
+    display: none
+}
+#MenuButton::-webkit-scrollbar {
+    display: none
+}
+
+.fullscreen-mixin() {
+    display:block;
+    position: absolute;
+    width: 100%;
+    height: 100%
+  }
+.bg-mixin(){
+    box-sizing:content-box; 
+    width: 100%;
+    height: 100%;
+    /* 背景图垂直、水平均居中 */
+    background-position: center center;
+    /* 背景图不平铺 */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: black;
+}
+  .WelcomeBGFade-enter{
+    opacity: 0.01;
+  }
+  .WelcomeBGFade-enter.WelcomeBGFade-enter-active {
+    opacity: 1;
+    transition: opacity 700ms linear;
+  }
+  .WelcomeBGFade-appear {
+    opacity: 0.01;
+  }
+  .WelcomeBGFade-appear.WelcomeBGFade-appear-active {
+    opacity: 1;
+    transition: opacity 700ms linear;
+  }
+  .WelcomeBGFade-leave {
+    opacity: 1;
+  }
+  .WelcomeBGFade-leave.WelcomeBGFade-leave-active {
+    opacity: 0.01;
+    transition: opacity 700ms linear;
+  }
+  
+  

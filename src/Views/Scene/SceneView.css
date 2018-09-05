@@ -3,7 +3,7 @@ div.SceneBackground{
     box-sizing:content-box; 
     width: 100%;
     position: absolute;
-    height: -webkit-fill-available;
+    height: 100%;
     /* 背景图垂直、水平均居中 */
     background-position: center center;
     /* 背景图不平铺 */
@@ -26,7 +26,6 @@ div.SelectionMask {
     z-index: 1001;
     -moz-opacity: 0.6;
     opacity: .60;
-    filter: alpha(opacity = 70);
 }
 
 div.SelectionMaskOn {
@@ -40,7 +39,6 @@ div.SelectionMaskOn {
     z-index: 1001;
     -moz-opacity: 0.6;
     opacity: .60;
-    filter: alpha(opacity = 70);
 }
 
 .SceneBGFade-enter{

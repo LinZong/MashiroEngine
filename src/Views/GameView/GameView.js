@@ -467,7 +467,7 @@ class GameView extends Component {
 
 					let InitIndex = this.props.Section ? 0 :
 						safetouch(this.props.location.state)().TextNodeBegin;
-					this.InitPreloadResources(nextProps.Section.PreloadResources, false, !KeepPrevScene());
+					this.InitPreloadResources(nextProps.Section.PreloadResources, false, true);
 					TextNodeInterpreter(nextProps.Section,
 						Actions.SetNodeIndex(InitIndex),
 						this.MiddleWareCallbackFuncArr);

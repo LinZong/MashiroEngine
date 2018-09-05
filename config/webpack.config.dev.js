@@ -160,6 +160,14 @@ module.exports = {
           // In production, we use a plugin to extract that CSS to a file, but
           // in development "style" loader enables hot editing of CSS.
           {
+            test: /\.less$/,
+            use: [
+              'style-loader',
+              { loader: 'css-loader', options: { importLoaders: 1 } },
+              'less-loader'
+            ]
+          },
+          {
             test: /\.css$/,
             use: [
               require.resolve('style-loader'),

@@ -56,7 +56,7 @@ function LoadGlobalConfig() {
         Environment.UI = { LoadingImage: './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\FakeLoading.jpg'),
                            SaveDataPlaceHolder : './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\EmptySlot.png') };
         global.Environment = Environment;
-        global.MyEngine = {StatusMachine:{}};
+        global.MyEngine = {StatusMachine:{},FirstRun:true};
         global.MyEngine.StatusMachine.AllChapter = LoadAllChapters(Environment.ChapterDir);//测试加载所有章节.
         global.MyEngine.StatusMachine.StoryLine = require('./storyline/storyline').GetStoryLine();
         global.SettingsNode = {};
