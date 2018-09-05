@@ -14,7 +14,7 @@ class WelcomeView extends React.Component {
         this.WelcomeContainerRef = React.createRef();
         this.WelcomeImageAnimator = this.WelcomeImageAnimator.bind(this);
         this.state = {
-            WelcomePicsArr: ["url('file:///D:/BG/Pic0.png')", "url('file:///D:/BG/Pic1.jpg')"]
+            WelcomePicsArr: ["url(\"file:///../../../res/Resources/Theme/UIResources/Framework/Pic0.png\")", "url(\"file:///../../../res/Resources/Theme/UIResources/Framework/Pic1.jpg\")"]
             , CurrentWelcomePic: null
         };
     }
