@@ -7,7 +7,7 @@ function FindPrevPlainText(Section, EndIndexer) {
 }
 function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
     let LastNewIndex = FindPrevPlainText(NowPlayingSection, EndIndexer);
-    let RollbackPlainText = new Array();
+    let RollbackPlainText = [];
     for (var i = LastNewIndex; i <= TextNodeIndexer; ++i) {
         RollbackPlainText.push(NowPlayingSection.TextNodes[i].PlainText);
     }
@@ -30,6 +30,7 @@ function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
             TextNodeIndexer = ev.SetIndex;
             break;
         }
+        default:break;
     }
     if (NowPlayingSection === null) return;
     let StatusFlag = null;/*

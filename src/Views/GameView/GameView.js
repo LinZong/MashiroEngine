@@ -461,12 +461,13 @@ class GameView extends Component {
 				case 'new': {
 
 					const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
-					const HaveSelection = safetouch(nextProps).Section.Header.Special.HaveSelection;
+					const {KeepPrevScene,HaveSelection} = safetouch(nextProps).Section.Header.Special;
+					
 					this.PlayerStoryLine.push({ Chapter: CurrentChapter.Index, Branch: CurrentBranch, Section: CurrentSectionIndex, Selection: HaveSelection() });
 
 					let InitIndex = this.props.Section ? 0 :
 						safetouch(this.props.location.state)().TextNodeBegin;
-					this.InitPreloadResources(nextProps.Section.PreloadResources, false, true);
+					this.InitPreloadResources(nextProps.Section.PreloadResources, false, !KeepPrevScene());
 					TextNodeInterpreter(nextProps.Section,
 						Actions.SetNodeIndex(InitIndex),
 						this.MiddleWareCallbackFuncArr);
