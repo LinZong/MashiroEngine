@@ -1,2 +1,3 @@
 import GameViewReducer from './GameViewReducer';
-export {GameViewReducer}
+import SettingReducer from './SettingReducer';
+export {GameViewReducer,SettingReducer}

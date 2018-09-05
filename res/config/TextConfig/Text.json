@@ -1,9 +1,9 @@
 {
-	"SettingName":"TextConfig",
+	"SettingName":"TEXTCONFIG",
 	"SettingOptions":{
 		"LeftCol":[
 			{
-				"Name":"TextTypingSpeed",
+				"Name":"TEXTSPEED",
 				"Title":"文本速度",
 				"Type":"Slider",
 				"Min":1,
@@ -11,45 +11,45 @@
 				"Description":"就是说文本出现的时候那个打字机效果的打字速度"
 			},
 			{
-				"Name":"AutoPlaySpeed",
+				"Name":"AUTOPLAYSPEED",
 				"Title":"自动播放速度",
 				"Type":"Slider",
 				"Min":1,
 				"Max":100
 			},
 			{
-				"Name":"AutoPlayMode",
+				"Name":"AUTOPLAYMODE",
 				"Title":"自动播放模式",
 				"Type":"RadioGroup",
 				"Selection":[
-					{"Value":"Normal","Title":"正常模式"},
-					{"Value":"TextPrority","Title":"文本优先模式"},
-					{"Value":"VoicePrority","Title":"音声优先模式"}
+					{"Value":"AUTOPLAYNORMAL","Title":"正常模式"},
+					{"Value":"AUTOPLAYTEXTFIRST","Title":"文本优先模式"},
+					{"Value":"AUTOPLAYSOUNDFIRST","Title":"音声优先模式"}
 				]
 			},
 			{
-				"Name":"AutoModeNextNodeDelay",
+				"Name":"AUTOPLAYSWITCHTEXTDELAY",
 				"Title":"自动模式文本切换延迟(ms)",
 				"Type":"Slider",
 				"Min":0,
 				"Max":100000
 			},
 			{
-				"Name":"SkipModeAfterSelection",
+				"Name":"SKIPSTATUSAFTERSELECTION",
 				"Title":"选择选项后Skip模式状态",
 				"Type":"RadioGroup",
 				"Selection":[
-					{"Value":"Keep","Title":"维持Skip模式"},
-					{"Value":"Exit","Title":"退出Skip模式"}
+					{"Value":"KEEPSKIPMODE","Title":"维持Skip模式"},
+					{"Value":"EXITSKIPMODE","Title":"退出Skip模式"}
 				]
 			},
 			{
-				"Name":"AutoPlayModeAfterSelection",
+				"Name":"AUTOPLAYMODEAFTERSELECTION",
 				"Title":"选择选项后自动播放模式状态",
 				"Type":"RadioGroup",
 				"Selection":[
-					{"Value":"Keep","Title":"维持自动播放模式"},
-					{"Value":"Exit","Title":"退出自动播放模式"}
+					{"Value":"KEEPAUTOPLAYMODE","Title":"维持自动播放模式"},
+					{"Value":"EXITAUTOPLAYMODE","Title":"退出自动播放模式"}
 				]
 			}
 		],

@@ -29,7 +29,7 @@ class GameView extends Component {
 			TextBoxVisible: true,
 			AutoMode: false
 		};
-			//游戏画面控制函数
+		//游戏画面控制函数
 		this.ChangeNode = this.ChangeNode.bind(this);
 		this.ApplyTextToView = this.ApplyTextToView.bind(this);
 		this.GetNewTextNode = this.GetNewTextNode.bind(this);
@@ -205,7 +205,7 @@ class GameView extends Component {
 		}
 	}
 	MoveSectionChecker(type, skip) {
-		this.props.location.state = {JumpType:type};
+		this.props.location.state = { JumpType: type };
 		this.SelectionFinder(this.props.Section, this.NodeIndex, type, (target, elementChange) => {
 			this.InitPreloadResources(elementChange, false, false);
 			TextNodeInterpreter(this.props.Section, Actions.SetNodeIndex(target), this.MiddleWareCallbackFuncArr);
@@ -247,9 +247,9 @@ class GameView extends Component {
 					// 		}
 					// 	}
 					// }
-					
+
 					if (this.PlayerStoryLine.length > 1) {
-						console.log('即将离开',this.PlayerStoryLine.pop());
+						console.log('即将离开', this.PlayerStoryLine.pop());
 						const { Chapter, Branch, Section } = this.PlayerStoryLine.pop();
 						return this.props.onLoadSectionRes(Chapter, Branch, Section);
 					}
@@ -273,7 +273,7 @@ class GameView extends Component {
 		//This function is used to navigate to the correct next selection.
 		const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
 		const MatArr = this.StoryLine.get(CurrentBranch);
-		this.props.location.state = {JumpType:type};
+		this.props.location.state = { JumpType: type };
 		this.SelectionFinder(this.props.Section, this.NodeIndex, type, (target, elementChange) => {
 			this.InitPreloadResources(elementChange, false, false);
 			TextNodeInterpreter(this.props.Section, Actions.SetNodeIndex(target), this.MiddleWareCallbackFuncArr);
@@ -285,12 +285,12 @@ class GameView extends Component {
 					for (let i = CurrentChapter.Index; i < MatArr.length; ++i) {
 						let JBegin = (i === CurrentChapter.Index ? CurrentSectionIndex : 0);
 						for (let j = JBegin; j < MatArr[i].length(); ++j) {
-							if (MatArr[i].touch(j, j+1) === 1) {
-								if (MatArr[i].touch(j+1, j+1).selection) {
-									return this.props.onLoadSectionRes(i, CurrentBranch, j+1);
+							if (MatArr[i].touch(j, j + 1) === 1) {
+								if (MatArr[i].touch(j + 1, j + 1).selection) {
+									return this.props.onLoadSectionRes(i, CurrentBranch, j + 1);
 								}
-								else{
-									this.PlayerStoryLine.push({Chapter:i,Branch:CurrentBranch,Section:j+1,Selection:false});
+								else {
+									this.PlayerStoryLine.push({ Chapter: i, Branch: CurrentBranch, Section: j + 1, Selection: false });
 								}
 							}
 						}
@@ -309,15 +309,15 @@ class GameView extends Component {
 					// 		}
 					// 	}
 					// }
-					
-					if(this.PlayerStoryLine.length>1){
-						console.log('即将离开',this.PlayerStoryLine.pop());
+
+					if (this.PlayerStoryLine.length > 1) {
+						console.log('即将离开', this.PlayerStoryLine.pop());
 						let result = this.PlayerStoryLine.pop();
-						while(!result.Selection&&this.PlayerStoryLine.length>1){
+						while (!result.Selection && this.PlayerStoryLine.length > 1) {
 							result = this.PlayerStoryLine.pop();
 						}
-						const { Chapter,Branch,Section} = result;
-						this.props.onLoadSectionRes(Chapter,Branch,Section);
+						const { Chapter, Branch, Section } = result;
+						this.props.onLoadSectionRes(Chapter, Branch, Section);
 					}
 					break;
 				}
@@ -403,7 +403,7 @@ class GameView extends Component {
 		this.TypingController.Stopper = ControllerFunc;
 	}
 	SaveState() {
-		let FreezeState = { ...this.state, NodeIndex: this.NodeIndex ,PlayerStoryLine:this.PlayerStoryLine};
+		let FreezeState = { ...this.state, NodeIndex: this.NodeIndex, PlayerStoryLine: this.PlayerStoryLine };
 		delete FreezeState['load'];
 		const contents = window.electron.remote.getCurrentWindow().webContents;
 		const PrevInfo = GetGlobalVar();
@@ -422,10 +422,8 @@ class GameView extends Component {
 		switch (LoadType) {
 			case 'next':
 			case 'new': {
-				let Chapter, Branch, Section;
-				Chapter = safetouch(this.props.location.state).Chapter();
-				Branch = safetouch(this.props.location.state).Branch();
-				Section = safetouch(this.props.location.state).Section();
+				let NewState = safetouch(this.props.location.state);
+				const { Chapter, Branch, Section } = NewState();
 				this.props.onLoadSectionRes(Chapter, Branch, Section);
 				break;
 			}
@@ -464,7 +462,7 @@ class GameView extends Component {
 
 					const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
 					const HaveSelection = safetouch(nextProps).Section.Header.Special.HaveSelection;
-					this.PlayerStoryLine.push({Chapter:CurrentChapter.Index,Branch:CurrentBranch,Section:CurrentSectionIndex,Selection:HaveSelection()});
+					this.PlayerStoryLine.push({ Chapter: CurrentChapter.Index, Branch: CurrentBranch, Section: CurrentSectionIndex, Selection: HaveSelection() });
 
 					let InitIndex = this.props.Section ? 0 :
 						safetouch(this.props.location.state)().TextNodeBegin;
@@ -477,7 +475,7 @@ class GameView extends Component {
 				case 'select': {
 					const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
 
-					this.PlayerStoryLine.push({Chapter:CurrentChapter.Index,Branch:CurrentBranch,Section:CurrentSectionIndex,Selection:true});
+					this.PlayerStoryLine.push({ Chapter: CurrentChapter.Index, Branch: CurrentBranch, Section: CurrentSectionIndex, Selection: true });
 
 					this.SelectionFinder(nextProps.Section, nextProps.Section.TextNodes.length - 1, nextProps.location.state.JumpType, (target, elementChange) => {
 						this.InitPreloadResources(nextProps.Section.PreloadResources, false, true);//先初始化默认资源

@@ -20,7 +20,7 @@ class Audio extends React.Component {
 	SetAllVolume() {
 		if (this.props.BGM) {
 			let node = document.getElementById('BGM');
-			node.volume = GetSettingValue('BGMVolume')/100;
+			node.volume = GetSettingValue('BGMVOLUME')/100;
 			node.play();
 			this.ShowBGMChanged && this.openNotification(this.props.BGM.Name);
 			this.ShowBGMChanged = false;

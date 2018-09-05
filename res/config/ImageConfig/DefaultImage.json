@@ -1,39 +1,35 @@
 {
-	"ConfigName":"ImageConfig",
+	"SettingName":"IMAGECONFIG",
 	"SettingElement":{
 		"LeftCol":[
 			{
-				"Name":"WindowMode",
+				"Name":"WINDOWMODE",
 				"Value":false
 			},
 			{
-				"Name":"WindowRatio",
+				"Name":"DISPLAYRATIO",
 				"Value":"4of3"
 			},
 			{
-				"Name":"AnimationEffect",
+				"Name":"ANIMATIONEFFECTS",
 				"Value":"true"
 			},
 			{
-				"Name":"KeepWindowAtTop",
+				"Name":"KEEPTHEWINDOWATTOP",
 				"Value":false
 			},
 			{
-				"Name":"ChangeSpeakerEmotion",
+				"Name":"CHANGEEMOTIONS",
 				"Value":"true"
 			}
 		],
 		"RightCol":[
 			{
-				"Name":"AdmireJuLaoMarioSu",
-				"Value":"true"
+				"Name":"LANGUAGE",
+				"Value":"zh"
 			},
 			{
-				"Name":"Language",
-				"Value":"zh-cn"
-			},
-			{
-				"Name":"ReduceLoadingTime",
+				"Name":"REDUCELOADINGDELAY",
 				"Value":"true"
 			}
 		]

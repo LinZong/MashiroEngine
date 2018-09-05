@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout, Menu, Row, Col, Icon, Switch ,Pagination} from 'antd';
+import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import './SaveDataView.css';
 import SaveDataPanel from './SaveDataPanel';
@@ -28,18 +29,18 @@ class SaveDataView extends React.Component {
 						style={{ lineHeight: '64px' }}
 						selectable={false}
 					>
-						<Menu.Item key="1" style={{ fontSize: "2em" }}>存档选择</Menu.Item>
+						<Menu.Item key="1" style={{ fontSize: "2em" }}><FormattedMessage id='SELECTSAVEDATA' /></Menu.Item>
 						<Menu.Item key="2">
 							<NavLink className="nav-text" to='/'>
 								<Icon type="arrow-left" />
-								回到主菜单
+								<FormattedMessage id='BACKTOMENU' />
 						</NavLink>
 						</Menu.Item>
 						<Menu.Item key="3">
 							{this.state.type === 'save' || this.props.match.params.from === 'ingame' ? 
 							<NavLink className="nav-text" to='/section/prev'>
 								<Icon type="to-top" />
-								回到游戏
+								<FormattedMessage id='BACKTOGAME' />
 						</NavLink> : null}
 						</Menu.Item>
 						<Menu.Item key="4">

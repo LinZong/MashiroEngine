@@ -1,9 +1,9 @@
 {
-	"SettingName": "SoundConfig",
+	"SettingName": "SOUNDCONFIG",
 	"SettingOptions": {
 		"LeftCol": [
 			{
-				"Name": "BGMVolume",
+				"Name": "BGMVOLUME",
 				"Title": "背景音乐音量",
 				"Type": "Slider",
 				"Min": 0,
@@ -11,7 +11,7 @@
 				"Description": "顾名思义，还看个啥解释"
 			},
 			{
-				"Name": "EffectsVolume",
+				"Name": "EFFECTVOLUME",
 				"Title": "特殊效果音音量",
 				"Type": "Slider",
 				"Min": 0,

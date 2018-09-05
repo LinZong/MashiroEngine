@@ -3,6 +3,7 @@ import { Col, message, Modal } from 'antd';
 import * as Actions from '../../../Engine/actions/SectionActions';
 import store from '../../../Store';
 import { withRouter } from 'react-router';
+import {injectIntl} from 'react-intl';
 import './SaveDataCard.css'
 
 const { CreateSaveData, DeleteSaveData } = require('../../../Engine/LoadSaveData');
@@ -18,7 +19,6 @@ class SaveDataCard extends React.Component {
 		};
 
 		if (this.props.data) this.state.Exist = true;
-
 		this.onClickSlot = this.onClickSlot.bind(this);
 		this.showModal = this.showModal.bind(this);
 		this.handleOk = this.handleOk.bind(this);
@@ -27,7 +27,9 @@ class SaveDataCard extends React.Component {
 		this.DeleteSaveData = this.DeleteSaveData.bind(this);
 		this.SaveToSlot = this.SaveToSlot.bind(this);
 		this.preventBrowserCache = this.preventBrowserCache.bind(this);
-		this.AlertTextArr = ['确定要加载这个存档?', '确定要删除这个存档?', '确定要覆盖这个存档?', '确定要在此新建存档?'];
+
+
+		//this.AlertTextArr = ['确定要加载这个存档?', '确定要删除这个存档?', '确定要覆盖这个存档?', '确定要在此新建存档?'];
 		this.ActionArr = [this.LoadSaveData, this.DeleteSaveData, this.SaveToSlot];
 		this.AlertText = null;
 		this.ActionFunc = null;
@@ -76,26 +78,27 @@ class SaveDataCard extends React.Component {
 		});
 	}
 	onClickSlot(event) {
+		const {intl} = this.props;
 		if (this.props.type.delete) {
 			if (this.state.Exist) {
-				this.AlertText = this.AlertTextArr[1];
+				this.AlertText = intl.formatMessage({id: 'CONFIRMDELETESAVEDATA'});
 				this.ActionFunc = this.ActionArr[1];
 				this.showModal();
 			}
 			else return;
 		}
 		else if (this.props.type.type === 'load' && this.state.Exist) {
-			this.AlertText = this.AlertTextArr[0];
+			this.AlertText = intl.formatMessage({id: 'CONFIRMLOADSAVEDATA'});
 			this.ActionFunc = this.ActionArr[0];
 			this.showModal();
 		}
 		else if (this.props.type.type === 'save' && this.state.Exist) {
-			this.AlertText = this.AlertTextArr[2];
+			this.AlertText = intl.formatMessage({id: 'CONFIRMCOVERSAVEDATA'});
 			this.ActionFunc = this.ActionArr[2];
 			this.showModal();
 		}
 		else if (this.props.type.type === 'save') {
-			this.AlertText = this.AlertTextArr[3];
+			this.AlertText = intl.formatMessage({id: 'CONFIRMCREATESAVEDATA'});
 			this.ActionFunc = this.ActionArr[2];
 			this.showModal();
 		}
@@ -129,4 +132,4 @@ class SaveDataCard extends React.Component {
 		);
 	}
 }
-export default withRouter(SaveDataCard);
+export default withRouter(injectIntl(SaveDataCard));

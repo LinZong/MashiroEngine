@@ -3,14 +3,17 @@ import { Radio, Row, Col, Divider, Select, Tooltip, Slider, InputNumber, message
 import safetouch from 'safe-touch';
 import { LoadUserConfig, SaveUserConfig } from '../../Engine/LoadConfig';
 import * as Status from '../../Engine/Status';
+import { FormattedMessage } from 'react-intl';
+
 const electron = window.electron;
 class ConfigPanel extends React.Component {
 	constructor() {
 		super(...arguments);
-		this.state = { status: 'loading', Desc: null, Settings: null, Changed: false }
+		this.state = { status: 'loading', Desc: null, Settings: null }
 		this.ApplySettings = this.ApplySettings.bind(this);
 		this.NodeInterpreter = this.NodeInterpreter.bind(this);
 		this.LoadConfigPanel = this.LoadConfigPanel.bind(this);
+		this.Changed = false;
 	}
 	ApplySettings(value, idx, SelectedCol) {
 		//探测系统设置
@@ -18,42 +21,46 @@ class ConfigPanel extends React.Component {
 		let Value = safetouch(value.target).value() || value;
 		let ConfigName = refObj.SettingElement[SelectedCol][idx].Name;
 		switch (ConfigName) {
-			case 'WindowMode': {
+			case 'WINDOWMODE': {
 				Value = safetouch(value.target).value();
 				electron.remote.getCurrentWindow().setFullScreen(Value);
 				break;
 			}
-			case 'WindowRatio': {
+			case 'DISPLAYRATIO': {
 				message.info("将根据您当前分辨率确定窗口纵横比", 2);
 				let currWindow = electron.remote.getCurrentWindow();
 				let sizearr = currWindow.getSize();
 				let newWidth = sizearr[0];
 				switch (Value) {
 					case '4of3': {
-						electron.remote.getCurrentWindow().setSize(newWidth,parseInt(newWidth*(3 / 4)));
+						electron.remote.getCurrentWindow().setSize(newWidth, parseInt(newWidth * (3 / 4)));
 						break;
 					}
 					case '16of9': {
-						electron.remote.getCurrentWindow().setSize(newWidth,parseInt(newWidth*(9 / 16)));
+						electron.remote.getCurrentWindow().setSize(newWidth, parseInt(newWidth * (9 / 16)));
 						break;
 					}
+					default: break;
 				}
 				break;
 			}
-			case 'KeepWindowAtTop':{
+			case 'KEEPTHEWINDOWATTOP': {
 				Value = safetouch(value.target).value();
 				electron.remote.getCurrentWindow().setAlwaysOnTop(Value);
-				break;		
-			}
-			case 'BGMVolume':{
-				let node = document.getElementById('BGM');
-				node&&(node.volume=Value/100);
 				break;
 			}
+			case 'BGMVOLUME': {
+				let node = document.getElementById('BGM');
+				node && (node.volume = Value / 100);
+				break;
+			}
+			default: break;
 		}
 		refObj.SettingElement[SelectedCol][idx].Value = Value;
-		this.setState({ Settings: refObj, Changed: true });
-		window.electron.remote.getGlobal('SettingsNode')[this.props.match.params.id] = refObj;
+		this.setState({ Settings: refObj }, () => {
+			SaveUserConfig(this.props.match.params.id, this.state.Settings).done((data) => {
+			}, (reason) => message.error(reason, 1));
+		});
 	}
 	LoadConfigPanel(id) {
 		let res = LoadUserConfig(id);
@@ -63,11 +70,7 @@ class ConfigPanel extends React.Component {
 		this.LoadConfigPanel(this.props.match.params.id);
 	}
 	componentWillReceiveProps(nextProps) {
-		if (this.state.Changed) { SaveUserConfig(this.props.match.params.id, this.state.Settings).done((data) => message.success(data, 1), (reason) => message.error(reason, 1)); }
 		this.LoadConfigPanel(nextProps.match.params.id);
-	}
-	componentWillUnmount() {
-		if (this.state.Changed) { SaveUserConfig(this.props.match.params.id, this.state.Settings).done((data) => message.success(data, 1), (reason) => message.error(reason, 1)); }
 	}
 	NodeInterpreter(Desc, SelectedCol) {
 		return (<Col span={12}>
@@ -77,8 +80,8 @@ class ConfigPanel extends React.Component {
 						return (
 							<div key={idx} style={{ textAlign: "center" }}>
 								<Divider orientation="left">{Item.Description ?
-									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
-									(Item.Title)}</Divider>
+									(<Tooltip title={Item.Description}><FormattedMessage id={Item.Name} /></Tooltip>) :
+									<FormattedMessage id={Item.Name} />}</Divider>
 								<Radio.Group value={this.state.Settings.SettingElement[SelectedCol][idx].Value}
 									buttonStyle="solid" onChange={(value) => this.ApplySettings(value, idx, SelectedCol)}>
 									{Item.Selection.map((e, index) => {
@@ -91,8 +94,8 @@ class ConfigPanel extends React.Component {
 						return (
 							<div key={idx} style={{ textAlign: "center" }}>
 								<Divider orientation="left">{Item.Description ?
-									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
-									(Item.Title)}</Divider>
+									(<Tooltip title={Item.Description}><FormattedMessage id={Item.Name} /></Tooltip>) :
+									<FormattedMessage id={Item.Name} />}</Divider>
 								<Select defaultValue={this.state.Settings.SettingElement[SelectedCol][idx].Value} style={{ width: 200 }}
 									onChange={(value) => this.ApplySettings(value, idx, SelectedCol)}>
 									{Item.Selection.map((e, index) => {
@@ -105,8 +108,8 @@ class ConfigPanel extends React.Component {
 						return (
 							<div key={idx} style={{ textAlign: "center" }}>
 								<Divider orientation="left">{Item.Description ?
-									(<Tooltip title={Item.Description}>{Item.Title}</Tooltip>) :
-									(Item.Title)}</Divider>
+									(<Tooltip title={Item.Description}><FormattedMessage id={Item.Name} /></Tooltip>) :
+									<FormattedMessage id={Item.Name} />}</Divider>
 								<Col span={16}>
 									<Slider min={Item.Min} max={Item.Max} onChange={(value) => this.ApplySettings(value, idx, SelectedCol)}
 										value={this.state.Settings.SettingElement[SelectedCol][idx].Value} />

@@ -9,7 +9,8 @@ aside.welcomemenu{
     font-family: Microsoft Yahei;
     height: 60vh;
     margin-top: 20px auto;
-    z-index: 1
+    z-index: 1;
+    background-color: rgba(255, 255, 255, 0.6)
 }
 
 .nav_ul{
@@ -17,7 +18,18 @@ aside.welcomemenu{
     overflow-y: auto;
     overflow-x: hidden;
 }
-
+.menu-list a {
+    border-radius: 2px;
+    color:#4a4a4a;
+    display: block;
+    padding: 0.5em 0.75em;
+  }
+  .menu-list a:hover {
+    background-color: whitesmoke;
+    color: #363633;
+    opacity: 0.8;
+  }
+  
 div.WelcomeBG{
     box-sizing:content-box; 
     width: 100%;

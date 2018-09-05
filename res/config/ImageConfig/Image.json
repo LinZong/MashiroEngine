@@ -3,7 +3,7 @@
 	"SettingOptions":{
 		"LeftCol":[
 			{
-				"Name":"WindowMode",
+				"Name":"WINDOWMODE",
 				"Title":"显示模式",
 				"Type":"RadioGroup",
 				"Selection":[
@@ -13,7 +13,7 @@
 				"Description":"设置是全屏运行还是窗口运行，没屌用。"
 			},
 			{
-				"Name":"WindowRatio",
+				"Name":"DISPLAYRATIO",
 				"Title":"显示比例",
 				"Type":"RadioGroup",
 				"Selection":[
@@ -22,7 +22,7 @@
 				]
 			},
 			{
-				"Name":"AnimationEffect",
+				"Name":"ANIMATIONEFFECTS",
 				"Title":"动画效果",
 				"Type":"RadioGroup",
 				"Selection":[
@@ -31,7 +31,7 @@
 				]
 			},
 			{
-				"Name":"KeepWindowAtTop",
+				"Name":"KEEPTHEWINDOWATTOP",
 				"Title":"保持窗口位于前端显示",
 				"Type":"RadioGroup",
 				"Selection":[
@@ -40,7 +40,7 @@
 				]
 			},
 			{
-				"Name":"ChangeSpeakerEmotion",
+				"Name":"CHANGEEMOTIONS",
 				"Title":"说话人的表情随着文字变更",
 				"Type":"RadioGroup",
 				"Selection":[
@@ -51,27 +51,17 @@
 		],
 		"RightCol":[
 			{
-				"Name":"AdmireJuLaoMarioSu",
-				"Title":"膜苏希烔巨佬",
-				"Type":"RadioGroup",
-				"Selection":[
-					{"Value":"true","Title":"是"},
-					{"Value":"false","Title":"是"}
-				],
-				"Description":"没啥好说，做游戏必备技能"
-			},
-			{
-				"Name":"Language",
+				"Name":"LANGUAGE",
 				"Title":"游戏界面语言",
 				"Type":"Select",
 				"Selection":[
-					{"Value":"zh-cn","Title":"中文(简体)"},
-					{"Value":"en-us","Title":"English"},
-					{"Value":"ja-jp","Title":"日本語"}
+					{"Value":"zh","Title":"中文(简体)"},
+					{"Value":"en","Title":"English"},
+					{"Value":"ja","Title":"日本語"}
 				]
 			},
 			{
-				"Name":"ReduceLoadingTime",
+				"Name":"REDUCELOADINGDELAY",
 				"Title":"减少停留在Loading图的时间",
 				"Type":"RadioGroup",
 				"Selection":[

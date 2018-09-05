@@ -10,7 +10,6 @@ const Settings = (props) => {
 	return (
 		<NavBar InGame={safetouch(props.location.state).ingame()}>
 			<Switch>
-				<Route exact path='/NewSettings/:id/:from' component={ConfigPanel} />
 				<Route exact path='/NewSettings/:id' component={ConfigPanel} />
 				<Redirect path="/NewSettings" to={{ pathname: '/NewSettings/' + IMAGE_SETTING }} />
 			</Switch>

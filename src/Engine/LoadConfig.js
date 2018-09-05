@@ -6,7 +6,18 @@ const { IMAGE_SETTING,
     CONTROLLER_SETTING,
     INGAME_SETTING, } = require('./actionTypes/SettingType');
 const {ExtendJson} = require('./Util');
+const {ApplySetting} = require('../Engine/actions/SettingActions');
 const Q  = require('q');
+let remoteFs=null;
+let store = null;
+function GetRemoteFs(){
+    if(!remoteFs) remoteFs = window.electron.remote.require('fs');
+    return remoteFs;
+}
+function GetStore(){
+    if(!store) store = require('../Store').default;
+    return store;
+}
 function LoadGlobalConfig() {
     try {
         let FileStream = require('fs');
@@ -96,7 +107,7 @@ function PathResolver(SettingType){
 }
 
 function LoadUserConfig(SettingType) {
-    let fs = window.electron.remote.require('fs');
+    let fs = GetRemoteFs();
     let TargetPath = PathResolver(SettingType);
 
     let DescHandle = fs.readFileSync(TargetPath.Desc);
@@ -111,8 +122,10 @@ function LoadUserConfig(SettingType) {
 }
 
 function SaveUserConfig(SettingType,ConfigObj){
-    var deferrer = Q.defer();
-    let fs = window.electron.remote.require('fs');
+    let deferrer = Q.defer();
+    let fs = GetRemoteFs();
+    let Store = GetStore();
+    Store.dispatch(ApplySetting(SettingType,ConfigObj));
     let TargetPath = PathResolver(SettingType);
     fs.writeFile(TargetPath.User,JSON.stringify(ConfigObj),(err)=>{
         if(err) {console.log(err);deferrer.reject('保存配置失败!');}
@@ -121,19 +134,28 @@ function SaveUserConfig(SettingType,ConfigObj){
     return deferrer.promise;
 }
 
-function GetSettingValue(SettingName,NewValue){
-    let Config =  window.electron.remote.getGlobal('SettingsNode');
+function ResetToDefaultConfig(SettingType){
+    let fs = GetRemoteFs();
+
+    let TargetPath = PathResolver(SettingType);
+    let DefHandle = fs.readFileSync(TargetPath.Default);
+    let DefJson = JSON.parse(DefHandle);
+    return SaveUserConfig(SettingType,DefJson);
+}
+
+function GetSettingValue(SettingName,SearchObj){
+    let Config = SearchObj||window.electron.remote.getGlobal('SettingsNode');
     if(Config){
         for(let name in Config){
             let element = Config[name].SettingElement;
             for(let key in element){
                 for(let i=0;i<element[key].length;++i){
                     if(element[key][i].Name===SettingName){
-                        if(NewValue){
-                            let PrevValue = element[key][i].Value;
-                            element[key][i].Value = NewValue;
-                            return PrevValue;
-                        }
+                        // if(arguments[1]){
+                        //     let PrevValue = element[key][i].Value;
+                        //     element[key][i].Value = NewValue;
+                        //     return PrevValue;
+                        // }
                         return element[key][i].Value;
                     }
                 }
@@ -143,4 +165,4 @@ function GetSettingValue(SettingName,NewValue){
     return undefined;
 }
 
-module.exports = { LoadGlobalConfig, LoadUserConfig,SaveUserConfig ,GetSettingValue};
+module.exports = { LoadGlobalConfig, LoadUserConfig,SaveUserConfig ,GetSettingValue,ResetToDefaultConfig};

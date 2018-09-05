@@ -1,26 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { NavLink } from 'react-router-dom'
+import { FormattedMessage } from 'react-intl';
 import 'bulma/css/bulma.css'
 import './WelcomeView.css'
 import store from '../../Store';
-import {LeaveGameView} from '../../Engine/actions/SectionActions';
+import { LeaveGameView } from '../../Engine/actions/SectionActions';
 const electron = window.electron;
 class WelcomeView extends React.Component {
-    constructor(){
+    constructor() {
         super(...arguments);
-        this.welcomeRef=React.createRef();
-        this.WelcomeImageAnimator=this.WelcomeImageAnimator.bind(this);
+        this.welcomeRef = React.createRef();
+        this.WelcomeImageAnimator = this.WelcomeImageAnimator.bind(this);
     }
-    WelcomeImageAnimator(){
+    WelcomeImageAnimator() {
         var count = 0;
-        let IntervalHandler = setInterval(()=>{if(0<=count&&count<=60){count++;this.welcomeRef.current.style.opacity = 1-(count/60);}},32);
-        setTimeout(()=>{this.welcomeRef.current.style.zIndex=0;clearInterval(IntervalHandler)},3000);
+        let IntervalHandler = setInterval(() => { if (0 <= count && count <= 60) { count++; this.welcomeRef.current.style.opacity = 1 - (count / 60); } }, 32);
+        setTimeout(() => { this.welcomeRef.current.style.zIndex = 0; clearInterval(IntervalHandler) }, 3000);
     }
-    componentDidMount(){
+    componentDidMount() {
         let GameViewData = store.getState().GameView;
-        if(GameViewData.Section){
+        if (GameViewData.Section) {
             store.dispatch(LeaveGameView());
+
         }
         ReactDOM.unmountComponentAtNode(document.getElementById('music'));
     }
@@ -30,19 +32,19 @@ class WelcomeView extends React.Component {
             <aside className="menu welcomemenu">
                 <ul className="menu-list nav_ul" id="MenuButton">
                     <li>
-                        <NavLink to='/chapters'><li>从头开始(现在是测试所以可以随意选章节)</li></NavLink>
+                        <NavLink to='/chapters'><FormattedMessage id='START' /></NavLink>
                     </li>
                     <li>
-                        <NavLink to='/savedata/load'><li>加载存档</li></NavLink>
+                        <NavLink to='/savedata/load'><FormattedMessage id='LOADSAVEDATA' /></NavLink>
                     </li>
                     <li>
-                        <a>Flow-Chart</a>
+                        <a><FormattedMessage id='FLOWCHART' /></a>
                     </li>
                     <li>
-                        <a>特典</a>
+                        <a><FormattedMessage id='EXTRA' /></a>
                     </li>
                     <li>
-                        <NavLink to='/NewSettings'><li>設定</li></NavLink>
+                        <NavLink to='/NewSettings'><li><FormattedMessage id='SETTING' /></li></NavLink>
                     </li>
                     <li>
                         <a onClick={() => {
@@ -51,7 +53,7 @@ class WelcomeView extends React.Component {
                                 message: "終了しますか？",
                                 title: "終了確認",
                                 buttons: ["はい", "キャンセル"],
-                                cancelId:1
+                                cancelId: 1
                             };
                             electron.remote.dialog.showMessageBox(null, options,
                                 (response) => {

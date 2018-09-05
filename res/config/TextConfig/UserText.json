@@ -1,1 +1,32 @@
-{"SettingName":"TextConfig","SettingElement":{"LeftCol":[{"Name":"TextTypingSpeed","Value":8},{"Name":"AutoPlaySpeed","Value":38},{"Name":"AutoPlayMode","Value":"Normal"},{"Name":"AutoModeNextNodeDelay","Value":3000},{"Name":"SkipModeAfterSelection","Value":"Exit"},{"Name":"AutoPlayModeAfterSelection","Value":"Keep"}],"RightCol":[]}}
+{
+    "SettingName": "TEXTCONFIG",
+    "SettingElement": {
+        "LeftCol": [
+            {
+                "Name": "TEXTSPEED",
+                "Value": 8
+            },
+            {
+                "Name": "AUTOPLAYSPEED",
+                "Value": 26
+            },
+            {
+                "Name": "AUTOPLAYMODE",
+                "Value": "AUTOPLAYNORMAL"
+            },
+            {
+                "Name": "AUTOPLAYSWITCHTEXTDELAY",
+                "Value": 2000
+            },
+            {
+                "Name": "SKIPSTATUSAFTERSELECTION",
+                "Value": "KEEPSKIPMODE"
+            },
+            {
+                "Name": "AUTOPLAYMODEAFTERSELECTION",
+                "Value": "KEEPAUTOPLAYMODE"
+            }
+        ],
+        "RightCol": []
+    }
+}
