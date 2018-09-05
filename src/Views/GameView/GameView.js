@@ -61,7 +61,7 @@ class GameView extends Component {
 		//节点解析器的回调函数
 		this.MiddleWareCallbackFuncArr = [null, this.InitPreloadResources, this.ApplyTextToView, this.ApplyPlainTextToView, this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
 		this.IsBlockKey = false;
-		this.AutoModeNextNodeDelay = GetSettingValue('AutoModeNextNodeDelay');
+		this.NodeDelay = GetSettingValue('AUTOPLAYSWITCHTEXTDELAY');
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
 
@@ -486,7 +486,7 @@ class GameView extends Component {
 				}
 				case 'save': {
 					let InitIndex = this.props.location.state.SaveInfo.NodeIndex;
-					this.props.location.state.SaveInfo = undefined;//读过一次就删掉了
+					//this.props.location.state.SaveInfo = undefined;//读过一次就删掉了
 					TextNodeInterpreter(nextProps.Section,
 						Actions.SetNodeIndex(InitIndex),
 						this.MiddleWareCallbackFuncArr);
@@ -511,7 +511,7 @@ class GameView extends Component {
 		let TmpInfo = Object.assign({}, SaveData);//deep copy
 		delete TmpInfo['PrevInfo'];
 		this.props.onLoadSaveData(SaveData);
-		this.setState(TmpInfo);
+		this.setState(TmpInfo,()=>{console.log(this.state)});
 		this.PlayerStoryLine = SaveData.PlayerStoryLine;
 	}
 	VoiceEnd(type) {

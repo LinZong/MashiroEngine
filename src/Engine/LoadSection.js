@@ -126,7 +126,7 @@ function GameViewElementRender(TextNodeObj, callback, StatusObj) {
         if (TextNodeObj.ChangeElement&&StatusObj.ActionType===PREV_NODE&&!TextNodeObj.ForceRollback) {
             return ;
         }
-        else if(TextNodeObj.ChangeElement||(StatusObj.ActionType===PREV_NODE&&TextNodeObj.ForceRollback)){
+        else if((TextNodeObj.ChangeElement&&StatusObj.ActionType!==SET_NODE_INDEX)||(StatusObj.ActionType===PREV_NODE&&TextNodeObj.ForceRollback)){
             callback(TextNodeObj.ChangeElement, TextNodeObj.ForceRollback, false);
         }
     }
