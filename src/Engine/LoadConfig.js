@@ -8,8 +8,8 @@ const { IMAGE_SETTING,
 const { ExtendJson } = require('./Util');
 const { ApplySetting } = require('../Engine/actions/SettingActions');
 const Q = require('q');
-const path = require('path');
-const eventproxy = require('eventproxy');
+// const path = require('path');
+// const eventproxy = require('eventproxy');
 let remoteFs = null;
 let store = null;
 function GetRemoteFs() {
@@ -32,7 +32,7 @@ function LoadGlobalConfig() {
         Environment.CharacterDir = './' + Path.join(Environment.Path.Root, Environment.Path.Resources.Character);
         Environment.ThemeDir = './' + Path.join(Environment.Path.Root, Environment.Path.Resources.Theme);
 
-
+        
         Environment.SaveDataDir = './' + Environment.Path.Savedata;
 
         Environment.Config = {};
@@ -41,16 +41,16 @@ function LoadGlobalConfig() {
         Environment.Config[SOUND_SETTING] = {};
 
         Environment.Config[IMAGE_SETTING].Desc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Elements);
-        Environment.Config[IMAGE_SETTING].Def = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Default);
+        Environment.Config[IMAGE_SETTING].Default = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Default);
         Environment.Config[IMAGE_SETTING].User = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.User);
 
 
         Environment.Config[TEXT_SETTING].Desc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Elements);
-        Environment.Config[TEXT_SETTING].Def = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Default);
+        Environment.Config[TEXT_SETTING].Default = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Default);
         Environment.Config[TEXT_SETTING].User = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.User);
 
         Environment.Config[SOUND_SETTING].Desc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Sound.Elements);
-        Environment.Config[SOUND_SETTING].Def = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Sound.Default);
+        Environment.Config[SOUND_SETTING].Default = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Sound.Default);
         Environment.Config[SOUND_SETTING].User = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Sound.User);
 
 
@@ -59,6 +59,7 @@ function LoadGlobalConfig() {
             LoadingImage: './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\FakeLoading.jpg'),
             SaveDataPlaceHolder: './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\EmptySlot.png')
         };
+        
         global.Environment = Environment;
         global.MyEngine = { StatusMachine: {}, FirstRun: true };
         global.MyEngine.StatusMachine.AllChapter = LoadAllChapters(Environment.ChapterDir);//测试加载所有章节.
@@ -76,45 +77,15 @@ function LoadGlobalConfig() {
                 }
             }
         }
-        let characterFile = FileStream.readFileSync(Environment.CharacterDir + '/CharacterInfo.json');
-        global.MyEngine.CharacterInfo = JSON.parse(characterFile);
+
     } catch (error) {
         throw error;
     }
 }
 function PathResolver(SettingType) {
-    var TargetPath = {};
     var ConfigPathNode = window.electron.remote.getGlobal('Environment').Config;
-    switch (SettingType) {
-        case IMAGE_SETTING: {
-            TargetPath.Desc = ConfigPathNode[IMAGE_SETTING].Desc;
-            TargetPath.Default = ConfigPathNode[IMAGE_SETTING].Def;
-            TargetPath.User = ConfigPathNode[IMAGE_SETTING].User;
-            break;
-        }
-        case TEXT_SETTING: {
-            TargetPath.Desc = ConfigPathNode[TEXT_SETTING].Desc;
-            TargetPath.Default = ConfigPathNode[TEXT_SETTING].Def;
-            TargetPath.User = ConfigPathNode[TEXT_SETTING].User;
-            break;
-        }
-        case SOUND_SETTING: {
-            TargetPath.Desc = ConfigPathNode[SOUND_SETTING].Desc;
-            TargetPath.Default = ConfigPathNode[SOUND_SETTING].Def;
-            TargetPath.User = ConfigPathNode[SOUND_SETTING].User;
-            break;
-        }
-        case CONTROLLER_SETTING: {
-            TargetPath = ConfigPathNode.ImageConfigPath;
-            break;
-        }
-        case INGAME_SETTING: {
-            TargetPath = ConfigPathNode.ImageConfigPath;
-            break;
-        }
-        default: TargetPath = {};
-    }
-    return TargetPath;
+   const {Desc,Default,User} =  ConfigPathNode[SettingType];
+    return {Desc,Default,User};
 }
 
 function LoadCustomModuleData(NodeName, DataPath) {
@@ -172,7 +143,6 @@ function SaveCustomProfile(ProfileName, ProfilePath, ProfileObj) {
 
 function ResetToDefaultConfig(SettingType) {
     let fs = GetRemoteFs();
-
     let TargetPath = PathResolver(SettingType);
     let DefHandle = fs.readFileSync(TargetPath.Default);
     let DefJson = JSON.parse(DefHandle);
@@ -187,11 +157,6 @@ function GetSettingValue(SettingName, SearchObj) {
             for (let key in element) {
                 for (let i = 0; i < element[key].length; ++i) {
                     if (element[key][i].Name === SettingName) {
-                        // if(arguments[1]){
-                        //     let PrevValue = element[key][i].Value;
-                        //     element[key][i].Value = NewValue;
-                        //     return PrevValue;
-                        // }
                         return element[key][i].Value;
                     }
                 }
@@ -199,6 +164,10 @@ function GetSettingValue(SettingName, SearchObj) {
         }
     }
     return undefined;
+}
+
+function GetCustomSettingValue(SettingName,SearchObj){
+    
 }
 
 module.exports = { LoadGlobalConfig, LoadUserConfig, SaveUserConfig, GetSettingValue, ResetToDefaultConfig, SaveCustomProfile };

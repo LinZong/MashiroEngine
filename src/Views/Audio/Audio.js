@@ -55,7 +55,7 @@ class Audio extends React.Component {
 		if (nextProps.BGM !== this.props.BGM) {
 			this.ShowBGMChanged = true;
 		}
-		this.SetAllVolume();
+		//this.SetAllVolume();
 	}
 	shouldComponentUpdate(nextProps,nextState){
 		return this.props.BGM!==nextProps.BGM||this.props.Character!==nextProps.Character;

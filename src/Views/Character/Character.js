@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TransitionGroup from 'react-addons-css-transition-group';
 import { Row, Col } from 'antd';
-import './Character.css';
+import './Character.less';
 class Character extends React.Component {
 	constructor() {
 		super(...arguments);
@@ -29,8 +29,8 @@ class Character extends React.Component {
 						{
 							this.props.CharacterList ?
 								this.props.CharacterList.map((it, idx) => (
-									<Col key={it.Name} span={24 / this.props.CharacterList.length}>
-										<div className="CharacterImage" style={{ backgroundImage: it.Path }}></div>
+									<Col key={it.Name+this.props.CharacterList.length} span={24 / this.props.CharacterList.length}>
+										<div className={`CharacterImage ${it.Name}`} style={{ backgroundImage: it.Path }}></div>
 									</Col>
 								), this)
 								: null
