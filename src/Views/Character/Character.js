@@ -7,11 +7,11 @@ class Character extends React.Component {
 	constructor() {
 		super(...arguments);
 		//传入数组，通过数组长度计算Col 的span
-		this.state={EnterTransition:false};
+		this.state = { EnterTransition: false };
 	}
-	componentWillReceiveProps(nextProps){
-		if(nextProps.CharacterList&&this.props.CharacterList){
-			this.setState({EnterTransition:(nextProps.CharacterList.length!==0&&this.props.CharacterList.length===0)});
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.CharacterList && this.props.CharacterList) {
+			this.setState({ EnterTransition: (nextProps.CharacterList.length !== 0 && this.props.CharacterList.length === 0) });
 		}
 	}
 	render() {
@@ -30,7 +30,7 @@ class Character extends React.Component {
 							this.props.CharacterList ?
 								this.props.CharacterList.map((it, idx) => (
 									<Col key={it.Name} span={24 / this.props.CharacterList.length}>
-										<div className="CharacterImage" style={{backgroundImage:it.Path}}></div>
+										<div className="CharacterImage" style={{ backgroundImage: it.Path }}></div>
 									</Col>
 								), this)
 								: null

@@ -20,6 +20,12 @@
 			}
 		],
 		"RightCol": [
+			{
+				"Name":"CHARACTERVOLUME",
+				"Title":"角色语音音量",
+				"Type":"CustomSettingModule",
+				"CustomSettingArrayIndex":0
+			}
 		]
 	}
 }

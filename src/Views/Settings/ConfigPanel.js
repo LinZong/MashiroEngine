@@ -1,6 +1,8 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Radio, Row, Col, Divider, Select, Tooltip, Slider, InputNumber, message } from 'antd';
 import safetouch from 'safe-touch';
+import * as CustomSettingModule from '../../AdditionalModule/Settings/index';
 import { LoadUserConfig, SaveUserConfig } from '../../Engine/LoadConfig';
 import * as Status from '../../Engine/Status';
 import { FormattedMessage } from 'react-intl';
@@ -33,11 +35,11 @@ class ConfigPanel extends React.Component {
 				let newWidth = sizearr[0];
 				switch (Value) {
 					case '4of3': {
-						electron.remote.getCurrentWindow().setSize(newWidth, parseInt(newWidth * (3 / 4)));
+						electron.remote.getCurrentWindow().setSize(newWidth, parseInt(newWidth * (3 / 4), 10));
 						break;
 					}
 					case '16of9': {
-						electron.remote.getCurrentWindow().setSize(newWidth, parseInt(newWidth * (9 / 16)));
+						electron.remote.getCurrentWindow().setSize(newWidth, parseInt(newWidth * (9 / 16), 10));
 						break;
 					}
 					default: break;
@@ -124,6 +126,14 @@ class ConfigPanel extends React.Component {
 									/>
 								</Col>
 							</div>);
+					}
+					case "CustomSettingModule": {
+						return (
+						<div key={idx} style={{ textAlign: "center" }} id={Item.Name}>
+						{
+							React.createElement(CustomSettingModule[Item.Name],{name:Item.Name,title:Item.Title,path:this.state.Settings.CustomSettingElement[Item.CustomSettingArrayIndex].DataPath})
+						}
+						</div>);
 					}
 					default: break;
 				}

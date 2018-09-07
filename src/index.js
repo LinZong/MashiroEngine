@@ -9,8 +9,9 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { AllChapterView, GameView, WelcomeView, Settings, SaveDataView } from './Views';
 import registerServiceWorker from './registerServiceWorker';
 function LoadSettingToStore() {
-    let settings = window.electron.remote.getGlobal('SettingsNode');
-    store.dispatch(LoadSetting(settings));
+    let defSettings = window.electron.remote.getGlobal('SettingsNode');
+    let customSettings = window.electron.remote.getGlobal('CustomModuleData');
+    store.dispatch(LoadSetting({...defSettings,...customSettings}));
 }
 LoadSettingToStore();
 ReactDOM.render(

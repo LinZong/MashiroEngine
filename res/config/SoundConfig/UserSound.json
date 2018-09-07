@@ -1,1 +1,27 @@
-{"SettingName":"SOUNDCONFIG","SettingElement":{"LeftCol":[{"Name":"BGMVOLUME","Value":83},{"Name":"EFFECTVOLUME","Value":89}],"RightCol":[]}}
+{
+    "SettingName": "SOUNDCONFIG",
+    "SettingElement": {
+        "LeftCol": [
+            {
+                "Name": "BGMVOLUME",
+                "Value": 82
+            },
+            {
+                "Name": "EFFECTVOLUME",
+                "Value": 89
+            }
+        ],
+        "RightCol": []
+    },
+    "CustomSettingElement": [
+        {
+            "Name": "CHARACTERVOLUME",
+            "Title": "角色语音音量",
+            "Type": "CustomSettingModule",
+            "ViewModelPath": "../../AdditionalModule/Settings_CharacterVolume.js",
+            "DataPath": [
+                "./res/Resources/Character/CharacterInfo.json"
+            ]
+        }
+    ]
+}

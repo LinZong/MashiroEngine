@@ -5,17 +5,19 @@ const { IMAGE_SETTING,
     SOUND_SETTING,
     CONTROLLER_SETTING,
     INGAME_SETTING, } = require('./actionTypes/SettingType');
-const {ExtendJson} = require('./Util');
-const {ApplySetting} = require('../Engine/actions/SettingActions');
-const Q  = require('q');
-let remoteFs=null;
+const { ExtendJson } = require('./Util');
+const { ApplySetting } = require('../Engine/actions/SettingActions');
+const Q = require('q');
+const path = require('path');
+const eventproxy = require('eventproxy');
+let remoteFs = null;
 let store = null;
-function GetRemoteFs(){
-    if(!remoteFs) remoteFs = window.electron.remote.require('fs');
+function GetRemoteFs() {
+    if (!remoteFs) remoteFs = window.electron.remote.require('fs');
     return remoteFs;
 }
-function GetStore(){
-    if(!store) store = require('../Store').default;
+function GetStore() {
+    if (!store) store = require('../Store').default;
     return store;
 }
 function LoadGlobalConfig() {
@@ -41,7 +43,7 @@ function LoadGlobalConfig() {
         Environment.Config[IMAGE_SETTING].Desc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Elements);
         Environment.Config[IMAGE_SETTING].Def = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Default);
         Environment.Config[IMAGE_SETTING].User = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.User);
-        
+
 
         Environment.Config[TEXT_SETTING].Desc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Elements);
         Environment.Config[TEXT_SETTING].Def = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Text.Default);
@@ -53,25 +55,34 @@ function LoadGlobalConfig() {
 
 
         //占坑，以后肯定是要加载全局UI 资源的(Default or usersettings)
-        Environment.UI = { LoadingImage: './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\FakeLoading.jpg'),
-                           SaveDataPlaceHolder : './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\EmptySlot.png') };
+        Environment.UI = {
+            LoadingImage: './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\FakeLoading.jpg'),
+            SaveDataPlaceHolder: './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\EmptySlot.png')
+        };
         global.Environment = Environment;
-        global.MyEngine = {StatusMachine:{},FirstRun:true};
+        global.MyEngine = { StatusMachine: {}, FirstRun: true };
         global.MyEngine.StatusMachine.AllChapter = LoadAllChapters(Environment.ChapterDir);//测试加载所有章节.
         global.MyEngine.StatusMachine.StoryLine = require('./storyline/storyline').GetStoryLine();
         global.SettingsNode = {};
-        for(var conf in Environment.Config){
+        global.CustomModuleData = {};
+        for (var conf in Environment.Config) {
             let p = Environment.Config[conf].User;
             let handle = FileStream.readFileSync(p);
-            global.SettingsNode[conf] = JSON.parse(handle);
+            let node = JSON.parse(handle);
+            global.SettingsNode[conf] = node;
+            if (node.CustomSettingElement) {
+                for (let i of node.CustomSettingElement) {
+                    LoadCustomModuleData(i.Name, i.DataPath);
+                }
+            }
         }
-        let characterFile = FileStream.readFileSync(Environment.CharacterDir+'/CharacterInfo.json');
+        let characterFile = FileStream.readFileSync(Environment.CharacterDir + '/CharacterInfo.json');
         global.MyEngine.CharacterInfo = JSON.parse(characterFile);
     } catch (error) {
         throw error;
     }
 }
-function PathResolver(SettingType){
+function PathResolver(SettingType) {
     var TargetPath = {};
     var ConfigPathNode = window.electron.remote.getGlobal('Environment').Config;
     switch (SettingType) {
@@ -106,6 +117,15 @@ function PathResolver(SettingType){
     return TargetPath;
 }
 
+function LoadCustomModuleData(NodeName, DataPath) {
+    let DataArr = [];
+    let fs = require('fs');
+    DataPath.forEach(p => {
+        DataArr.push(JSON.parse(fs.readFileSync(p)));
+    });
+    global.CustomModuleData[NodeName] = DataArr;
+}
+
 function LoadUserConfig(SettingType) {
     let fs = GetRemoteFs();
     let TargetPath = PathResolver(SettingType);
@@ -118,39 +138,55 @@ function LoadUserConfig(SettingType) {
     let DefJson = JSON.parse(DefHandle);
     let UserJson = JSON.parse(UserHandle);
 
-	return {Desc:DescJson,Settings:ExtendJson(DefJson,UserJson)};
+    return { Desc: DescJson, Settings: ExtendJson(DefJson, UserJson) };
 }
 
-function SaveUserConfig(SettingType,ConfigObj){
+function SaveUserConfig(SettingType, ConfigObj) {
     let deferrer = Q.defer();
     let fs = GetRemoteFs();
     let Store = GetStore();
-    Store.dispatch(ApplySetting(SettingType,ConfigObj));
+    Store.dispatch(ApplySetting(SettingType, ConfigObj));
     let TargetPath = PathResolver(SettingType);
-    fs.writeFile(TargetPath.User,JSON.stringify(ConfigObj),(err)=>{
-        if(err) {console.log(err);deferrer.reject('保存配置失败!');}
+    fs.writeFile(TargetPath.User, JSON.stringify(ConfigObj), (err) => {
+        if (err) { console.log(err); deferrer.reject('保存配置失败!'); }
         else deferrer.resolve('保存配置成功!');
     });
     return deferrer.promise;
 }
 
-function ResetToDefaultConfig(SettingType){
+function SaveCustomProfile(ProfileName, ProfilePath, ProfileObj) {
+    let deferrer = Q.defer();
+    let fs = GetRemoteFs();
+    let Store = GetStore();
+    try {
+        for (let i = 0; i < ProfilePath.length; ++i) {
+            fs.writeFileSync(ProfilePath[i], JSON.stringify(ProfileObj[i]));
+        }
+    } catch (error) {
+        return deferrer.reject(error);
+    }
+    Store.dispatch(ApplySetting(ProfileName, ProfileObj));
+    deferrer.resolve("全部数据写入完成");
+    return deferrer.promise;
+}
+
+function ResetToDefaultConfig(SettingType) {
     let fs = GetRemoteFs();
 
     let TargetPath = PathResolver(SettingType);
     let DefHandle = fs.readFileSync(TargetPath.Default);
     let DefJson = JSON.parse(DefHandle);
-    return SaveUserConfig(SettingType,DefJson);
+    return SaveUserConfig(SettingType, DefJson);
 }
 
-function GetSettingValue(SettingName,SearchObj){
-    let Config = SearchObj||window.electron.remote.getGlobal('SettingsNode');
-    if(Config){
-        for(let name in Config){
+function GetSettingValue(SettingName, SearchObj) {
+    let Config = SearchObj || window.electron.remote.getGlobal('SettingsNode');
+    if (Config) {
+        for (let name in Config) {
             let element = Config[name].SettingElement;
-            for(let key in element){
-                for(let i=0;i<element[key].length;++i){
-                    if(element[key][i].Name===SettingName){
+            for (let key in element) {
+                for (let i = 0; i < element[key].length; ++i) {
+                    if (element[key][i].Name === SettingName) {
                         // if(arguments[1]){
                         //     let PrevValue = element[key][i].Value;
                         //     element[key][i].Value = NewValue;
@@ -165,4 +201,4 @@ function GetSettingValue(SettingName,SearchObj){
     return undefined;
 }
 
-module.exports = { LoadGlobalConfig, LoadUserConfig,SaveUserConfig ,GetSettingValue,ResetToDefaultConfig};
+module.exports = { LoadGlobalConfig, LoadUserConfig, SaveUserConfig, GetSettingValue, ResetToDefaultConfig, SaveCustomProfile };

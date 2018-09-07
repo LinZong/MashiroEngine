@@ -461,7 +461,7 @@ class GameView extends Component {
 				case 'new': {
 
 					const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
-					const {KeepPrevScene,HaveSelection} = safetouch(nextProps).Section.Header.Special;
+					const {HaveSelection} = safetouch(nextProps).Section.Header.Special;
 					
 					this.PlayerStoryLine.push({ Chapter: CurrentChapter.Index, Branch: CurrentBranch, Section: CurrentSectionIndex, Selection: HaveSelection() });
 
@@ -540,7 +540,7 @@ class GameView extends Component {
 						(() => {
 							switch (this.props.GameViewStatus) {
 								case Status.SUCCESS: {
-									ReactDOM.render(<Audio BGM={this.state.BGM.top()} Character={this.state.CharacterVoice} onEnd={this.VoiceEnd} />, document.getElementById('music'));
+									ReactDOM.render(<Audio BGM={this.state.BGM.top()} Character={{Name:this.state.CharacterName,File:this.state.CharacterVoice}} onEnd={this.VoiceEnd} />, document.getElementById('music'));
 									this.BlockKeyEvent(this.state.NowMode === 'selection' || !this.state.TextBoxVisible);
 									return (
 										<Scene key={2} BG={this.state.Scene.top()} EnableMask={this.state.NowMode !== 'text'} onClick={this.ToggleTextBoxVisible}>
@@ -552,7 +552,6 @@ class GameView extends Component {
 													switch (this.state.NowMode) {
 														case 'text': {
 															return <TextBox
-																SectionName={this.props.Section.Header.SectionName}
 																CharacterName={this.state.CharacterName}
 																TextContent={this.state.Text}
 																MouseEventTrigger={this.ChangeNode}

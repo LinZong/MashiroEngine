@@ -45,7 +45,6 @@ class TextBox extends Component {
                                 <p className="TextBox-intro" id="Text" />
                             </Typed>
                         )}
-
                     </ControlFunctionContext.Consumer>
                     <ControlButton setVisible={this.props.setVisible} 
                                     AutoMode={this.props.AutoMode}/>

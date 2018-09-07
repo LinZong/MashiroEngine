@@ -12,5 +12,16 @@
 			}
 		],
 		"RightCol": []
-	}
+	},
+	"CustomSettingElement": [
+		{
+			"Name": "CHARACTERVOLUME",
+			"Title": "角色语音音量",
+			"Type": "CustomSettingModule",
+			"ViewModelPath": "../../AdditionalModule/Settings_CharacterVolume.js",
+			"DataPath": [
+				"./res/Resources/Character/CharacterInfo.json"
+			]
+		}
+	]
 }

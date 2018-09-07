@@ -1,9 +1,11 @@
 import React from 'react';
 import { notification } from 'antd';
+import store from '../../Store';
 const {GetSettingValue}=require('../../Engine/LoadConfig');
 class Audio extends React.Component {
 	constructor() {
 		super(...arguments);
+		this.state = {CharacterList:store.getState().Setting["CHARACTERVOLUME"][0].CharacterList}
 		//on ended on play , BGM ,character(is array),effects
 		this.SetAllVolume = this.SetAllVolume.bind(this);
 		this.openNotification = this.openNotification.bind(this);
@@ -25,19 +27,26 @@ class Audio extends React.Component {
 			this.ShowBGMChanged && this.openNotification(this.props.BGM.Name);
 			this.ShowBGMChanged = false;
 		}
-		if (this.props.Character) {
+		if (this.props.Character&&this.props.Character.File) {
 			let node = document.getElementById('CharacterVoice');
-			node.volume = 1//这里应该去获取设置
+			node.volume = this.GetCharacterVolume(this.props.Character.Name)//这里应该去获取设置
 			node.play();
 		}
 		const SetArrayVolumeAndPlay = (arr) => {
 			arr.forEach(ele => {
 				let node = document.getElementById(ele.Name);
-				node.volume = GetSettingValue('EffectsVolume')/100;
+				node.volume = GetSettingValue(ele.Name)/100;
 				node.play();
 			})
 		};
 		this.props.Effects && SetArrayVolumeAndPlay(this.props.Effects);
+	}
+	GetCharacterVolume(displayName){
+		for(let i=0;i<this.state.CharacterList.length;++i){
+			if(displayName===this.state.CharacterList[i].DisplayName){
+				return this.state.CharacterList[i].VoiceVolume;
+			}
+		}
 	}
 	componentDidMount() {
 		this.SetAllVolume();
@@ -46,6 +55,7 @@ class Audio extends React.Component {
 		if (nextProps.BGM !== this.props.BGM) {
 			this.ShowBGMChanged = true;
 		}
+		this.SetAllVolume();
 	}
 	shouldComponentUpdate(nextProps,nextState){
 		return this.props.BGM!==nextProps.BGM||this.props.Character!==nextProps.Character;
@@ -75,4 +85,5 @@ class Audio extends React.Component {
 			</div>);
 	}
 }
-export default Audio;
+
+export default (Audio);

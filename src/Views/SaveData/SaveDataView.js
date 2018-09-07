@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Menu, Row, Col, Icon, Switch ,Pagination} from 'antd';
+import { Layout, Menu, Icon, Switch ,Pagination} from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import './SaveDataView.css';
