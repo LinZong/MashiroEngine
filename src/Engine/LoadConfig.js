@@ -166,8 +166,5 @@ function GetSettingValue(SettingName, SearchObj) {
     return undefined;
 }
 
-function GetCustomSettingValue(SettingName,SearchObj){
-    
-}
 
 module.exports = { LoadGlobalConfig, LoadUserConfig, SaveUserConfig, GetSettingValue, ResetToDefaultConfig, SaveCustomProfile };

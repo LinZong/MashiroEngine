@@ -34,28 +34,10 @@ function createWindow() {
 	require('./src/Engine/StatusMachine');//加载全部章节
 	BrowserWindow.addDevToolsExtension('./DevExtensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.3_0/');
 	mainWindow = new BrowserWindow(Options);
-	mainWindow.loadURL('http://localhost:3000');
+	mainWindow.loadURL("http://localhost:3000/");
 	mainWindow.once('ready-to-show', () => {
 		mainWindow.show();
 	})
-
-	// mainWindow.on('resize',function(event){
-	// 	let sizearr = mainWindow.getSize();
-	// 	let newWidth = sizearr[0];
-	// 	let ratio = global.SettingsNode['IMAGE_SETTING']['SettingElement']['LeftCol'][1].Value;
-	// 	console.log(newWidth);
-	// 	switch (ratio){
-	// 		case '4of3':{
-	// 			mainWindow.setSize(newWidth,parseInt(newWidth*(3/4)));
-	// 			break;
-	// 		}
-	// 		case '16of9':{
-				
-	// 			mainWindow.setSize(newWidth,parseInt(newWidth*(9/16)));
-	// 			break;
-	// 		}
-	// 	}
-	// })
 	mainWindow.on('closed', function () {
 		mainWindow = null
 	})

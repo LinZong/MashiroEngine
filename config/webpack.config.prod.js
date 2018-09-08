@@ -158,6 +158,14 @@ module.exports = {
             //   cacheDirectory: true,
             // },
           },
+          {
+            test: /\.less$/,
+            use: [
+              'style-loader',
+              { loader: 'css-loader', options: { importLoaders: 1 } },
+              'less-loader'
+            ]
+          },
           // The notation here is somewhat confusing.
           // "postcss" loader applies autoprefixer to our CSS.
           // "css" loader resolves paths in CSS and adds assets as dependencies.
