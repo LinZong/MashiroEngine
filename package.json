@@ -46,6 +46,7 @@
     "react-addons-css-transition-group": "^15.6.2",
     "react-addons-perf": "^15.4.1",
     "react-addons-test-utils": "^15.4.2",
+    "react-crossfade-image": "^1.1.1",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.4.1",
     "react-flexbox-grid": "^2.1.2",

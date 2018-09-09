@@ -1,25 +1,69 @@
-.CharacterFade-enter{
-	opacity: 0.01;
-  }
-.CharacterFade-enter-active {
-	opacity: 1;
-	transition: opacity 400ms linear;
-  }
-  .CharacterFade-appear {
-	opacity: 0.01;
-  }
-.CharacterFade-appear-active {
-	opacity: 1;
-	transition: opacity 400ms linear;
-  }
-  .CharacterFade-exit {
-	opacity: 1;
-  }
-.CharacterFade-exit-active {
-	opacity: 0.01;
-	transition: opacity 400ms linear;
-  }
+// .CharacterFade-enter{
+// 	opacity: 0.01;
+//   }
+// .CharacterFade-enter-active {
+// 	opacity: 1;
+// 	transition: opacity 400000ms linear;
+//   }
+//   .CharacterFade-appear {
+// 	opacity: 0.01;
+//   }
+// .CharacterFade-appear-active {
+// 	opacity: 1;
+// 	transition: opacity 400000ms linear;
+//   }
+//   .CharacterFade-exit {
+//     position: absolute;
+// 	opacity: 1;
+//   }
+// .CharacterFade-exit-active {
+//   opacity: 0.01;
+//   position: absolute;
+// 	transition: opacity 400000ms linear;
+//   }
   
+
+
+
+
+  
+.defaultTachie-enter{
+  opacity: 0;
+}
+.defaultTachie-enter-active {
+  opacity: 1;
+  left: 0px;
+  transition: opacity 400ms linear;
+}
+.defaultTachie-enter-done {
+  opacity: 1;
+  left: 0px;
+}
+.defaultTachie-appear {
+  opacity: 0;
+}
+.defaultTachie-appear-active {
+  opacity: 1;
+  left: 0px;
+  transition: opacity 400ms linear;
+}
+.defaultTachie-appear-done {
+  opacity: 1;
+  left: 0px;
+}
+.defaultTachie-exit {
+  opacity: 1;
+  left: 0px;
+}
+.defaultTachie-exit-active {
+opacity: 0;
+transition: opacity 400ms linear;
+}
+.defaultLeftTachie-exit-done {
+  opacity: 0;
+  left:-30px;
+  }
+
 div.CharacterImage{
   align-items:center;
   justify-content:center;
