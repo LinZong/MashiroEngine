@@ -1,27 +1,3 @@
-/* .App {
-  text-align: center;
-} */
-
-/* .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-.App-header {
-  height: 150px;
-  padding: 20px;
-  color: rgb(0, 0, 0);
-} */
-
-.App-title {
-  text-align: center;
-  margin-top: 0px;
-  font-size: 1.5em;
-}
-
-.App-intro {
-  margin-top: 0px;
-  font-size: 17pt;
-}
 
 .GameViewFade-enter{
   opacity: 0.01;

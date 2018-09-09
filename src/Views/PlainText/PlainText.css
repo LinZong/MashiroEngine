@@ -19,9 +19,6 @@ div#ScrollWrapper,div.BacklogText
     left: 20vw;
 }
 
-div#ScrollWrapper{
-    overflow: hidden;
-}
 div.BacklogText{
     overflow: auto;
 }
@@ -31,7 +28,6 @@ p#backlogtextp,p#plaintextp{
 .BacklogContainer{
     color: white;
 }
-
 p#BacklogTitle{
     position: absolute;
     font-size: 3.2em;
