@@ -40,6 +40,7 @@ export default class CrossfadeImage extends Component {
       <div style={{ ...defaultStyle, ...{ position: "relative" } }}>
         {topSrc &&
           <img
+            className={ImgClassName}
             style={{ ...defaultStyle, ...style, ...{ position: "absolute" } }}
             src={topSrc}
             alt={alt}
@@ -74,7 +75,7 @@ CrossfadeImage.propTypes = {
 };
 
 CrossfadeImage.defaultProps = {
-  duration: 500,
-  timingFunction: "ease",
+  duration: 400,
+  timingFunction: "linear",
   delay: 0
 };
