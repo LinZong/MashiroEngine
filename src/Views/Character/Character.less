@@ -1,35 +1,32 @@
 .CharacterFade-enter{
 	opacity: 0.01;
   }
-  .CharacterFade-enter.CharacterFade-enter-active {
+.CharacterFade-enter-active {
 	opacity: 1;
 	transition: opacity 400ms linear;
   }
   .CharacterFade-appear {
 	opacity: 0.01;
   }
-  .CharacterFade-appear.CharacterFade-appear-active {
+.CharacterFade-appear-active {
 	opacity: 1;
 	transition: opacity 400ms linear;
   }
-  .CharacterFade-leave {
+  .CharacterFade-exit {
 	opacity: 1;
   }
-  .CharacterFade-leave.CharacterFade-leave-active {
+.CharacterFade-exit-active {
 	opacity: 0.01;
 	transition: opacity 400ms linear;
   }
   
 div.CharacterImage{
-  box-sizing:content-box; 
-  width: 100%;
-  height: -webkit-fill-available;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  position: absolute;
+  align-items:center;
+  justify-content:center;
+  display: flex;
+  display: -webkit-flex;
+  height: 100vh;
 }
 
 @import "../../../res/Resources/Character/CharacterStyle.less";
   
-

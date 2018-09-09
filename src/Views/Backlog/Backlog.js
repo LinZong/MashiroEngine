@@ -1,7 +1,5 @@
 import React from 'react';
-import { PlainText } from '../index'
 import store from '../../Store';
-import './Backlog.css';
 const { BacklogGenerator } = require('../../Engine/LoadSection');
 class Backlog extends React.Component {
 	constructor() {
@@ -18,7 +16,7 @@ class Backlog extends React.Component {
 		return (
 			<div className="BacklogContainer">
 				<p id="BacklogTitle">
-					回顾  Backlog
+					回顾
 				</p>
 				<div className="BacklogText">
 					{

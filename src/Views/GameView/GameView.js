@@ -373,7 +373,7 @@ class GameView extends Component {
 								Character.pop();
 								break;
 							}
-							let CharacterObj = Array.from(PreloadResourcesObj[key], (ele) => ({ ...ele, Path: GetRemoteUrlPath(ele.Path) }));//进行数组深复制
+							let CharacterObj = Array.from(PreloadResourcesObj[key], (ele) => ({ ...ele, Path: GetRemoteUrlPath(ele.Path, true) }));//进行数组深复制
 							Character.push(CharacterObj);
 							break;
 						}
@@ -461,8 +461,8 @@ class GameView extends Component {
 				case 'new': {
 
 					const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
-					const {HaveSelection} = safetouch(nextProps).Section.Header.Special;
-					
+					const { HaveSelection } = safetouch(nextProps).Section.Header.Special;
+
 					this.PlayerStoryLine.push({ Chapter: CurrentChapter.Index, Branch: CurrentBranch, Section: CurrentSectionIndex, Selection: HaveSelection() });
 
 					let InitIndex = this.props.Section ? 0 :
@@ -512,7 +512,7 @@ class GameView extends Component {
 		let TmpInfo = Object.assign({}, SaveData);//deep copy
 		delete TmpInfo['PrevInfo'];
 		this.props.onLoadSaveData(SaveData);
-		this.setState(TmpInfo,()=>{console.log(this.state)});
+		this.setState(TmpInfo, () => { console.log(this.state) });
 		this.PlayerStoryLine = SaveData.PlayerStoryLine;
 	}
 	VoiceEnd(type) {
@@ -540,13 +540,14 @@ class GameView extends Component {
 						(() => {
 							switch (this.props.GameViewStatus) {
 								case Status.SUCCESS: {
-									ReactDOM.render(<Audio BGM={this.state.BGM.top()} Character={{Name:this.state.CharacterName,File:this.state.CharacterVoice}} onEnd={this.VoiceEnd} />, document.getElementById('music'));
+									ReactDOM.render(<Audio BGM={this.state.BGM.top()} Character={{ Name: this.state.CharacterName, File: this.state.CharacterVoice }} onEnd={this.VoiceEnd} />, document.getElementById('music'));
 									this.BlockKeyEvent(this.state.NowMode === 'selection' || !this.state.TextBoxVisible);
 									return (
 										<Scene key={2} BG={this.state.Scene.top()} EnableMask={this.state.NowMode !== 'text'} onClick={this.ToggleTextBoxVisible}>
 											{
 												//这里放Character
-												<Character CharacterList={this.state.Character.top()} />}
+												this.state.Character.top() ? <Character CharacterList={this.state.Character.top()} /> : null
+											}
 											{
 												(() => {
 													switch (this.state.NowMode) {
