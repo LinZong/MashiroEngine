@@ -4,7 +4,7 @@ class Tachie extends React.Component {
     render() {
         return (
             <div className={`CharacterImage`}>
-                    <CrossfadeImage ImgClassName={this.props.IMGClassName} src={this.props.Path} />
+                {this.props.EnableFade ? <CrossfadeImage ImgClassName={this.props.IMGClassName} src={this.props.Path} /> : <img className={this.props.IMGClassName} src={this.props.Path} />}
             </div>);
     }
 }
