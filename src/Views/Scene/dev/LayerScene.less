@@ -1,0 +1,84 @@
+.App {
+    font-family: sans-serif;
+  }
+  .FillUpView(){
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+  }
+
+  [class|="Background"] {
+    .FillUpView();
+  }
+  [class|="Foreground"] {
+    .FillUpView();
+  }
+  
+  .BackgroundImage {
+    .FillUpView();
+    box-sizing: content-box;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: black;
+  }
+  /* .SelectionMask {
+    width: 100%;
+    height: 100%;
+    box-sizing: content-box;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+  } */
+  .Header {
+    display: flex;
+    justify-content: space-around;
+  }
+  .BGM {
+    font-size: 1.5rem;
+  }
+  
+  .CharacterContainer {
+    height: 100vh;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .CharacterImage {
+    height: 40vh;
+  }
+  
+  .CardContainer {
+    background: linear-gradient(rgb(255, 255, 255, 0), rgba(0, 0, 0, 0.9));
+    min-height: 25vh;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+  }
+  .CharacterInfo {
+    top: 1vw;
+    left: 5vw;
+    position: absolute;
+    text-align: center;
+  }
+  .CharacterAvater {
+    max-width: 100px;
+  }
+  .Text {
+    position: relative;
+    left: 25vw;
+    top: 7vh;
+    font-size: 2rem;
+    color: white;
+  }
+  .ControlButton {
+    position: absolute;
+    right: 10vw;
+    bottom: 5vh;
+    color: wheat;
+  }
+  

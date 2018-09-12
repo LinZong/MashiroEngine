@@ -61,7 +61,7 @@ class ControlButtion extends React.Component {
 					this.Func = Func;
 					const { intl } = this.props;
 					return (
-						<div className="ControlButton" style={{ display: "flex", justifyContent: "flex-end" }}>
+						<div style={{display:"flex",justifyContent:"flex-end"}}>
 							<ButtonGroup onClick={(e) => e.stopPropagation()}>
 								<Popover content={this.state.ShowQuickSave} title={intl.formatMessage({ id: 'QLOAD' })}>
 									<Button icon='cloud-upload-o large' onClick={this.LoadQuickSave} />
@@ -90,8 +90,7 @@ class ControlButtion extends React.Component {
 								<Tooltip title={intl.formatMessage({ id: 'HIDETEXTBOX' })}><Button icon='close large' onClick={(e) => { Func.SetTextBoxVisible(false) }} /></Tooltip>
 							</ButtonGroup>
 						</div>);
-				}
-				}
+				}}
 			</ControlFunctionContext.Consumer>);
 	}
 }

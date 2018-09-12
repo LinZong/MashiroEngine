@@ -14,7 +14,7 @@ class WelcomeView extends React.Component {
         const { FirstRun } = electron.remote.getGlobal('MyEngine');
         this.state = {
             WelcomePicsArr: ["url(\"file:///../../../res/Resources/Theme/UIResources/Framework/Pic0.png\")", "url(\"file:///../../../res/Resources/Theme/UIResources/Framework/Pic1.jpg\")"]
-            , CurrentWelcomePic: null, Fr: FirstRun
+            ,  Fr: FirstRun
         };
         if (FirstRun) electron.remote.getGlobal('MyEngine').FirstRun = false;
     }
@@ -30,25 +30,25 @@ class WelcomeView extends React.Component {
             <WelcomeScreen on={false} last={2500} ScreenArray={this.state.WelcomePicsArr}>
                 <div className="WelcomeContainer">
                     <div className="WelcomeBG" style={{ backgroundImage: "url(\"file:///../../../res/Resources/Theme/UIResources/Framework/WelcomeBG.png\")" }} />
-                    <aside className="menu welcomemenu">
-                        <ul className="menu-list nav_ul" id="MenuButton">
+                    <aside className="menu WelcomeMenu">
+                        <ul className="menu-list nav_ul WelcomeMenuList">
                             <li>
-                                <NavLink to='/chapters'><FormattedMessage id='START' /></NavLink>
+                                <NavLink to='/chapters' id='START'><FormattedMessage id='START' /></NavLink>
                             </li>
                             <li>
-                                <NavLink to='/savedata/load'><FormattedMessage id='LOADSAVEDATA' /></NavLink>
+                                <NavLink to='/savedata/load' id='LOADSAVEDATA'><FormattedMessage id='LOADSAVEDATA' /></NavLink>
                             </li>
                             <li>
-                                <a><FormattedMessage id='FLOWCHART' /></a>
+                                <a id='FLOWCHART'><FormattedMessage id='FLOWCHART' /></a>
                             </li>
                             <li>
-                                <a><FormattedMessage id='EXTRA' /></a>
+                                <a id='EXTRA'><FormattedMessage id='EXTRA' /></a>
                             </li>
                             <li>
-                                <NavLink to='/NewSettings'><li><FormattedMessage id='SETTING' /></li></NavLink>
+                                <NavLink to='/NewSettings' id='SETTING'><li><FormattedMessage id='SETTING' /></li></NavLink>
                             </li>
                             <li>
-                                <a onClick={() => {
+                                <a id='EXITGAME' onClick={() => {
                                     const options = {
                                         type: "info",
                                         message: "終了しますか？",

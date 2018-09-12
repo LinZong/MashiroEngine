@@ -125,7 +125,7 @@ class SaveDataCard extends React.Component {
 				<Col span={12}>
 					<div className="SaveDataInfo">
 						<p className="TimeStamp">{this.state.SaveTimeStamp}</p>
-						<p className="Text">{this.state.Title}</p>
+						<p id="OriginalText">{this.state.Title}</p>
 					</div>
 				</Col>
 			</div>

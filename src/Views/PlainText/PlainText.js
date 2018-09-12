@@ -43,7 +43,7 @@ class PlainText extends React.Component {
 		this.typed.destroy();
 		this.ScrollToEnd();
 		clearInterval(this.ScrollIntervalHandle);
-		document.getElementById("Text").innerText = this.props.CurrentText;
+		document.getElementById("CurrentText").innerText = this.props.CurrentText;
 	}
 	componentWillUnmount() {
 		if (this.hasOwnProperty('typed') || this.typed !== undefined) {
@@ -62,7 +62,7 @@ class PlainText extends React.Component {
 						<div className="PlainText" onClick={() => this.props.MouseEventTrigger({ Mouse: true })}>
 							{
 								this.state.TextArray.map((it, idx) => {
-									return idx < this.state.TextArray.length - 1 || (this.props.Rollback || this.props.DisableTypeEffect) ? (<p key={idx} id="plaintextp">{it}</p>) : (
+									return idx < this.state.TextArray.length - 1 || (this.props.Rollback || this.props.DisableTypeEffect) ? (<p key={idx} className="OriginalText">{it}</p>) : (
 										<Typed
 											typedRef={(typed) => { this.typed = typed; }}
 											key={idx}
@@ -81,7 +81,7 @@ class PlainText extends React.Component {
 												clearInterval(this.ScrollIntervalHandle);
 											}}
 											onDestroy={() => Func.SetTypingStatus(0)}>
-											<p id="Text" />
+											<p className="OriginalText" id="CurrentText" key={idx} />
 										</Typed>
 									)
 								}, this)

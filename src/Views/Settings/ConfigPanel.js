@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { Radio, Row, Col, Divider, Select, Tooltip, Slider, InputNumber, message } from 'antd';
 import safetouch from 'safe-touch';
 import * as CustomSettingModule from '../../AdditionalModule/Settings/index';
@@ -75,43 +74,42 @@ class ConfigPanel extends React.Component {
 		this.LoadConfigPanel(nextProps.match.params.id);
 	}
 	NodeInterpreter(Desc, SelectedCol) {
+		const ItemWrapper = (children, idx, Description, Name) => {
+			return (<div key={idx} style={{ textAlign: "center" }}>
+				<Divider orientation="left">{Description ?
+					(<Tooltip title={Description}><FormattedMessage id={Name} /></Tooltip>) :
+					<FormattedMessage id={Name} />}</Divider>
+				{children}
+			</div>);
+		}
 		return (<Col span={12}>
 			{Desc.SettingOptions[SelectedCol].map((Item, idx) => {
 				switch (Item.Type) {
 					case "RadioGroup": {
 						return (
-							<div key={idx} style={{ textAlign: "center" }}>
-								<Divider orientation="left">{Item.Description ?
-									(<Tooltip title={Item.Description}><FormattedMessage id={Item.Name} /></Tooltip>) :
-									<FormattedMessage id={Item.Name} />}</Divider>
+							ItemWrapper(
 								<Radio.Group value={this.state.Settings.SettingElement[SelectedCol][idx].Value}
 									buttonStyle="solid" onChange={(value) => this.ApplySettings(value, idx, SelectedCol)}>
 									{Item.Selection.map((e, index) => {
 										return (<Radio.Button key={index} value={e.Value}>{e.Title}</Radio.Button>);
 									})}
-								</Radio.Group>
-							</div>);
+								</Radio.Group>, idx, Item.Description, Item.Name)
+						);
 					}
 					case "Select": {
 						return (
-							<div key={idx} style={{ textAlign: "center" }}>
-								<Divider orientation="left">{Item.Description ?
-									(<Tooltip title={Item.Description}><FormattedMessage id={Item.Name} /></Tooltip>) :
-									<FormattedMessage id={Item.Name} />}</Divider>
+							ItemWrapper(
 								<Select defaultValue={this.state.Settings.SettingElement[SelectedCol][idx].Value} style={{ width: 200 }}
 									onChange={(value) => this.ApplySettings(value, idx, SelectedCol)}>
 									{Item.Selection.map((e, index) => {
 										return (<Select.Option key={index} value={e.Value}>{e.Title}</Select.Option>);
 									})}
-								</Select>
-							</div>);
+								</Select>, idx, Item.Description, Item.Name)
+						);
 					}
 					case "Slider": {
 						return (
-							<div key={idx} style={{ textAlign: "center" }}>
-								<Divider orientation="left">{Item.Description ?
-									(<Tooltip title={Item.Description}><FormattedMessage id={Item.Name} /></Tooltip>) :
-									<FormattedMessage id={Item.Name} />}</Divider>
+							ItemWrapper(<span>
 								<Col span={16}>
 									<Slider min={Item.Min} max={Item.Max} onChange={(value) => this.ApplySettings(value, idx, SelectedCol)}
 										value={this.state.Settings.SettingElement[SelectedCol][idx].Value} />
@@ -125,15 +123,16 @@ class ConfigPanel extends React.Component {
 										onChange={(value) => this.ApplySettings(value, idx, SelectedCol)}
 									/>
 								</Col>
-							</div>);
+							</span>, idx, Item.Description, Item.Name)
+						);
 					}
 					case "CustomSettingModule": {
 						return (
-						<div key={idx} style={{ textAlign: "center" }} id={Item.Name}>
-						{
-							React.createElement(CustomSettingModule[Item.Name],{name:Item.Name,title:Item.Title,path:this.state.Settings.CustomSettingElement[Item.CustomSettingArrayIndex].DataPath})
-						}
-						</div>);
+							<div key={idx} style={{ textAlign: "center" }} id={Item.Name}>
+								{
+									React.createElement(CustomSettingModule[Item.Name], { name: Item.Name, title: Item.Title, path: this.state.Settings.CustomSettingElement[Item.CustomSettingArrayIndex].DataPath })
+								}
+							</div>);
 					}
 					default: break;
 				}

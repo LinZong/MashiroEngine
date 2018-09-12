@@ -5,7 +5,7 @@ const Selection = (props) => {
 	return (<div className="SelectionFlow">
 		{SelectionArray.map((item, idx) =>
 			(
-				<button key={idx} className="button" onClick={() => {
+				<button key={idx} className="button SelectionButton" onClick={() => {
 					const { Chapter, Branch, Section } = item.JumpTo;
 					onLoadSectionRes(Chapter, Branch, Section);
 				}}>{item.Text}</button>

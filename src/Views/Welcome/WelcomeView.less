@@ -1,29 +1,24 @@
-aside.welcomemenu{
+aside.WelcomeMenu{
     width: 20vw;
     top: 28vh;
     position:absolute;
-    display: block;
     font-size: 2rem;
     left: 4vw;
-    overflow: hidden;
+    overflow: auto;
     font-family: Microsoft Yahei;
-    max-height: 60vh;
-    margin-top: 20px auto;
-    z-index: 1;
+    max-height: 60vh;   
     background-color: rgba(255, 255, 255, 0.6)
 }
 
 .menu-list a {
-    border-radius: 2px;
     color:#4a4a4a;
-    display: block;
     padding: 0.5em 0.75em;
-  }
-  .menu-list a:hover {
-    background-color: whitesmoke;
-    color: #363633;
-    opacity: 0.8;
-  }
+}
+.menu-list a:hover {
+background-color: whitesmoke;
+color: #363633;
+opacity: 0.8;
+}
   
 div.WelcomeBG{
     .bg-mixin();
@@ -31,11 +26,9 @@ div.WelcomeBG{
   }
 
 div.PlainText::-webkit-scrollbar {
-    display: none
+    display: none;
 }
-#MenuButton::-webkit-scrollbar {
-    display: none
-}
+.WelcomeMenu::-webkit-scrollbar {display:none;}
 
 .bg-mixin(){
     box-sizing:content-box; 

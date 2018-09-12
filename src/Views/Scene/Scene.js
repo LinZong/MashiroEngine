@@ -22,7 +22,7 @@ const Scene = (props) => {
                 }
             </TransitionGroup>
 
-            <div className="ChildTextBox">{props.children}</div>
+            <div className="ChildElement">{props.children}</div>
         </div >
     );
 }

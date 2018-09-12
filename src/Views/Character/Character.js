@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'antd';
 import { CSSTransition } from 'react-transition-group';
 import Tachie from './Tachie/Tachie';
+import {GetSettingValue} from '../../Engine/LoadConfig';
 import './Character.less';
 const CheckCharacterExist = (obj) => (obj && obj.Name && obj.Path);
 const CheckCharacterClassName = (obj) => (CheckCharacterExist(obj) && obj.ClassName);
@@ -14,9 +15,10 @@ class Character extends React.Component {
 		this.LastRenderCharacter = [];
 		this.BuildRenderArray = this.BuildRenderArray.bind(this);
 		this.CharacterViewAdapter = this.CharacterViewAdapter.bind(this);
+		this.AnimationEffect = GetSettingValue("ANIMATIONEFFECTS");
 	}
 	BuildRenderArray(arraySource) {
-		this.LastRenderCharacter = Array.from(this.ShouldRenderCharacter);
+		this.LastRenderCharacter = this.ShouldRenderCharacter;
 		this.ShouldRenderCharacter = [];
 		let exists = [];
 		for (let i = 0; i < arraySource.length; ++i) {
@@ -41,8 +43,8 @@ class Character extends React.Component {
 	}
 	CharacterViewAdapter(list, oldList, i, other) {
 		return (<CSSTransition in={this.state.ExistStatus[i]} timeout={400}
-			classNames={CheckCharacterClassName(list[i]) ? list[i].ClassName :
-				(CheckCharacterClassName(oldList[i]) ? oldList[i].ClassName : "defaultTachie")} key={i}>
+			classNames={(CheckCharacterClassName(list[i]) ? list[i].ClassName :
+				(CheckCharacterClassName(oldList[i]) ? oldList[i].ClassName : "defaultTachie"))} key={i}>
 			{!other ? <Col span={8} key={list[i] ? `${i}ex` : `${i}lea`}>
 				{list[i] ? <Tachie EnableFade={true} IMGClassName={list[i].Name} Path={list[i].Path} /> : null}
 				{oldList[i] ? <Tachie EnableFade={false} IMGClassName={oldList[i].Name} Path={oldList[i].Path} /> : null}

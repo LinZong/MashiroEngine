@@ -5,7 +5,7 @@ import TransitionGroup from 'react-addons-css-transition-group';
 import * as Actions from '../../Engine/actions/SectionActions'
 import * as Status from '../../Engine/Status'
 import { TextNodeInterpreter } from '../../Engine/LoadSection';
-import { Scene, TextBox, Loading, Selection, Backlog, PlainText, Character } from '../index';
+import { Scene, NewTextBox,CustomView, Loading, Selection, Backlog, PlainText, Character } from '../index';
 import { GetRemoteUrlPath, copy } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
@@ -61,7 +61,7 @@ class GameView extends Component {
 		//节点解析器的回调函数
 		this.MiddleWareCallbackFuncArr = [null, this.InitPreloadResources, this.ApplyTextToView, this.ApplyPlainTextToView, this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
 		this.IsBlockKey = false;
-		this.NodeDelay = GetSettingValue('AUTOPLAYSWITCHTEXTDELAY');
+		this.AutoModeNextNodeDelay = GetSettingValue('AUTOPLAYSWITCHTEXTDELAY');
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
 
@@ -69,6 +69,7 @@ class GameView extends Component {
 
 		//The New Context API is excited!
 		this.ControlFunction = {
+			GameViewState:this.state,
 			GetNewTextNode: this.GetNewTextNode,
 			setState: this.setState,
 			SaveState: this.SaveState,//Q.Save
@@ -247,7 +248,6 @@ class GameView extends Component {
 					// 		}
 					// 	}
 					// }
-
 					if (this.PlayerStoryLine.length > 1) {
 						console.log('即将离开', this.PlayerStoryLine.pop());
 						const { Chapter, Branch, Section } = this.PlayerStoryLine.pop();
@@ -459,12 +459,9 @@ class GameView extends Component {
 			switch (LoadType) {
 				case 'next':
 				case 'new': {
-
 					const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
 					const { HaveSelection } = safetouch(nextProps).Section.Header.Special;
-
 					this.PlayerStoryLine.push({ Chapter: CurrentChapter.Index, Branch: CurrentBranch, Section: CurrentSectionIndex, Selection: HaveSelection() });
-
 					let InitIndex = this.props.Section ? 0 :
 						safetouch(this.props.location.state)().TextNodeBegin;
 					this.InitPreloadResources(nextProps.Section.PreloadResources, false, true);
@@ -475,9 +472,7 @@ class GameView extends Component {
 				}
 				case 'select': {
 					const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
-
 					this.PlayerStoryLine.push({ Chapter: CurrentChapter.Index, Branch: CurrentBranch, Section: CurrentSectionIndex, Selection: true });
-
 					this.SelectionFinder(nextProps.Section, nextProps.Section.TextNodes.length - 1, nextProps.location.state.JumpType, (target, elementChange) => {
 						this.InitPreloadResources(nextProps.Section.PreloadResources, false, true);//先初始化默认资源
 						this.InitPreloadResources(elementChange, false, false);//再计算资源变更
@@ -545,6 +540,10 @@ class GameView extends Component {
 									return (
 										<Scene key={2} BG={this.state.Scene.top()} EnableMask={this.state.NowMode !== 'text'} onClick={this.ToggleTextBoxVisible}>
 											{
+												//这里可以放一下自定义显示插件的内容
+												<CustomView zIndex={20} custom={[{type:"div",props:{className:"testDiv",style:{zIndex:20}},children:{type:"button",props:{className:"testPElement",onClick:function(){console.log("Clicked")}},children:"这是测试文本"}}]} />
+											}
+											{
 												//这里放Character
 												this.state.Character.top() ? <Character CharacterList={this.state.Character.top()} /> : null
 											}
@@ -552,7 +551,7 @@ class GameView extends Component {
 												(() => {
 													switch (this.state.NowMode) {
 														case 'text': {
-															return <TextBox
+															return <NewTextBox
 																CharacterName={this.state.CharacterName}
 																TextContent={this.state.Text}
 																MouseEventTrigger={this.ChangeNode}
@@ -591,7 +590,6 @@ class GameView extends Component {
 							}
 						}).call(this, null)
 					}
-
 				</TransitionGroup>
 			</ControlFunctionContext.Provider>
 		)
