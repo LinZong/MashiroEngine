@@ -1,0 +1,61 @@
+{
+    "Header": {
+        "SectionNo": 1,
+        "SectionName": "苏希烔巨佬教不动我做人",
+        "Special":{
+            "HaveSelection":true,
+            "HaveExtraUnlock":false
+        }
+    },
+    "PreloadResources": {
+        "Scene": "../../res/Resources/Chapter/ch01/Scene/Scene02.png",
+        "BGM": {
+            "Name":"鹿乃小姐姐的DayBreak FrontLine",
+            "Path":"../../res/Resources/Chapter/ch01/BGM/BGM02.mp3"
+        },
+        "Character": []
+    },
+    "TextNodes": [
+        {
+            "TextProperty": {
+                "CharacterName": "苏希烔",
+                "Text": "你看你这个傻逼，又不会Unity，又不会Maya",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "苏希烔",
+                "Text": "整天就写一下傻逼代码，以后肯定没出息",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "苏希烔",
+                "Text": "不像我，老子才是真牛逼，琴棋书画样样精通！",
+                "TextMode": "new"
+            }
+        },
+        {
+            "Selection":[
+                {
+                    "Text":"向苏希烔巨佬低头",
+                    "JumpTo":{
+                        "Chapter":1,
+                        "Branch":1,
+                        "Section":1
+                    }
+                },
+                {
+                    "Text":"向郑泽明大佬低头",
+                    "JumpTo":{
+                        "Chapter":1,
+                        "Branch":1,
+                        "Section":0
+                    }
+                }
+            ]
+        }
+    ]
+}

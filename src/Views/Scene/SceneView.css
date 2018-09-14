@@ -1,5 +1,5 @@
 
-div.SceneBackground,div.LoadingPage{
+div.SceneBackground,div.LoadingPage,div.Scene{
     box-sizing:content-box; 
     width: 100%;
     position: absolute;

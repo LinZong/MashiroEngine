@@ -4,11 +4,10 @@ const { LoadSectionRes } = require('../../Engine/LoadSection');
 const { StoryMatrix } = require('../../Engine/StoryMatrix');
 
 
-let AllChapter = global.MyEngine.StatusMachine.AllChapter;
+let AllChapter = (this===global) ? global.MyEngine.StatusMachine.AllChapter : window.electron.remote.getGlobal("MyEngine").StatusMachine.AllChapter;
 let BranchSet = new Set([]);
 let StoryLineMap = null;
-
-
+let StoryLineList = null;
 function GetSectionName(chNum, br, secBegin = 0) {
     let ch = LoadChapterRes(AllChapter[chNum].Path, br);
     let sections = ch.Branch.Sections;
@@ -44,10 +43,14 @@ function GetSectionName(chNum, br, secBegin = 0) {
 
 function BuildStoryMap() {
     for (let brVal of BranchSet.values()) {
-        for (let i = 0; i < AllChapter.length; ++i) {
-            if (StoryLineMap.get(brVal)[i]) {
-                GetSectionName(i, brVal);
-            }
+        // for (let i = 0; i < AllChapter.length; ++i) {
+        //     if (StoryLineMap.get(brVal)[i]) {
+        //         GetSectionName(i, brVal);
+        //     }
+        // }
+        let chNumArr = StoryLineList.get(brVal);
+        for(let i=0;i<chNumArr.length;++i){
+            GetSectionName(chNumArr[i],brVal);
         }
     }
 }
@@ -65,16 +68,19 @@ function GetStoryLine() {
                 StoryLineMap.get(res.Branch[index].BranchTag).push(i);
             }
         }
-
-        for (let i of StoryLineMap.keys()) {//i is Branch, j is the index of AllChapter Array.
+        StoryLineList = new Map(StoryLineMap);
+        for (let i of StoryLineList.keys()) {//i is Branch, j is the index of AllChapter Array.
+            //let map = new Map();
             let arr = [];
-            let chapterarr = StoryLineMap.get(i);
+            let chapterarr = StoryLineList.get(i);
             for (let j = 0; j < chapterarr.length; ++j) {
-                let res = LoadChapterRes(AllChapter[j].Path, i);
-                arr[j] = new StoryMatrix(res.Branch.Sections.length);
+                let res = LoadChapterRes(AllChapter[chapterarr[j]].Path, i);
+                arr[chapterarr[j]] = new StoryMatrix(res.Branch.Sections.length);
+               // map.set(chapterarr[j],new StoryMatrix(res.Branch.Sections.length));
             }
             StoryLineMap.set(i, arr);
         }
+        
         BuildStoryMap();
     }
     return StoryLineMap;//Must declared as const!;

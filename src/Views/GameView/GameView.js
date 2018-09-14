@@ -5,15 +5,18 @@ import TransitionGroup from 'react-addons-css-transition-group';
 import * as Actions from '../../Engine/actions/SectionActions'
 import * as Status from '../../Engine/Status'
 import { TextNodeInterpreter } from '../../Engine/LoadSection';
-import { Scene, NewTextBox,CustomView, Loading, Selection, Backlog, PlainText, Character } from '../index';
+import { Scene, NewTextBox, CustomView, Loading, Selection, Backlog, PlainText, Character } from '../index';
 import { GetRemoteUrlPath, copy } from '../../Engine/Util';
 import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
 import './GameView.css';
 import { message } from 'antd';
+import {GetStoryLine} from '../../Engine/storyline/storyline';
 const { GetSettingValue } = require('../../Engine/LoadConfig');
 const { GetGlobalVar } = require('../../Engine/StatusMachine');
 var ControlFunctionContext = React.createContext();
+
+const StoryLine = GetStoryLine();
 class GameView extends Component {
 	constructor() {
 		super(...arguments);
@@ -65,9 +68,8 @@ class GameView extends Component {
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
 
-		this.StoryLine = window.electron.remote.getGlobal('MyEngine').StatusMachine.StoryLine;
 		this.ControlFunction = {
-			GameViewState:this.state,
+			GameViewState: this.state,
 			GetNewTextNode: this.GetNewTextNode,
 			setState: this.setState,
 			SaveState: this.SaveState,//Q.Save
@@ -205,20 +207,21 @@ class GameView extends Component {
 			this.InitPreloadResources(elementChange, false, false);
 			TextNodeInterpreter(this.props.Section, Actions.SetNodeIndex(target), this.MiddleWareCallbackFuncArr);
 		}, () => {
-			//type === 'next' ? this.props.onLoadNextSection(skip) : this.props.onLoadPrevSection(skip);
+			
 			const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
-			const MatArr = this.StoryLine.get(CurrentBranch);
+			let MatArr = StoryLine.get(CurrentBranch);
+			
 			switch (type) {
 				case "next": {
-					// let i = CurrentChapter.Index;
-					// let j = CurrentSectionIndex;
-					// if (j < MatArr[i].length() - 1) {
-					// 	if (MatArr[i].touch(j, j + 1) === 1) {
-					// 		if (MatArr[i].touch(j + 1, j + 1)) {
-					// 			return this.props.onLoadSectionRes(i, CurrentBranch, j + 1);
-					// 		}
-					// 	}
-					// }
+					let i = CurrentChapter.Index;
+					let j = CurrentSectionIndex;
+					if (j < MatArr[i].length() - 1) {
+						if (MatArr[i].touch(j, j + 1) === 1) {
+							if (MatArr[i].touch(j + 1, j + 1)) {
+								return this.props.onLoadSectionRes(i, CurrentBranch, j + 1);
+							}
+						}
+					}
 					for (let i = CurrentChapter.Index; i < MatArr.length; ++i) {
 						let jBegin = (i === CurrentChapter.Index ? CurrentSectionIndex : 0);
 						for (let j = jBegin; j < MatArr[i].length() - 1; ++j) {
@@ -229,7 +232,25 @@ class GameView extends Component {
 							}
 						}
 					}
-					//message.warn("在本章节中找不到可以向后跳转的小节了", 1);
+
+					// let nn = new Map();
+					// nn.
+					// for (let chNum of MatArr) {
+					// 	if (chNum < CurrentChapter.Index) continue;
+					// 	let MatInstance = MatArr.get(chNum);//定位到当前chapter
+					// 	let jBegin = (chNum === CurrentChapter.Index ? CurrentSectionIndex : 0);//确定小节位置
+					// 	for (let j = jBegin; j < MatInstance.length() - 1; ++j) {
+					// 		if (MatInstance.touch(j, j + 1) === 1) {
+					// 			if (MatInstance.touch(j + 1, j + 1)) {
+					// 				return this.props.onLoadSectionRes(chNum, CurrentBranch, j + 1);
+					// 			}
+					// 		}
+					// 	}
+					// }
+
+
+
+					message.warn("在本章节中找不到可以向后跳转的小节了", 1);
 					break;
 				}
 				case "prev": {
@@ -266,7 +287,7 @@ class GameView extends Component {
 	MoveSelectionChecker(type) {
 		//This function is used to navigate to the correct next selection.
 		const { CurrentChapter, CurrentBranch, CurrentSectionIndex } = GetGlobalVar();
-		const MatArr = this.StoryLine.get(CurrentBranch);
+		const MatArr = StoryLine.get(CurrentBranch);
 		this.props.location.state = { JumpType: type };
 		this.SelectionFinder(this.props.Section, this.NodeIndex, type, (target, elementChange) => {
 			this.InitPreloadResources(elementChange, false, false);
@@ -289,6 +310,21 @@ class GameView extends Component {
 							}
 						}
 					}
+					// for (let chNum of MatArr) {
+					// 	if (chNum < CurrentChapter.Index) continue;
+					// 	let MatInstance = MatArr.get(chNum);//定位到当前chapter
+					// 	let jBegin = (chNum === CurrentChapter.Index ? CurrentSectionIndex : 0);//确定小节位置
+					// 	for (let j = jBegin; j < MatInstance.length() - 1; ++j) {
+					// 		if (MatInstance.touch(j, j + 1) === 1) {
+					// 			if (MatInstance.touch(j + 1, j + 1).selection) {
+					// 				return this.props.onLoadSectionRes(chNum, CurrentBranch, j + 1);
+					// 			}
+					// 			else {
+					// 				this.PlayerStoryLine.push({ Chapter: chNum, Branch: CurrentBranch, Section: j + 1, Selection: false });
+					// 			}
+					// 		}
+					// 	}
+					// }
 					break;
 				}
 				case "prev": {
@@ -342,38 +378,38 @@ class GameView extends Component {
 		}
 		const Loader = (PreloadResourcesObj) => {
 			for (var key in PreloadResourcesObj) {
-				if (PreloadResourcesObj[key]) {
-					switch (key) {
-						case "Scene": {
-							if (Rollback && Scene.length > 1) {
-								Scene.pop();
-								break;
-							}
-							Scene.push(GetRemoteUrlPath(PreloadResourcesObj[key]));
+				//if (PreloadResourcesObj[key]) {
+				switch (key) {
+					case "Scene": {
+						if (Rollback && Scene.length > 0) {
+							Scene.pop();
 							break;
 						}
-						case "BGM": {
-							if (Rollback && BGM.length > 1) {
-								BGM.pop();
-								break;
-							}
-							let BGMObj = copy(PreloadResourcesObj[key], {});//进行深复制
-							BGMObj.Path = GetRemoteUrlPath(BGMObj.Path, true);
-							BGM.push(BGMObj);
-							break;
-						}
-						case "Character": {
-							if (Rollback && Character.length > 1) {
-								Character.pop();
-								break;
-							}
-							let CharacterObj = Array.from(PreloadResourcesObj[key], (ele) => ({ ...ele, Path: GetRemoteUrlPath(ele.Path, true) }));//进行数组深复制
-							Character.push(CharacterObj);
-							break;
-						}
-						default: break;
+						Scene.push(GetRemoteUrlPath(PreloadResourcesObj[key]));
+						break;
 					}
+					case "BGM": {
+						if (Rollback && BGM.length > 0) {
+							BGM.pop();
+							break;
+						}
+						let BGMObj = copy(PreloadResourcesObj[key], {});//进行深复制
+						BGMObj.Path = GetRemoteUrlPath(BGMObj.Path, true);
+						BGM.push(BGMObj);
+						break;
+					}
+					case "Character": {
+						if (Rollback && Character.length > 0) {
+							Character.pop();
+							break;
+						}
+						let CharacterObj = Array.from(PreloadResourcesObj[key], (ele) => ({ ...ele, Path: GetRemoteUrlPath(ele.Path, true) }));//进行数组深复制
+						Character.push(CharacterObj);
+						break;
+					}
+					default: break;
 				}
+				//}
 
 			}
 		};
@@ -412,6 +448,8 @@ class GameView extends Component {
 	}
 	componentDidMount() {
 		// let state = safetouch(this.props.location.state);
+		
+		console.log("已成功读入矩阵", StoryLine);
 		let LoadType = this.props.match.params.load;
 		switch (LoadType) {
 			case 'next':
@@ -447,7 +485,7 @@ class GameView extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.Section && nextProps.GameViewStatus === Status.SUCCESS) { //检查现在应不应该把新资源应用上去。
-			if(nextProps.End) return this.props.history.push('/');
+			if (nextProps.End) return this.props.history.push('/');
 			if (nextProps.Section === this.props.Section && !safetouch(this.props.location.state).SaveInfo()) return;
 			let LoadType = this.props.match.params.load;
 			clearTimeout(this.AutoModeCancelation);//去除上个section遗留的自动模式计时器
@@ -595,7 +633,7 @@ const mapStateToProps = (StoreState) => {
 		GameViewStatus: StoreState.GameView.status,
 		Section: StoreState.GameView.Section,
 		PreviousState: StoreState.GameView.PrevState,
-		End:StoreState.GameView.End
+		End: StoreState.GameView.End
 	};
 };
 const mapDispatchToProps = (dispatch) => {

@@ -13,16 +13,14 @@ class SaveDataCard extends React.Component {
 		this.state = {
 			Exist: this.props.exist,
 			visible: false,
-			Cover: this.props.Cover||PlaceHolder,
+			Cover: this.props.Cover || PlaceHolder,
 			SaveTimeStamp: this.props.SaveTimeStamp,
 			Title: this.props.Title
 		};
 
 		this.onClickSlot = this.onClickSlot.bind(this);
 		this.showModal = this.showModal.bind(this);
-		// this.handleOk = this.handleOk.bind(this);
-		// this.handleCancel = this.handleCancel.bind(this);
-		this.handleButton=this.handleButton.bind(this);
+		this.handleButton = this.handleButton.bind(this);
 		this.LoadSaveData = this.LoadSaveData.bind(this);
 		this.DeleteSaveData = this.DeleteSaveData.bind(this);
 		this.SaveToSlot = this.SaveToSlot.bind(this);
@@ -34,7 +32,7 @@ class SaveDataCard extends React.Component {
 	DeleteSaveData() {
 		DeleteSaveData(this.props.Index).then((ok) => {
 			message.success(ok);
-			this.setState({ Cover: PlaceHolder, SaveTimeStamp: null, Title: "所以也没办法显示文本", Exist: false });
+			this.setState({ Cover: PlaceHolder, SaveTimeStamp: null, Title: null, Exist: false });
 		}, (reason) => {
 			console.log(reason);
 		});
@@ -60,30 +58,15 @@ class SaveDataCard extends React.Component {
 				visible: true,
 			});
 	}
-	// handleOk(e) {
-	// 	e.stopPropagation();
-	// 	this.setState({
-	// 		visible: false,
-	// 	});
-	// 	this.ActionFunc();
-	// }
-	// handleCancel(e) {
-	// 	e.stopPropagation();
-	// 	this.setState({
-	// 		visible: false,
-	// 	});
-	// }
-
-
-	handleButton(v){
-		switch(v){
-			case 0:{
-				this.setState({visible:false});
+	handleButton(v) {
+		switch (v) {
+			case 0: {
+				this.setState({ visible: false });
 				this.ActionFunc();
 				break;
 			}
-			default:{
-				this.setState({visible:false});
+			default: {
+				this.setState({ visible: false });
 				break;
 			}
 		}
@@ -124,7 +107,7 @@ class SaveDataCard extends React.Component {
 				SaveTimeStamp={this.state.SaveTimeStamp}
 				Title={this.state.Title}
 				Exist={this.state.Exist}
-				Cover={this.state.Cover} 
+				Cover={this.state.Cover}
 				Index={this.props.Index} />
 		);
 	}

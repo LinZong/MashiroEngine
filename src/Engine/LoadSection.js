@@ -1,5 +1,6 @@
 const { NEXT_NODE, PREV_NODE, SET_NODE_INDEX } = require('./Events');
 const { GetRemoteUrlPath, GetCharacterAlias } = require('../Engine/Util');
+const safetouch = require('safe-touch').default;
 let TextNodeIndexer = null;
 function FindPrevPlainText(Section, EndIndexer) {
     while (EndIndexer >= 0 && Section.TextNodes[EndIndexer--].hasOwnProperty('PlainText'));
@@ -50,10 +51,12 @@ function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
         let CurrNode = Object.assign({}, NowPlayingSection.TextNodes[TextNodeIndexer]);
         CurrNode.ForceRollback = false;
         if (ev.type === PREV_NODE) {
-            if (NowPlayingSection.TextNodes[TextNodeIndexer]['PlainText']) {
+            let thisNode = safetouch(NowPlayingSection.TextNodes[TextNodeIndexer]);
+            let nextNode = safetouch(NowPlayingSection.TextNodes[TextNodeIndexer+1]);
+            if (thisNode.PlainText()) {
                 CurrNode.PlainText = MakeRollBackProperty(NowPlayingSection, TextNodeIndexer);
             }
-            if (NowPlayingSection.TextNodes[TextNodeIndexer + 1]['ChangeElement']) {
+            if (nextNode.ChangeElement()) {
                 CurrNode.ForceRollback = true;
                 CurrNode.ChangeElement = Object.assign({}, NowPlayingSection.TextNodes[TextNodeIndexer + 1]['ChangeElement']);
             }

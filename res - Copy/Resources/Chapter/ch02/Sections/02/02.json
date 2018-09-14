@@ -1,0 +1,43 @@
+{
+    "Header": {
+        "SectionNo": 2,
+        "SectionName": "歌唱苏希烔新时代",
+        "Special":{
+            "HaveSelection":false,
+            "HaveExtraUnlock":false
+        }
+    },
+    "PreloadResources": {
+        "Scene":"../../res/Resources/Chapter/ch02/Scene/Scene02.png"
+    },
+    "TextNodes": [
+        {
+            "TextProperty": {
+                "CharacterName": "郑泽明",
+                "Text": "广东的中山上太阳照四方",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "郑泽明",
+                "Text": "苏希烔就像那金色的太阳",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "郑泽明",
+                "Text": "多么温暖多么慈祥把我们的心儿照亮",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "郑泽明",
+                "Text": "我们迈步走在，学习苏希烔做人的大道上",
+                "TextMode": "new"
+            }
+        }
+    ]
+}

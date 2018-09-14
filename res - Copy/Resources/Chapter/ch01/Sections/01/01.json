@@ -1,0 +1,96 @@
+{
+    "Header": {
+        "SectionNo": 1,
+        "SectionName": "苏希烔巨佬教我做人",
+        "VoicePath": "../../res/Resources/Chapter/ch01/Sections/01/Voice",
+        "Special": {
+            "HaveSelection": false,
+            "HaveExtraUnlock": false
+        }
+    },
+    "PreloadResources": {
+        "Scene": "../../res/Resources/Chapter/ch01/Scene/Scene01.png",
+        "BGM": {
+            "Name": "咸咸的",
+            "Path": "../../res/Resources/Chapter/ch01/BGM/咸咸的.mp3"
+        },
+        "Character": [
+            {
+                "Name": "Zhengzeming",
+                "Path": "../../res/Resources/Character/Zhengzeming/Tachie/Default.jpg",
+                "ClassName":"ZhengzemingLeftTachie"
+            },
+            {
+                "Name": "Zhengzeming",
+                "Path": "../../res/Resources/Character/Xuange/Tachie/Default2.png"
+            },
+            {
+                "Name": "Zhengzeming",
+                "Path": "../../res/Resources/Character/Zhengzeming/Tachie/Default.jpg"
+            }
+        ]
+    },
+    "TextNodes": [
+        {
+            "PlainText": "这个是旁白的Sample，一些介绍故事背景，主人公自言自语的文本可以放在这里。"
+        },
+        {
+            "PlainText": "可以前后滚动。同时最新的一行有打字机效果。多了也没关系，可以自动滚下去。"
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "郑泽明",
+                "Text": "苏希烔巨佬太牛批,可以前后滚动。同时最新的一行有打字机效果。多了也没关系，可以自动滚下去。，可以前后滚动。同时最新的一行有打字机效果。多了也没关系，可以自动滚下去。可以前后滚动。同时最新的一行有打字机效果。多了也没关系，可以自动滚下去。",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "郑泽明",
+                "Text": "没人比他更牛批",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "郑泽明",
+                "Text": "苏希帅烔天下第一牛批",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "苏希烔",
+                "Text": "哎呀好了好了，我知道了，吵到我做游戏了!",
+                "TextMode": "new"
+            },
+            "ChangeElement": {
+                "Character": [
+                    {},
+                    {
+                        "Name": "Zhengzeming",
+                        "Path": "../../res/Resources/Character/Zhengzeming/Tachie/Default.jpg"
+                    },
+                    {}
+                ]
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "苏希帅烔",
+                "Text": "所以我现在就要给你一个没有文字节点的Node给你解析一下!",
+                "TextMode": "new"
+            },
+            "ChangeElement": {
+                "Character": [
+                    {},
+                    {},
+                    {
+                        "Name": "Zhengzeming",
+                        "Path": "../../res/Resources/Character/Zhengzeming/Tachie/Default.jpg"
+                    }
+                ]
+            }
+        }
+    ]
+}

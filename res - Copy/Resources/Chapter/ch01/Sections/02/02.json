@@ -1,0 +1,43 @@
+{
+    "Header": {
+        "SectionNo": 1,
+        "SectionName": "苏希烔告诉你怎么做人",
+        "Special":{
+            "HaveSelection":false,
+            "HaveExtraUnlock":false
+        }
+    },
+    "PreloadResources": {
+        "Scene": "../../res/Resources/Chapter/ch01/Scene/Scene02.png"
+    },
+    "TextNodes": [
+        {
+            "TextProperty": {
+                "CharacterName": "苏希烔",
+                "Text": "我终于做完Light-Fish了!",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "苏希烔",
+                "Text": "这是我人生中第一个伟大的作品",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "苏希烔",
+                "Text": "老子真是太牛逼了！",
+                "TextMode": "new"
+            }
+        },
+        {
+            "TextProperty": {
+                "CharacterName": "苏希烔",
+                "Text": "你们这些傻逼看看就好了，啊哈哈哈哈哈",
+                "TextMode": "new"
+            }
+        }
+    ]
+}

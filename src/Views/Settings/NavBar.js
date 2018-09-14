@@ -72,14 +72,14 @@ class NavBar extends React.Component {
 								<FormattedMessage id='SOUNDCONFIG' />
 							</NavLink>
 						</Menu.Item>
-						<Menu.Item key="4">
+						{/* <Menu.Item key="4">
 							<Icon type="tool" />
 							<FormattedMessage id='CONTROLCONFIG' />
 						</Menu.Item>
 						<Menu.Item key="5">
 							<Icon type="select" />
 							<FormattedMessage id='INGAMESETTING' />
-						</Menu.Item>
+						</Menu.Item> */}
 
 					</Menu>
 					<Menu theme="dark" mode="inline" selectable={false}>

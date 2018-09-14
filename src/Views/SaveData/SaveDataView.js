@@ -9,15 +9,11 @@ const {Page} = window.electron.remote.getGlobal("Environment").SaveDataView;
 class SaveDataView extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { type: null, delete: false, PageNum: 1 };
+		this.state = { type: (this.props.type || this.props.match.params.type), delete: false, PageNum: 1 };
 		this.onChangePageNum = this.onChangePageNum.bind(this);
-		
 	}
 	onChangePageNum(page) {
 		this.setState({ PageNum: page });
-	}
-	componentDidMount() {
-		this.setState({ type: this.props.type || this.props.match.params.type });
 	}
 	render() {
 		return (

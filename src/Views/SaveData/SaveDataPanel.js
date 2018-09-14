@@ -1,18 +1,17 @@
 import React from 'react';
 import SaveDataCard from './VerticleCard/SaveDataCard';
-import { Row, Col } from 'antd';
+import {Row,Col} from 'react-flexbox-grid';
 const { GetAllSaveData } = require('../../Engine/LoadSaveData');
 const SaveDataViewInfo = window.electron.remote.getGlobal("Environment").SaveDataView;
 class SaveDataPanel extends React.Component {
 	constructor() {
 		super(...arguments);
-		this.state = { RenderData: null };
 		this.CardProvider = this.CardProvider.bind(this);
 		this.PlaceHolder = window.electron.remote.getGlobal('Environment').UI.SaveDataPlaceHolder;
 	}
 	CardProvider(it, idx, begin) {
 		return (it ?
-			<Col span={24 / SaveDataViewInfo.Col} key={idx + begin}>
+			<Col xs key={idx + begin}>
 				<SaveDataCard type={this.props.type}
 					key={idx + begin}
 					Index={idx + begin}
@@ -21,7 +20,7 @@ class SaveDataPanel extends React.Component {
 					Title={it.State.Text}
 					data={it.State} exist />
 			</Col>
-			: <Col span={24 / SaveDataViewInfo.Col} key={idx + begin} >
+			: <Col xs key={idx + begin} >
 				<SaveDataCard
 					type={this.props.type}
 					key={idx + begin}
@@ -30,48 +29,30 @@ class SaveDataPanel extends React.Component {
 			</Col>);
 	}
 	RendeSavaDataCard(source) {
+		let row = SaveDataViewInfo.Row;
+		let col = SaveDataViewInfo.Col;
 		const sav = GetAllSaveData(source.Page);
 		let RenderData = [];
+		let beginKey = row*col*(source.Page-1);
 		for (let i = 0; i < SaveDataViewInfo.Row; ++i) {
 			RenderData.push(
-				<Row gutter={16} style={{ marginBottom: "16px" }}>
+				<Row style={{ marginBottom: (i!==SaveDataViewInfo.Row-1)&&"16px" }}>
 					{
-						sav.slice(i * SaveDataViewInfo.Col, (i + 1) * SaveDataViewInfo.Col).map((it, idx) => (this.CardProvider(it, idx, source.Page * SaveDataViewInfo.Col)))
+						sav.slice(i * SaveDataViewInfo.Col, (i + 1) * SaveDataViewInfo.Col).map((it, idx) => this.CardProvider(it, idx, beginKey))
 					}
 				</Row>);
+			beginKey+=col;
 		}
 		return RenderData;
-	}
-	componentDidMount() {
-		this.setState({ RenderData: this.RendeSavaDataCard(this.props) });
-	}
-	componentWillReceiveProps(nextProps) {
-		this.setState({ RenderData: this.RendeSavaDataCard(nextProps) });
 	}
 	render() {
 		return (
 			<div className="SaveDataPanelContainer">
 				{
-					this.state.RenderData && this.state.RenderData.map(it=>it)
+					this.RendeSavaDataCard(this.props)	
 				}
 			</div>);
 	}
 }
 
 export default SaveDataPanel;
-
-{/* <Row gutter={16} style={{ marginBottom: "16px" }}>
-{
-	AllSaveData.slice((this.props.Page - 1) * 9, (this.props.Page - 1) * 9 + 3).map((it, idx) => (this.CardProvider(it, idx, (this.props.Page - 1) * 9)), this)
-}
-</Row>
-<Row gutter={16} style={{ marginBottom: "16px" }}>
-{
-	AllSaveData.slice((this.props.Page - 1) * 9 + 3, (this.props.Page - 1) * 9 + 6).map((it, idx) => (this.CardProvider(it, idx, (this.props.Page - 1) * 9 + 3)), this)
-}
-</Row>
-<Row gutter={16}>
-{
-	AllSaveData.slice((this.props.Page - 1) * 9 + 6, (this.props.Page - 1) * 9 + 9).map((it, idx) => (this.CardProvider(it, idx, (this.props.Page - 1) * 9 + 6)), this)
-}
-</Row> */}

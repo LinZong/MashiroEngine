@@ -32,7 +32,27 @@ function createWindow() {
 		Options.height = global.Environment.Resolution['Y'];
 	}
 	require('./src/Engine/StatusMachine');//加载全部章节
-	BrowserWindow.addDevToolsExtension('./DevExtensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.3_0/');
+	if (process.env.NODE_ENV !== 'production') {
+		// BrowserWindow.addDevToolsExtension('./DevExtensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.3_0/');	
+		// Install redux-devtools and react-developer-tools.
+		const {
+		  default: installExtension,
+		  REACT_DEVELOPER_TOOLS
+		} = require('electron-devtools-installer');
+	
+		installExtension([
+		  REACT_DEVELOPER_TOOLS
+		])
+		  .then((name) => {
+			console.log(`Added Extension:  ${name}`);
+			LoadWindow(Options);
+		  })
+		  .catch((err) => console.log('An error occurred: ', err));
+	  }
+}
+
+
+function LoadWindow(Options){
 	mainWindow = new BrowserWindow(Options);
 	mainWindow.loadURL("http://localhost:3000/");
 	mainWindow.once('ready-to-show', () => {
@@ -41,14 +61,6 @@ function createWindow() {
 	mainWindow.on('closed', function () {
 		mainWindow = null
 	})
-	const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
-
-	installExtension(REACT_DEVELOPER_TOOLS).then((name) => {
-		console.log(`Added Extension:  ${name}`);
-	})
-	.catch((err) => {
-		console.log('An error occurred: ', err);
-	});
 }
 
 app.on('ready', createWindow)

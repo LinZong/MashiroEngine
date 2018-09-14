@@ -14,6 +14,10 @@ class SaveDataCardView extends React.Component {
         let PicStyle = document.defaultView.getComputedStyle(ReactDOM.findDOMNode(this._PicRef), null);
         this._InfRef.style.height = PicStyle.height;
     }
+    componentDidUpdate() {
+        let PicStyle = document.defaultView.getComputedStyle(ReactDOM.findDOMNode(this._PicRef), null);
+        this._InfRef.style.height = PicStyle.height;
+    }
     render() {
         return (
             <div>

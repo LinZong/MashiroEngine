@@ -63,7 +63,7 @@ function LoadGlobalConfig() {
         global.Environment = Environment;
         global.MyEngine = { StatusMachine: {}, FirstRun: true };
         global.MyEngine.StatusMachine.AllChapter = LoadAllChapters(Environment.ChapterDir);//测试加载所有章节.
-        global.MyEngine.StatusMachine.StoryLine = require('./storyline/storyline').GetStoryLine();
+        //global.MyEngine.StatusMachine.StoryLine = require('./storyline/storyline').GetStoryLine();
         global.SettingsNode = {};
         global.CustomModuleData = {};
         for (var conf in Environment.Config) {

@@ -6,6 +6,7 @@ import { Button, Tooltip, Popover, message } from 'antd';
 import { ControlFunctionContext } from '../../GameView/GameView';
 import { IMAGE_SETTING } from '../../../Engine/actionTypes/SettingType';
 import { injectIntl } from 'react-intl';
+import "./ControlButton.less"
 const ButtonGroup = Button.Group;
 const { GetQuickSaveData, CreateQuickSaveData } = require('../../../Engine/LoadSaveData');
 class ControlButtion extends React.Component {
@@ -61,33 +62,65 @@ class ControlButtion extends React.Component {
 					this.Func = Func;
 					const { intl } = this.props;
 					return (
-						<div style={{display:"flex",justifyContent:"flex-end"}}>
+						<div style={{ display: "flex", justifyContent: "flex-end" }}>
 							<ButtonGroup onClick={(e) => e.stopPropagation()}>
 								<Popover content={this.state.ShowQuickSave} title={intl.formatMessage({ id: 'QLOAD' })}>
-									<Button icon='cloud-upload-o large' onClick={this.LoadQuickSave} />
+									<Button className="ControlButtonStyle" icon='cloud-upload-o large' onClick={this.LoadQuickSave} />
 								</Popover>
 								<Tooltip title={intl.formatMessage({ id: 'QSAVE' })}>
-									<Button icon='cloud-download-o large' onClick={this.DoQuickSave} />
+									<Button className="ControlButtonStyle" icon='cloud-download-o large' onClick={this.DoQuickSave} />
 								</Tooltip>
-								<Tooltip title={intl.formatMessage({ id: 'LOADSAVEDATA' })}><NavLink to='/savedata/load/ingame'><Button icon='cloud-upload large' /></NavLink></Tooltip>
-								<Tooltip title={intl.formatMessage({ id: 'CREATESAVEDATA' })}><NavLink to='/savedata/save/ingame'><Button icon='cloud-download large' /></NavLink></Tooltip>
-								<Tooltip title={intl.formatMessage({ id: 'SETTING' })}><NavLink to={{ pathname: '/NewSettings/' + IMAGE_SETTING, state: { ingame: true } }} ><Button icon='tool large' /></NavLink></Tooltip>
-								<Tooltip title={intl.formatMessage({ id: 'BACKTOMENU' })}><NavLink to='/'><Button icon='desktop large' /></NavLink></Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'LOADSAVEDATA' })}>
+									<NavLink to='/savedata/load/ingame'>
+										<Button className="ControlButtonStyle" icon='cloud-upload large' />
+									</NavLink>
+								</Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'CREATESAVEDATA' })}>
+									<NavLink to='/savedata/save/ingame'>
+										<Button className="ControlButtonStyle" icon='cloud-download large' />
+									</NavLink>
+								</Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'SETTING' })}>
+									<NavLink to={{ pathname: '/NewSettings/' + IMAGE_SETTING, state: { ingame: true } }} >
+										<Button className="ControlButtonStyle" icon='tool large' />
+									</NavLink>
+								</Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'BACKTOMENU' })}>
+									<NavLink to='/'>
+										<Button className="ControlButtonStyle" icon='desktop large' />
+									</NavLink>
+								</Tooltip>
 							</ButtonGroup>
-							<br />
+
 							<ButtonGroup onClick={(e) => e.stopPropagation()}>
-								<Tooltip title={intl.formatMessage({ id: 'PREVSELECTION' })}><Button icon='backward large' onClick={() => Func.GetPrevSelection(true)} /></Tooltip>
-								<Tooltip title={intl.formatMessage({ id: 'PREVSCENE' })}><Button icon='fast-backward large' onClick={() => Func.GetPrevSection(true)} /></Tooltip>
-								<Tooltip title={intl.formatMessage({ id: 'PREVTEXT' })}><Button icon='step-backward large' onClick={() => Func.GetNewTextNode(-1)} /></Tooltip>
-								<Tooltip title={intl.formatMessage({ id: 'BACKLOG' })}><Button icon='caret-left large' onClick={Func.OpenBacklog} /></Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'PREVSELECTION' })}>
+									<Button className="ControlButtonStyle" icon='backward large' onClick={() => Func.GetPrevSelection(true)} />
+								</Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'PREVSCENE' })}>
+									<Button className="ControlButtonStyle" icon='fast-backward large' onClick={() => Func.GetPrevSection(true)} />
+								</Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'PREVTEXT' })}>
+									<Button className="ControlButtonStyle" icon='step-backward large' onClick={() => Func.GetNewTextNode(-1)} />
+								</Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'BACKLOG' })}>
+									<Button className="ControlButtonStyle" icon='caret-left large' onClick={Func.OpenBacklog} />
+								</Tooltip>
 								<Tooltip title={classNames('AutoMode', { 'On': this.props.AutoMode, 'Off': !this.props.AutoMode })}>
-									<Button icon={classNames({ 'caret-right': this.props.AutoMode, 'right': !this.props.AutoMode }, 'large')}
+									<Button className="ControlButtonStyle" icon={classNames({ 'caret-right': this.props.AutoMode, 'right': !this.props.AutoMode }, 'large')}
 										onClick={() => Func.SetAutoModeStatus(!this.props.AutoMode)} />
 								</Tooltip>
-								<Tooltip title={intl.formatMessage({ id: 'NEXTTEXT' })}><Button icon='step-forward large' onClick={() => Func.GetNewTextNode(1)} /></Tooltip>
-								<Tooltip title={intl.formatMessage({ id: 'NEXTSCENE' })}><Button icon='fast-forward large' onClick={() => Func.GetNextSection(true)} /></Tooltip>
-								<Tooltip title={intl.formatMessage({ id: 'NEXTSELECTION' })}><Button icon='forward large' onClick={() => Func.GetNextSelection(true)} /></Tooltip>
-								<Tooltip title={intl.formatMessage({ id: 'HIDETEXTBOX' })}><Button icon='close large' onClick={(e) => { Func.SetTextBoxVisible(false) }} /></Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'NEXTTEXT' })}>
+									<Button className="ControlButtonStyle" icon='step-forward large' onClick={() => Func.GetNewTextNode(1)} />
+								</Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'NEXTSCENE' })}>
+									<Button className="ControlButtonStyle" icon='fast-forward large' onClick={() => Func.GetNextSection(true)} />
+								</Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'NEXTSELECTION' })}>
+									<Button className="ControlButtonStyle" icon='forward large' onClick={() => Func.GetNextSelection(true)} />
+								</Tooltip>
+								<Tooltip title={intl.formatMessage({ id: 'HIDETEXTBOX' })}>
+									<Button className="ControlButtonStyle" icon='close large' onClick={(e) => { Func.SetTextBoxVisible(false) }} />
+								</Tooltip>
 							</ButtonGroup>
 						</div>);
 				}}
