@@ -7,16 +7,18 @@ import './WelcomeView.less';
 import store from '../../Store';
 import { LeaveGameView } from '../../Engine/actions/SectionActions';
 import WelcomeScreen from 'electron-react-welcome';
+import Modal from '../Modules/Modal/Modal';
 const electron = window.electron;
 class WelcomeView extends React.Component {
     constructor() {
         super(...arguments);
         const { FirstRun } = electron.remote.getGlobal('MyEngine');
         this.state = {
-            WelcomePicsArr: ["url(\"file:///../../../res/Resources/Theme/UIResources/Framework/Pic0.png\")", "url(\"file:///../../../res/Resources/Theme/UIResources/Framework/Pic1.jpg\")"]
-            ,  Fr: FirstRun
+            WelcomePicsArr: ["file:///../../../res/Resources/Theme/UIResources/Framework/Pic0.png", "url(\"file:///../../../res/Resources/Theme/UIResources/Framework/Pic1.jpg\")"]
+            ,  Fr: FirstRun,ModalVisible:false
         };
-        if (FirstRun) electron.remote.getGlobal('MyEngine').FirstRun = false;
+        this.handleClose=this.handleClose.bind(this);
+        if (FirstRun) electron.remote.getGlobal('MyEngine').FirstRun = false;//获取是不是第一次运行
     }
     componentDidMount() {
         let GameViewData = store.getState().GameView;
@@ -25,10 +27,19 @@ class WelcomeView extends React.Component {
         }
         ReactDOM.unmountComponentAtNode(document.getElementById('music'));
     }
+    handleClose(v){
+        if(v===0){
+            electron.remote.getCurrentWindow().close()
+        }
+        this.setState({ModalVisible:false});
+    }
     render() {
         return (
             <WelcomeScreen on={false} last={2500} ScreenArray={this.state.WelcomePicsArr}>
                 <div className="WelcomeContainer">
+                    <Modal visible={this.state.ModalVisible} title="退出游戏" clickfunc={this.handleClose}>
+                        真的要退出游戏吗
+                    </Modal>
                     <div className="WelcomeBG" style={{ backgroundImage: "url(\"file:///../../../res/Resources/Theme/UIResources/Framework/WelcomeBG.png\")" }} />
                     <aside className="menu WelcomeMenu">
                         <ul className="menu-list nav_ul WelcomeMenuList">
@@ -48,19 +59,7 @@ class WelcomeView extends React.Component {
                                 <NavLink to='/NewSettings' id='SETTING'><li><FormattedMessage id='SETTING' /></li></NavLink>
                             </li>
                             <li>
-                                <a id='EXITGAME' onClick={() => {
-                                    const options = {
-                                        type: "info",
-                                        message: "終了しますか？",
-                                        title: "終了確認",
-                                        buttons: ["はい", "キャンセル"],
-                                        cancelId: 1
-                                    };
-                                    electron.remote.dialog.showMessageBox(null, options,
-                                        (response) => {
-                                            if (response === 0) electron.remote.getCurrentWindow().close()
-                                        });
-                                }}>退出游戏</a>
+                                <a id='EXITGAME' onClick={()=>this.setState({ModalVisible:true})}>退出游戏</a>
                             </li>
                         </ul>
                     </aside>

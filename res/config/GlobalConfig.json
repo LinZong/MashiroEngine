@@ -3,6 +3,11 @@
         1600,
         900
     ],
+    "SaveDataView":{
+        "Row":4,
+        "Col":4,
+        "Page":9
+    },
     "Path": {
         "Root": "./res/Resources",
         "Resources": {

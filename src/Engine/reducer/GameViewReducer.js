@@ -23,6 +23,9 @@ export default (state = {}, action) => {
     case ActionTypes.SAVE_GAMEVIEW_STATE: {
       return { ...state, PrevState: action.StateForSave };
     }
+    case ActionTypes.END_OF_TOTAL_GAME: {
+      return { ...state, End:true ,status: Status.SUCCESS};
+    }
     default: return state;
   }
 }

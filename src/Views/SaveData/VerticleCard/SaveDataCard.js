@@ -1,44 +1,40 @@
 import React from 'react'
-import { Col, message, Modal } from 'antd';
+import { message } from 'antd';
 import * as Actions from '../../../Engine/actions/SectionActions';
 import store from '../../../Store';
 import { withRouter } from 'react-router';
-import {injectIntl} from 'react-intl';
-import './SaveDataCard.css'
-
+import { injectIntl } from 'react-intl';
+import SaveDataCardView from './SaveDataCardView';
+const PlaceHolder = window.electron.remote.getGlobal('Environment').UI.SaveDataPlaceHolder;
 const { CreateSaveData, DeleteSaveData } = require('../../../Engine/LoadSaveData');
 class SaveDataCard extends React.Component {
 	constructor() {
 		super(...arguments);
 		this.state = {
-			Exist: false,
+			Exist: this.props.exist,
 			visible: false,
-			Cover: this.props.Cover,
+			Cover: this.props.Cover||PlaceHolder,
 			SaveTimeStamp: this.props.SaveTimeStamp,
 			Title: this.props.Title
 		};
 
-		if (this.props.data) this.state.Exist = true;
 		this.onClickSlot = this.onClickSlot.bind(this);
 		this.showModal = this.showModal.bind(this);
-		this.handleOk = this.handleOk.bind(this);
-		this.handleCancel = this.handleCancel.bind(this);
+		// this.handleOk = this.handleOk.bind(this);
+		// this.handleCancel = this.handleCancel.bind(this);
+		this.handleButton=this.handleButton.bind(this);
 		this.LoadSaveData = this.LoadSaveData.bind(this);
 		this.DeleteSaveData = this.DeleteSaveData.bind(this);
 		this.SaveToSlot = this.SaveToSlot.bind(this);
-		this.preventBrowserCache = this.preventBrowserCache.bind(this);
 
-
-		//this.AlertTextArr = ['确定要加载这个存档?', '确定要删除这个存档?', '确定要覆盖这个存档?', '确定要在此新建存档?'];
 		this.ActionArr = [this.LoadSaveData, this.DeleteSaveData, this.SaveToSlot];
 		this.AlertText = null;
 		this.ActionFunc = null;
-		this.PlaceHolder = window.electron.remote.getGlobal('Environment').UI.SaveDataPlaceHolder;
 	}
 	DeleteSaveData() {
 		DeleteSaveData(this.props.Index).then((ok) => {
 			message.success(ok);
-			this.setState({ Cover: this.PlaceHolder, SaveTimeStamp: "存档不存在", Title: "所以也没办法显示文本", Exist: false });
+			this.setState({ Cover: PlaceHolder, SaveTimeStamp: null, Title: "所以也没办法显示文本", Exist: false });
 		}, (reason) => {
 			console.log(reason);
 		});
@@ -64,71 +60,72 @@ class SaveDataCard extends React.Component {
 				visible: true,
 			});
 	}
-	handleOk(e) {
-		e.stopPropagation();
-		this.setState({
-			visible: false,
-		});
-		this.ActionFunc();
+	// handleOk(e) {
+	// 	e.stopPropagation();
+	// 	this.setState({
+	// 		visible: false,
+	// 	});
+	// 	this.ActionFunc();
+	// }
+	// handleCancel(e) {
+	// 	e.stopPropagation();
+	// 	this.setState({
+	// 		visible: false,
+	// 	});
+	// }
+
+
+	handleButton(v){
+		switch(v){
+			case 0:{
+				this.setState({visible:false});
+				this.ActionFunc();
+				break;
+			}
+			default:{
+				this.setState({visible:false});
+				break;
+			}
+		}
 	}
-	handleCancel(e) {
-		e.stopPropagation();
-		this.setState({
-			visible: false,
-		});
-	}
-	onClickSlot(event) {
-		const {intl} = this.props;
+	onClickSlot() {
+		const { intl } = this.props;
 		if (this.props.type.delete) {
 			if (this.state.Exist) {
-				this.AlertText = intl.formatMessage({id: 'CONFIRMDELETESAVEDATA'});
+				this.AlertText = intl.formatMessage({ id: 'CONFIRMDELETESAVEDATA' });
 				this.ActionFunc = this.ActionArr[1];
 				this.showModal();
 			}
 			else return;
 		}
 		else if (this.props.type.type === 'load' && this.state.Exist) {
-			this.AlertText = intl.formatMessage({id: 'CONFIRMLOADSAVEDATA'});
+			this.AlertText = intl.formatMessage({ id: 'CONFIRMLOADSAVEDATA' });
 			this.ActionFunc = this.ActionArr[0];
 			this.showModal();
 		}
 		else if (this.props.type.type === 'save' && this.state.Exist) {
-			this.AlertText = intl.formatMessage({id: 'CONFIRMCOVERSAVEDATA'});
+			this.AlertText = intl.formatMessage({ id: 'CONFIRMCOVERSAVEDATA' });
 			this.ActionFunc = this.ActionArr[2];
 			this.showModal();
 		}
 		else if (this.props.type.type === 'save') {
-			this.AlertText = intl.formatMessage({id: 'CONFIRMCREATESAVEDATA'});
+			this.AlertText = intl.formatMessage({ id: 'CONFIRMCREATESAVEDATA' });
 			this.ActionFunc = this.ActionArr[2];
 			this.showModal();
 		}
 	}
-	preventBrowserCache(state) {
-		return state === this.PlaceHolder ? state : state + "?" + Math.random();
-	}
+
 	render() {
 		return (
-			<div className="CardFramework" onClick={this.onClickSlot}>
-				<Modal
-					title="确认框"
-					visible={this.state.visible}
-					onOk={this.handleOk}
-					onCancel={this.handleCancel}
-				>
-					{this.AlertText}
-				</Modal>
-				<Col span={12}>
-					<div className="ScreenShotImg">
-						<img alt="这是当前游戏画面的截图" src={"file:///" + this.preventBrowserCache(this.state.Cover)} style={{ width: '100%' }} />
-					</div>
-				</Col>
-				<Col span={12}>
-					<div className="SaveDataInfo">
-						<p className="TimeStamp">{this.state.SaveTimeStamp}</p>
-						<p id="OriginalText">{this.state.Title}</p>
-					</div>
-				</Col>
-			</div>
+			<SaveDataCardView onClick={this.onClickSlot}
+				visible={this.state.visible}
+				clickfunc={this.handleButton}
+				AlertText={this.AlertText}
+				SaveTimeStamp={this.state.SaveTimeStamp}
+				Title={this.state.Title}
+				Exist={this.state.Exist}
+				Cover={this.state.Cover} 
+				Index={this.props.Index} />
 		);
 	}
 }

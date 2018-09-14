@@ -1,20 +1,20 @@
 import React from 'react';
-import { Layout, Menu, Icon, Switch ,Pagination} from 'antd';
+import { Layout, Menu, Icon, Switch, Pagination } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import './SaveDataView.css';
 import SaveDataPanel from './SaveDataPanel';
 const { Header, Content, Footer } = Layout;
-
+const {Page} = window.electron.remote.getGlobal("Environment").SaveDataView;
 class SaveDataView extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { type: null, delete: false ,PageNum:1};
-		this.onChangePageNum=this.onChangePageNum.bind(this);
+		this.state = { type: null, delete: false, PageNum: 1 };
+		this.onChangePageNum = this.onChangePageNum.bind(this);
+		
 	}
-	onChangePageNum(page,pageSize){
-		//console.log(page,pageSize);
-		this.setState({PageNum:page});
+	onChangePageNum(page) {
+		this.setState({ PageNum: page });
 	}
 	componentDidMount() {
 		this.setState({ type: this.props.type || this.props.match.params.type });
@@ -34,14 +34,14 @@ class SaveDataView extends React.Component {
 							<NavLink className="nav-text" to='/'>
 								<Icon type="arrow-left" />
 								<FormattedMessage id='BACKTOMENU' />
-						</NavLink>
+							</NavLink>
 						</Menu.Item>
 						<Menu.Item key="3">
-							{this.state.type === 'save' || this.props.match.params.from === 'ingame' ? 
-							<NavLink className="nav-text" to='/section/prev'>
-								<Icon type="to-top" />
-								<FormattedMessage id='BACKTOGAME' />
-						</NavLink> : null}
+							{this.state.type === 'save' || this.props.match.params.from === 'ingame' ?
+								<NavLink className="nav-text" to='/section/prev'>
+									<Icon type="to-top" />
+									<FormattedMessage id='BACKTOGAME' />
+								</NavLink> : null}
 						</Menu.Item>
 						<Menu.Item key="4">
 							<Switch checkedChildren="delete" unCheckedChildren={this.state.type} onChange={(checked) => this.setState({ delete: checked })} />
@@ -49,13 +49,35 @@ class SaveDataView extends React.Component {
 					</Menu>
 				</Header>
 				<Content style={{ padding: '0 50px' }}>
-					<SaveDataPanel type={{ type: this.state.type, delete: this.state.delete }} Page={this.state.PageNum}/>
+					<SaveDataPanel type={{ type: this.state.type, delete: this.state.delete }} Page={this.state.PageNum} />
 				</Content>
 				<Footer style={{ textAlign: 'center' }}>
-					<Pagination defaultCurrent={1} total={90} defaultPageSize={10} onChange={this.onChangePageNum}/>
+					<Pagination defaultCurrent={1} total={Page*10} defaultPageSize={10} onChange={this.onChangePageNum} />
 				</Footer>
-			</Layout>);
+			</Layout>
+		);
 	}
 }
 
 export default SaveDataView;
+
+
+
+
+			// <div>
+			// 	<NavBar brand={<p style={{ fontSize: "2em" }}><FormattedMessage id='SELECTSAVEDATA' /></p>}>
+			// 		<NavLink className="nav-text" to='/'>
+			// 			<FormattedMessage id='BACKTOMENU' />
+			// 		</NavLink>
+			// 		{this.state.type === 'save' || this.props.match.params.from === 'ingame' ?
+			// 			<NavLink className="nav-text" to='/section/prev'>
+			// 				<Icon type="to-top" />
+			// 				<FormattedMessage id='BACKTOGAME' />
+			// 			</NavLink> : null}
+			// 		<Switch checkedChildren="delete" unCheckedChildren={this.state.type} onChange={(checked) => this.setState({ delete: checked })} />
+			// 	</NavBar>
+			// 	<SaveDataPanel type={{ type: this.state.type, delete: this.state.delete }} Page={this.state.PageNum}/>
+			// 	<Footer style={{ textAlign: 'center' }}>
+			// 		<Pagination defaultCurrent={1} total={90} defaultPageSize={10} onChange={this.onChangePageNum}/>
+			// 	</Footer>
+			// </div>

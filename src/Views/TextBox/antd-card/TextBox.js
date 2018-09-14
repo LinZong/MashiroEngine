@@ -4,11 +4,12 @@ import Typed from 'react-typed';
 import { Card } from 'antd';
 import ControlButton from './ControlButton/ControlButton';
 import { ControlFunctionContext } from '../GameView/GameView';
+import {GetSettingValue} from '../../../Engine/LoadConfig';
 class TextBox extends Component {
     constructor() {
         super(...arguments);
         this.StopTyping = this.StopTyping.bind(this);
-        this.TypeSpeed = window.electron.remote.getGlobal('SettingsNode')['TEXT_SETTING']['SettingElement']['LeftCol'][0].Value;
+        this.TypeSpeed = GetSettingValue("TEXTSPEED");
     }
     componentWillUpdate() {
         this.typed.reset();

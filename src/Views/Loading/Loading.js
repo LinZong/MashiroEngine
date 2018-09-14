@@ -8,6 +8,6 @@ const GetLoadingImagePath = (SectionDefinedPath) => {
     else return GetRemoteUrlPath(SectionDefinedPath);
 }
 const Loading = ({LoadingImage}) => (
-    <div id="LoadingPage" style={{backgroundImage:GetLoadingImagePath(LoadingImage)}} />
+    <div className="LoadingPage" style={{backgroundImage:GetLoadingImagePath(LoadingImage)}} />
 );
 export default  Loading ;

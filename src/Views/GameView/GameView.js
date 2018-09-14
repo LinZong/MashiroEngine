@@ -59,15 +59,13 @@ class GameView extends Component {
 		this.NeedNewSection = null;
 		this.NodeIndex = null;
 		//节点解析器的回调函数
-		this.MiddleWareCallbackFuncArr = [null, this.InitPreloadResources, this.ApplyTextToView, this.ApplyPlainTextToView, this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
+		this.MiddleWareCallbackFuncArr = [this.InitPreloadResources, this.ApplyTextToView, this.ApplyPlainTextToView, this.ApplySelectionToView, this.ApplyCharacterVoice, this.GetStatusFlag];
 		this.IsBlockKey = false;
 		this.AutoModeNextNodeDelay = GetSettingValue('AUTOPLAYSWITCHTEXTDELAY');
 		//打字机特效控制函数
 		this.TypingController = { Stopper: null, IsTyping: 0 };
 
 		this.StoryLine = window.electron.remote.getGlobal('MyEngine').StatusMachine.StoryLine;
-
-		//The New Context API is excited!
 		this.ControlFunction = {
 			GameViewState:this.state,
 			GetNewTextNode: this.GetNewTextNode,
@@ -147,11 +145,7 @@ class GameView extends Component {
 	}
 	ApplyTextToView(NodeProps) {
 		let NextTextContent = NodeProps.TextContent;
-		//if (NextTextContent.TextMode === 'new') {
 		this.setState({ ...NextTextContent, NowMode: 'text' });
-		// } else if (NextTextContent.TextMode === 'append') {
-		// 	this.setState({ ...NextTextContent, Text: this.state.Text + NextTextContent.Text });
-		// }
 	}
 	ApplyPlainTextToView(NodeProps) {
 		this.setState({
@@ -453,6 +447,7 @@ class GameView extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.Section && nextProps.GameViewStatus === Status.SUCCESS) { //检查现在应不应该把新资源应用上去。
+			if(nextProps.End) return this.props.history.push('/');
 			if (nextProps.Section === this.props.Section && !safetouch(this.props.location.state).SaveInfo()) return;
 			let LoadType = this.props.match.params.load;
 			clearTimeout(this.AutoModeCancelation);//去除上个section遗留的自动模式计时器
@@ -539,10 +534,10 @@ class GameView extends Component {
 									this.BlockKeyEvent(this.state.NowMode === 'selection' || !this.state.TextBoxVisible);
 									return (
 										<Scene key={2} BG={this.state.Scene.top()} EnableMask={this.state.NowMode !== 'text'} onClick={this.ToggleTextBoxVisible}>
-											{
+											{/* {
 												//这里可以放一下自定义显示插件的内容
 												<CustomView zIndex={20} custom={[{type:"div",props:{className:"testDiv",style:{zIndex:20}},children:{type:"button",props:{className:"testPElement",onClick:function(){console.log("Clicked")}},children:"这是测试文本"}}]} />
-											}
+											} */}
 											{
 												//这里放Character
 												this.state.Character.top() ? <Character CharacterList={this.state.Character.top()} /> : null
@@ -599,7 +594,8 @@ const mapStateToProps = (StoreState) => {
 	return {
 		GameViewStatus: StoreState.GameView.status,
 		Section: StoreState.GameView.Section,
-		PreviousState: StoreState.GameView.PrevState
+		PreviousState: StoreState.GameView.PrevState,
+		End:StoreState.GameView.End
 	};
 };
 const mapDispatchToProps = (dispatch) => {

@@ -13,7 +13,7 @@ function MakeRollBackProperty(NowPlayingSection, EndIndexer) {
     }
     return RollbackPlainText;
 }
-var MiddleWare = [CustomFunctionAdapter, GameViewElementRender, TextBoxRender, PlainTextRender, SelectionRender, SoundRender, ParseStatusFlag];
+var MiddleWare = [GameViewElementRender, TextBoxRender, PlainTextRender, SelectionRender, SoundRender, ParseStatusFlag];
 //This callback should match the MiddleWareList correctly.
 
 function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
@@ -64,18 +64,6 @@ function TextNodeInterpreter(NowPlayingSection, ev, MiddleWareCallback) {
             element.Func(CurrNode, element.Callback, { Header: NowPlayingSection.Header, Index: TextNodeIndexer, Flag: StatusFlag, ActionType: ev.type });
         });
         return;
-    }
-}
-
-
-function CustomFunctionAdapter(TextNodeObj, callback, StatusObj) {
-    if (TextNodeObj.ExecuteFunction) {
-        let FuncArray = TextNodeObj.ExecuteFunction;
-        FuncArray.forEach(element => {
-            // let Func = global.CustomScripts[element.Name];
-            // setTimeout(() => Func(...element.Parameter), element.ExecuteTime);
-            console.log('Should execute function : ', element.Name);
-        });
     }
 }
 
@@ -167,16 +155,4 @@ function BacklogGenerator(NowPlayingSection){
     return BacklogArr;
 }
 
-// function CustomFunctionAdapter(ExecuteFunctionArray) {
-//     ExecuteFunctionArray.forEach(element => {
-//         let Func = global.CustomScripts[element.Name];
-//         setTimeout(() => Func(...element.Parameter), element.ExecuteTime);
-//     });
-// }
-// function LoadCustomScripts(ScriptsPath) {
-//     global.CustomScripts = require(ScriptsPath);
-// }
 module.exports = { TextNodeInterpreter, LoadSectionRes, BacklogGenerator,MiddleWare };
-//渲染主进程同时维护着一个状态机，当LoadChapterRes发出事件的时候状态机定位到当前游玩的节点
-//节点没有在存档树上的时候就append节点，SectionResolver发出进入Section的时候
-//状态机根据当前的Chapter(Branch) Section状态修改状态树

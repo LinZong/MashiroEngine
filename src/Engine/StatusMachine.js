@@ -6,9 +6,6 @@ let event = require('events').EventEmitter;
 var EventHandler = new event();
 const { LoadChapterRes } = require('./LoadChapter');
 const { LoadSectionRes } = require('./LoadSection');
-
-
-
 var AllChapter = null;
 var CurrentChapter = null;
 var CurrentBranch = null;
@@ -18,7 +15,9 @@ const DispatchSectionJson = (dispatch, actionCtor) => (ChapterInfoObj, SectionIn
     let secres = LoadSectionRes(ChapterInfoObj, SectionIndex);
     dispatch(actionCtor(secres));
 }
-
+ const EndOfTheGame = () =>({
+    type:EventsType.END_OF_TOTAL_GAME
+})
 EventHandler.on(EventsType.GET_SELECTED_PLAYING_SECTION, (dispatch, actionCtor, SelectedChapter, SelectedBranch, SelectedSection) => {
     //测试用
     if (typeof SelectedChapter === 'number') SelectedChapter = AllChapter[SelectedChapter];
@@ -76,6 +75,9 @@ EventHandler.on(EventsType.ENTER_NEXT_CHAPTER, (dispatch, actionCtor) => {
     let AllChapterLength = AllChapter.length;
     if (CurrChapterIndex < AllChapterLength - 1) {
         EventHandler.emit(EventsType.GET_SELECTED_PLAYING_SECTION, dispatch, actionCtor, AllChapter[CurrChapterIndex + 1], CurrentBranch, 0);
+    }
+    else{
+        dispatch(EndOfTheGame());
     }
 });
 

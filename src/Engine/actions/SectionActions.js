@@ -20,7 +20,8 @@ import {
     SAVE_GAMEVIEW_STATE,
     CLEAR_GAMEVIEW_STATE,
     FINISHED_RELOAD,
-    LOAD_SAVEDATA
+    LOAD_SAVEDATA,
+    END_OF_TOTAL_GAME
 } from '../Events';
 
 import {GetRemoteUrlPath} from '../Util';
@@ -71,6 +72,7 @@ export const FinishedReload = () => ({
 export const ClearGameViewState = () =>({
   type:CLEAR_GAMEVIEW_STATE
 });
+
 
 export const GetSelectedSection = (Chapter,Branch,Section) => {
   return (dispatch)=>{

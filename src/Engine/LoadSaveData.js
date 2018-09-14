@@ -3,6 +3,8 @@
  */
 const Q = require('q');
 const eventproxy = require('eventproxy');
+const { Row, Col, Page } = window.electron.remote.getGlobal("Environment").SaveDataView;
+
 function GetFsAndSaveDir() {
 	let remote = window.electron.remote;
 	let _fs = remote.require('fs');
@@ -10,25 +12,31 @@ function GetFsAndSaveDir() {
 	let _SaveDataPath = remote.getGlobal('Environment').SaveDataDir;
 	return { rimraf: _rimraf, fs: _fs, SaveDataPath: _SaveDataPath };
 }
-function GetAllSaveData() {
+function GetAllSaveData(page) {
 	const { fs, SaveDataPath } = GetFsAndSaveDir();
 	let savearr = [];
-	for (let i = 0; i < 81; ++i) {
+	let dirarr = fs.readdirSync(SaveDataPath);
+	let begin = page ? ((Row * Col) * (page - 1)) : 0;
+	let end = page ? ((Row * Col) * (page)) : (Row * Col) * (Page);
+	for (let i = 0; i < (end - begin); ++i) {
 		savearr[i] = null;
 	}
-	let dirarr = fs.readdirSync(SaveDataPath);
+
 	dirarr.forEach((subdir) => {
 		if (subdir === 'qsave') return;
-		let fullpath = SaveDataPath + '/' + subdir;
-		let stat = fs.statSync(fullpath);
-		if (stat.isDirectory()) {
-			//探测存档是否完整
-			if (fs.existsSync(fullpath + '/State.json') && fs.existsSync(fullpath + '/Cover.jpg')) {
-				let data = fs.readFileSync(fullpath + '/State.json');
-				savearr[parseInt(subdir, 10)] = { State: JSON.parse(data), Cover: fullpath + '/Cover.jpg' };
+		if ((begin <= parseInt(subdir, 10)) && (parseInt(subdir, 10) < end)) {
+			let fullpath = SaveDataPath + '/' + subdir;
+			let stat = fs.statSync(fullpath);
+			if (stat.isDirectory()) {
+				//探测存档是否完整
+				if (fs.existsSync(fullpath + '/State.json') && fs.existsSync(fullpath + '/Cover.jpg')) {
+					let data = fs.readFileSync(fullpath + '/State.json');
+					savearr[parseInt(subdir, 10)-begin] = { State: JSON.parse(data), Cover: fullpath + '/Cover.jpg' };
+				}
 			}
 		}
 	});
+
 	return savearr;
 }
 function GetQuickSaveData() {
@@ -40,7 +48,7 @@ function GetQuickSaveData() {
 	}
 	return null;
 }
-function CreateSaveData(FolderIndex, StateJsonObj,callback,errcallback) {
+function CreateSaveData(FolderIndex, StateJsonObj, callback, errcallback) {
 	let CoverImgBuffer = StateJsonObj.Image;
 	let RemoveBuffer = Object.assign({}, StateJsonObj);
 	delete RemoveBuffer['Image'];
@@ -51,17 +59,17 @@ function CreateSaveData(FolderIndex, StateJsonObj,callback,errcallback) {
 	}
 	//保存图片
 	const ep = new eventproxy();
-	ep.all('save_screenshot','save_state',function(data1,data2){
+	ep.all('save_screenshot', 'save_state', function (data1, data2) {
 		callback({ Cover: fullpath + '/Cover.jpg', State: RemoveBuffer });
 	})
 	fs.writeFile(fullpath + '/Cover.jpg', CoverImgBuffer.toJPEG(100), (err) => {
 		if (err) return errcallback(err);
-		else ep.emit('save_screenshot','截屏保存完成');
+		else ep.emit('save_screenshot', '截屏保存完成');
 	});
 	let json = JSON.stringify(RemoveBuffer);
 	fs.writeFile(fullpath + '/State.json', json, (err) => {
 		if (err) return errcallback(err);
-		else ep.emit('save_state','存档文件保存完成');
+		else ep.emit('save_state', '存档文件保存完成');
 	});
 }
 function CreateQuickSaveData(StateJsonObj) {
