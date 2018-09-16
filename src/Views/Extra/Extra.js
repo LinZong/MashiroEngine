@@ -1,11 +1,9 @@
 import React from "react";
 import {NavLink} from 'react-router-dom';
 import NavBar from "../Modules/NavBar/NavBar"
+import ExtraContent from './ExtraContent';
+import "./Extra.less";
 class Extra extends React.Component {
-  constructor() {
-    super(...arguments);
-    this.state = { visible: false };
-  }
   render() {
     return (
       <div className="ExtraContainer">
@@ -15,9 +13,9 @@ class Extra extends React.Component {
         >
           <a href="http://www.baidu.com">臭烔</a>
           <a href="http://www.baidu.com">屁明</a>
+          <a href="http://www.baidu.com">健哥哥</a>
         </NavBar>
-
-        
+        <ExtraContent />
       </div>
     );
   }
