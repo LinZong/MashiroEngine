@@ -15,9 +15,9 @@ class WelcomeView extends React.Component {
         const { FirstRun } = electron.remote.getGlobal('MyEngine');
         this.state = {
             WelcomePicsArr: ["file:///../../../res/Resources/Theme/UIResources/Framework/Pic0.png", "url(\"file:///../../../res/Resources/Theme/UIResources/Framework/Pic1.jpg\")"]
-            ,  Fr: FirstRun,ModalVisible:false
+            , Fr: FirstRun, ModalVisible: false
         };
-        this.handleClose=this.handleClose.bind(this);
+        this.handleClose = this.handleClose.bind(this);
         if (FirstRun) electron.remote.getGlobal('MyEngine').FirstRun = false;//获取是不是第一次运行
     }
     componentDidMount() {
@@ -27,11 +27,11 @@ class WelcomeView extends React.Component {
         }
         ReactDOM.unmountComponentAtNode(document.getElementById('music'));
     }
-    handleClose(v){
-        if(v===0){
+    handleClose(v) {
+        if (v === 0) {
             electron.remote.getCurrentWindow().close()
         }
-        this.setState({ModalVisible:false});
+        this.setState({ ModalVisible: false });
     }
     render() {
         return (
@@ -44,7 +44,7 @@ class WelcomeView extends React.Component {
                     <aside className="menu WelcomeMenu">
                         <ul className="menu-list nav_ul WelcomeMenuList">
                             <li>
-                                <NavLink to='/chapters' id='START'><FormattedMessage id='START' /></NavLink>
+                                <NavLink to={{ pathname: '/section/new', state: { Chapter: 0, Branch: 1, Section: 0, TextNodeBegin: 0 } }} id='START'><FormattedMessage id='START' /></NavLink>
                             </li>
                             <li>
                                 <NavLink to='/savedata/load' id='LOADSAVEDATA'><FormattedMessage id='LOADSAVEDATA' /></NavLink>
@@ -53,13 +53,13 @@ class WelcomeView extends React.Component {
                                 <a id='FLOWCHART'><FormattedMessage id='FLOWCHART' /></a>
                             </li>
                             <li>
-                                <a id='EXTRA'><FormattedMessage id='EXTRA' /></a>
+                                <NavLink to='/extra' id='EXTRA'><FormattedMessage id='EXTRA' /></NavLink>
                             </li>
                             <li>
-                                <NavLink to='/NewSettings' id='SETTING'><li><FormattedMessage id='SETTING' /></li></NavLink>
+                                <NavLink to='/NewSettings' id='SETTING'><FormattedMessage id='SETTING' /></NavLink>
                             </li>
                             <li>
-                                <a id='EXITGAME' onClick={()=>this.setState({ModalVisible:true})}>退出游戏</a>
+                                <a id='EXITGAME' onClick={() => this.setState({ ModalVisible: true })}>退出游戏</a>
                             </li>
                         </ul>
                     </aside>

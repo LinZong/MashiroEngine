@@ -49,12 +49,17 @@ function createWindow() {
 		  })
 		  .catch((err) => console.log('An error occurred: ', err));
 	  }
+	  else{
+		LoadWindow(Options);
+	  }
 }
 
 
 function LoadWindow(Options){
+	const html = process.env.NODE_ENV !== 'production' ?
+    'http://localhost:3000/' :`file:///./build/index.html`;
 	mainWindow = new BrowserWindow(Options);
-	mainWindow.loadURL("http://localhost:3000/");
+	mainWindow.loadURL(html);
 	mainWindow.once('ready-to-show', () => {
 		mainWindow.show();
 	})

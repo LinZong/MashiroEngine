@@ -1,35 +1,53 @@
 .NavBar {
-    background-color:white;
-    font-family: Microsoft Yahei;
-    min-height: 3.25rem;
-    position: relative;
-    z-index: 30;
-  }
-  .NavBarBrand {
-    display: flex;
-    align-items: stretch;
-    min-height: 3.25rem;
-    flex-shrink: 0;
-  }
-  .NavBarItem {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-    flex-grow: 0;
-    color: #4a4a4a;
-    line-height: 1.5;
-    padding: 0.5rem 0.75rem;
-    position: relative;
-  }
-  .NavBarMenu {
-    display: flex;
-    align-items: stretch;
-  }
-  
-  .NavBar a:hover {
-    color: #3273dc;
-  }
-  .NavBar a {
-    color: #4a4a4a;
-  }
-  
+  background-color: aliceblue;
+  border-radius: 4px;
+  border: 1px;
+  min-height: 3.25rem;
+  position: relative;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  font-family: "Helvetica Neue For Number", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.NavBarContent(){
+  display: flex;
+  align-items: stretch;
+  min-height: 3.25rem;
+  flex-shrink: 0;
+}
+.NavBarBrand {
+ .NavBarContent();
+}
+.NavBarItem {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  flex-grow: 0;
+  color: #4a4a4a;
+  line-height: 1.5;
+  padding: 0.5rem 0.75rem;
+  position: relative;
+  cursor: pointer;
+}
+.NavBarMenu {
+  .NavBarContent();
+}
+
+.NavBar a:hover {
+  color: #3273dc;
+}
+.NavBar a:focus {
+  color: #3273dc;
+}
+.NavBar a {
+  color: #4a4a4a;
+  text-decoration: none;
+}
+.NavBarMenuEnd {
+  right: 0;
+  position: absolute;
+  .NavBarContent();
+  z-index: 30;
+}

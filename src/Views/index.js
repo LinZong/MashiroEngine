@@ -12,4 +12,5 @@ import PlainText from './PlainText/PlainText';
 import WelcomeView from './Welcome/WelcomeView';
 import Character from './Character/Character';
 import Backlog from './Backlog/Backlog';
-export { GameView, AllChapterView, Scene,CustomView, Loading, Settings, WelcomeView, PlainText,SaveDataView,Selection ,NewTextBox,Backlog,Character};
+import Extra from './Extra/Extra';
+export { GameView, AllChapterView, Extra, Scene, CustomView, Loading, Settings, WelcomeView, PlainText, SaveDataView, Selection, NewTextBox, Backlog, Character };

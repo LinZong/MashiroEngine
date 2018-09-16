@@ -3,6 +3,7 @@ div.PlainText{
     width: 100%;
     overflow-y:auto;
     overflow-x: hidden;
+    cursor: pointer;
 }
 div#ScrollWrapper,div.BacklogText
 {

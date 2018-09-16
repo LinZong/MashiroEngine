@@ -6,7 +6,7 @@ import store from './Store';
 import IntlWrapper from './Views/IntlWrapper';
 import { LoadSetting } from './Engine/actions/SettingActions';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import { AllChapterView, GameView, WelcomeView, Settings, SaveDataView } from './Views';
+import { AllChapterView, GameView, WelcomeView, Settings, SaveDataView,Extra } from './Views';
 import registerServiceWorker from './registerServiceWorker';
 function LoadSettingToStore() {
     let defSettings = window.electron.remote.getGlobal('SettingsNode');
@@ -16,7 +16,7 @@ function LoadSettingToStore() {
 LoadSettingToStore();
 ReactDOM.render(
     <Provider store={store}>
-        <IntlWrapper locale={navigator.language}>
+        <IntlWrapper locale="en">
             <BrowserRouter>
                 <div>
                     <Switch>
@@ -24,6 +24,7 @@ ReactDOM.render(
                         <Route path='/savedata/:type/:from' component={SaveDataView} />
                         <Route path='/savedata/:type' component={SaveDataView} />
                         <Route path='/chapters' component={AllChapterView} />
+                        <Route path='/extra' component={Extra} />
                         <Route path='/section/:load' component={GameView} />
                         <Route path='/NewSettings' component={Settings} />
                         <Redirect to='/' />

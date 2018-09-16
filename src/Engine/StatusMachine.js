@@ -20,6 +20,7 @@ const DispatchSectionJson = (dispatch, actionCtor) => (ChapterInfoObj, SectionIn
 })
 EventHandler.on(EventsType.GET_SELECTED_PLAYING_SECTION, (dispatch, actionCtor, SelectedChapter, SelectedBranch, SelectedSection) => {
     //测试用
+    if(!AllChapter) GetAllChapter();
     if (typeof SelectedChapter === 'number') SelectedChapter = AllChapter[SelectedChapter];
     let TmpChapter = LoadChapterRes(SelectedChapter.Path, SelectedBranch);
     if (TmpChapter !== null) {
