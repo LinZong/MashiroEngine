@@ -34,7 +34,7 @@ export default class CrossfadeImage extends Component {
     }
   }
   render() {
-    const { duration, timingFunction, delay, style, alt,ImgClassName } = this.props;
+    const { duration, timingFunction, delay, style, alt, ImgClassName, onClick } = this.props;
     const { topSrc, bottomOpacity, bottomSrc } = this.state;
     return (
       <div style={{ ...defaultStyle, ...{ position: "relative" } }}>
@@ -47,7 +47,8 @@ export default class CrossfadeImage extends Component {
           />}
         {bottomSrc &&
           <img
-          className={ImgClassName}
+            onClick={onClick}
+            className={ImgClassName}
             style={{
               ...defaultStyle,
               ...style,

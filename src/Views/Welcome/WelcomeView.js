@@ -7,7 +7,7 @@ import './WelcomeView.less';
 import store from '../../Store';
 import { LeaveGameView } from '../../Engine/actions/SectionActions';
 import WelcomeScreen from 'electron-react-welcome';
-import Modal from '../Modules/Modal/Modal';
+import {Modal,MessageBox} from '../Modules/Modal/index';
 const electron = window.electron;
 class WelcomeView extends React.Component {
     constructor() {
@@ -37,8 +37,10 @@ class WelcomeView extends React.Component {
         return (
             <WelcomeScreen on={false} last={2500} ScreenArray={this.state.WelcomePicsArr}>
                 <div className="WelcomeContainer">
-                    <Modal visible={this.state.ModalVisible} title="退出游戏" clickfunc={this.handleClose}>
-                        真的要退出游戏吗
+                    <Modal visible={this.state.ModalVisible}>
+                        <MessageBox title="退出游戏" clickfunc={this.handleClose}>
+                            真的要退出游戏吗
+                        </MessageBox>
                     </Modal>
                     <div className="WelcomeBG" style={{ backgroundImage: "url(\"file:///../../../res/Resources/Theme/UIResources/Framework/WelcomeBG.png\")" }} />
                     <aside className="menu WelcomeMenu">

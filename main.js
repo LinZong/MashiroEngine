@@ -33,8 +33,8 @@ function createWindow() {
 	}
 	require('./src/Engine/StatusMachine');//加载全部章节
 	if (process.env.NODE_ENV !== 'production') {
-		// BrowserWindow.addDevToolsExtension('./DevExtensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.3_0/');	
-		// Install redux-devtools and react-developer-tools.
+		BrowserWindow.addDevToolsExtension('./DevExtensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.3_0/');	
+		//Install redux-devtools and react-developer-tools.
 		const {
 		  default: installExtension,
 		  REACT_DEVELOPER_TOOLS

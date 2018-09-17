@@ -1,0 +1,21 @@
+.MessageBox {
+    position: absolute;
+    min-width: 30vw;
+    border-radius: 4px !important;
+    z-index: 1000;
+    top: 25vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+  }
+  .MessageBoxTitle {
+    position: relative;
+    padding: 8px 8px;
+  }
+  .MessageBoxChildren {
+    margin: 12px 12px;
+  }
+  .SelectionButtons {
+    display: flex;
+    justify-content: flex-end;
+  }
+  

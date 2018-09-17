@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import {NavLink} from 'react-router-dom';
 import NavBar from "../Modules/NavBar/NavBar"
 import ExtraContent from './ExtraContent';
@@ -9,12 +8,12 @@ class Extra extends React.Component {
     return (
       <div className="ExtraContainer">
         <NavBar
-          end={<NavLink to="/" >返回Title</NavLink>}
+          end={<NavLink to="/" >返回标题</NavLink>}
           brand={[<span style={{ fontSize: "2rem" }}>特典 Extra</span>]}
         >
-          <a href="http://www.baidu.com">帅烔</a>
-          <a href="http://www.baidu.com">屁明</a>
-          <a href="http://www.baidu.com">健哥哥</a>
+          <a href="http://www.baidu.com">测试角色1</a>
+          <a href="http://www.baidu.com">测试角色2</a>
+          <a href="http://www.baidu.com">测试角色3</a>
         </NavBar>
         <ExtraContent />
       </div>

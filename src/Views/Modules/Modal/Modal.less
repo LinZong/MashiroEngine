@@ -1,55 +1,43 @@
-  .ModalContainer {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top:0;
-    left: 0;
-    animation-name: ModalFadeIn;
-    animation-timing-function: linear;
-    animation-duration: 0.3s;
-    animation-direction: alternate;
+.ModalContainer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  animation-name: ModalFadeIn;
+  animation-timing-function: linear;
+  animation-duration: 0.3s;
+  animation-direction: alternate;
+
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.ModalMaskOn {
+  width: 100%;
+  height: 100%;
+  box-sizing: content-box;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  z-index: 999;
+}
+.ModalChildren {
+  position: relative;
+  max-width: 80vw;
+  z-index: 1000;
+}
+@keyframes ModalFadeIn {
+  0% {
+    opacity: 0;
   }
-  .ModalMaskOn {
-    width: 100%;
-    height: 100%;
-    box-sizing: content-box;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    background-color: rgba(0, 0, 0, 0.7);
-    position: absolute;
-    z-index: 999;
+  100% {
+    opacity: 1;
   }
-  .MessageBox {
-    position: absolute;
-    min-width: 30vw;
-    border-radius: 4px !important;
-    z-index: 1000;
-    top: 25vh;
-    left: 50vw;
-    transform: translate(-50%, -50%);
-  }
-  .MessageBoxTitle {
-    position: relative;
-    padding: 8px 8px;
-  }
-  .MessageBoxChildren {
-    margin: 12px 12px;
-  }
-  .SelectionButtons {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  @keyframes ModalFadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
+}
+
   .SelectionButton{
     margin: 0 2px;
   }
