@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'antd';
 import { CSSTransition } from 'react-transition-group';
 import Tachie from './Tachie/Tachie';
-import {GetSettingValue} from '../../Engine/LoadConfig';
+import { GetSettingValue } from '../../Engine/LoadConfig';
 import './Character.less';
 const CheckCharacterExist = (obj) => (obj && obj.Name && obj.Path);
 const CheckCharacterClassName = (obj) => (CheckCharacterExist(obj) && obj.ClassName);

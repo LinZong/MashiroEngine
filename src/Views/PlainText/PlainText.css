@@ -3,7 +3,7 @@ div.PlainText{
     width: 100%;
     overflow-y:auto;
     overflow-x: hidden;
-    cursor: pointer;
+    cursor: default;
 }
 div#ScrollWrapper,div.BacklogText
 {
@@ -28,6 +28,7 @@ p#backlogtextp,p#plaintextp{
 }
 .BacklogContainer{
     color: white;
+    cursor: default;
 }
 p#BacklogTitle{
     position: absolute;

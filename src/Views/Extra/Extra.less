@@ -1,6 +1,9 @@
 .ExtraContainer {
+    display: flex;
+    flex-direction: column;//先设置整页的div为flex布局，方向为纵向，以便排列NavBar和下面的显示元素
     position: absolute;
-    width: 100vw;
+    width: 100vw;//同时设置width和height，撑满整个viewpoint
+    height: 100vh;
     background-position: center center;
     background-attachment: fixed;
     background-repeat: no-repeat;
@@ -10,7 +13,8 @@
   .ContentContainer {
     margin: 1.6rem;
     position: relative;
-    height: 87vh;
+    flex:1 1 auto;//flex自动填满容器剩余空间   =>  剩余空间 = (100vh - NavBar的height)
+    height: 1px;//设置内容元素高度为1，让他自然溢出  保证内部滚动的CGList始终在background颜色范围，并且不会溢出显示区域。
     background: rgba(255, 255, 255, 0.75);
   }
   .BorderLine {
@@ -34,8 +38,8 @@
     display: none;
   }
   .ExtraCGRow {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin: 1rem 0;
+    flex-wrap: nowrap;  //避免伸缩时换行
   }
   .ExtraCGCol {
     display: flex;

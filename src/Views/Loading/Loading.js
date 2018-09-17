@@ -10,4 +10,4 @@ const GetLoadingImagePath = (SectionDefinedPath) => {
 const Loading = ({LoadingImage}) => (
     <div className="LoadingPage" style={{backgroundImage:GetLoadingImagePath(LoadingImage)}} />
 );
-export default  Loading ;
+export default Loading ;

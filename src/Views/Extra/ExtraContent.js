@@ -1,7 +1,21 @@
 import React from "react";
+import ReactDOM from 'react-dom';
 import { Row, Col } from "react-flexbox-grid";
 import ExtraCard from "./Card/ExtraCard";
-class Content extends React.Component {
+class ExtraContent extends React.Component {
+  // componentDidMount(){
+  //   this.UpdateSize();
+  //   window.addEventListener('resize', () => this.UpdateSize());
+  // }
+  // componentWillUnmount(){
+  //   window.removeEventListener('resize', () => this.UpdateSize());
+  // }
+  // UpdateSize() {
+  //     const ContainerDom = document.defaultView.getComputedStyle(ReactDOM.findDOMNode(this._ExtraContainerRef));
+  //     let ResizeTarget = ReactDOM.findDOMNode(this._ExtraCGListRef);
+  //     ResizeTarget.style.height = ContainerDom.height;
+  //     console.log("重设为",ResizeTarget.style.height);
+  // }
   render() {
     return (
       <div className="ContentContainer">
@@ -19,6 +33,63 @@ class Content extends React.Component {
                   <ExtraCard />
                 </Col>
                 <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+              </Row>
+              <Row className="ExtraCGRow">
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+              </Row>
+              <Row className="ExtraCGRow">
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+              </Row>
+              <Row className="ExtraCGRow">
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+              </Row>
+              <Row className="ExtraCGRow">
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
+                </Col>
+                <Col xs className="ExtraCGCol">
+                  <ExtraCard />
                 </Col>
               </Row>
             </div>
@@ -46,4 +117,4 @@ class Content extends React.Component {
   }
 }
 
-export default Content;
+export default ExtraContent;
