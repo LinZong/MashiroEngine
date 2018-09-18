@@ -3,7 +3,7 @@ import "./ExtraCard.less";
 
 function ExtraCard(props) {
   return (
-    <div className="ExtraCardContainer" onClick={()=>props.onClick(props.Images)}>
+    <div className="ExtraCardContainer" onClick={()=>props.unlocked&&props.onClick(props.Images)}>
       <div
         className="ScreenShot"
         style={{

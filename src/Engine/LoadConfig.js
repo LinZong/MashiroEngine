@@ -25,6 +25,7 @@ function LoadGlobalConfig() {
         let FileStream = require('fs');
         let Path = require('path');
         let Environment = JSON.parse(FileStream.readFileSync('./res/config/GlobalConfig.json'));
+
         Environment.AppPath = __dirname;
         Environment.Resolution["X"] = Environment.Resolution[0];
         Environment.Resolution["Y"] = Environment.Resolution[1];
@@ -39,7 +40,7 @@ function LoadGlobalConfig() {
         Environment.Config[IMAGE_SETTING] = {};
         Environment.Config[TEXT_SETTING] = {};
         Environment.Config[SOUND_SETTING] = {};
-
+       // "./res/Resources/Character/CharacterInfo.json"
         Environment.Config[IMAGE_SETTING].Desc = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Elements);
         Environment.Config[IMAGE_SETTING].Default = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.Default);
         Environment.Config[IMAGE_SETTING].User = './' + Path.join(Environment.Path.Config.Root, Environment.Path.Config.Resources.Image.User);
@@ -56,6 +57,7 @@ function LoadGlobalConfig() {
 
         //占坑，以后肯定是要加载全局UI 资源的(Default or usersettings)
         Environment.UI = {
+            LockedCG :'./' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\CGLocked.png'),
             LoadingImage: './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\FakeLoading.jpg'),
             SaveDataPlaceHolder: './' + Path.join(Environment.ThemeDir, 'UIResources\\Framework\\EmptySlot.png')
         };
@@ -64,6 +66,11 @@ function LoadGlobalConfig() {
         global.MyEngine = { StatusMachine: {}, FirstRun: true };
         global.MyEngine.StatusMachine.AllChapter = LoadAllChapters(Environment.ChapterDir);//测试加载所有章节.
         //global.MyEngine.StatusMachine.StoryLine = require('./storyline/storyline').GetStoryLine();
+
+        //加载角色信息.
+
+        global.Character = JSON.parse(FileStream.readFileSync(Path.resolve(Environment.CharacterDir,"CharacterInfo.json")));
+
         global.SettingsNode = {};
         global.CustomModuleData = {};
         for (var conf in Environment.Config) {

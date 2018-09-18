@@ -7,7 +7,7 @@ class SaveDataPanel extends React.Component {
 	constructor() {
 		super(...arguments);
 		this.CardProvider = this.CardProvider.bind(this);
-		this.PlaceHolder = window.electron.remote.getGlobal('Environment').UI.SaveDataPlaceHolder;
+	
 	}
 	CardProvider(it, idx, begin) {
 		return (it ?

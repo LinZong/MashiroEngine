@@ -3,10 +3,13 @@
         1600,
         900
     ],
-    "SaveDataView":{
-        "Row":4,
-        "Col":3,
-        "Page":9
+    "SaveDataView": {
+        "Row": 4,
+        "Col": 3,
+        "Page": 9
+    },
+    "ExtraView": {
+        "Col": 5
     },
     "Path": {
         "Root": "./res/Resources",
@@ -15,24 +18,24 @@
             "Character": "Character",
             "Theme": "Theme"
         },
-        "Savedata":"./res/Savedata",
-        "Config":{
-            "Root":"./res/config",
-            "Resources":{
-                "Image":{
-                    "Elements":"./ImageConfig/Image.json",
-                    "Default":"./ImageConfig/DefaultImage.json",
-                    "User":"./ImageConfig/UserImage.json"
+        "Savedata": "./res/Savedata",
+        "Config": {
+            "Root": "./res/config",
+            "Resources": {
+                "Image": {
+                    "Elements": "./ImageConfig/Image.json",
+                    "Default": "./ImageConfig/DefaultImage.json",
+                    "User": "./ImageConfig/UserImage.json"
                 },
-                "Text":{
-                    "Elements":"./TextConfig/Text.json",
-                    "Default":"./TextConfig/DefaultText.json",
-                    "User":"./TextConfig/UserText.json"
+                "Text": {
+                    "Elements": "./TextConfig/Text.json",
+                    "Default": "./TextConfig/DefaultText.json",
+                    "User": "./TextConfig/UserText.json"
                 },
-                "Sound":{
-                    "Elements":"./SoundConfig/Sound.json",
-                    "Default":"./SoundConfig/DefaultSound.json",
-                    "User":"./SoundConfig/UserSound.json"
+                "Sound": {
+                    "Elements": "./SoundConfig/Sound.json",
+                    "Default": "./SoundConfig/DefaultSound.json",
+                    "User": "./SoundConfig/UserSound.json"
                 }
             }
         }
