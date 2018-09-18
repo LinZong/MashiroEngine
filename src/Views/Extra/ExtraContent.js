@@ -51,7 +51,7 @@ class ExtraContent extends React.Component {
     return (
       <div className="ContentContainer">
         <Modal visible={this.state.ModalVisible} showClose CloseHandler={this.handleClose}>
-          <ExtraCardImage Images={this.state.ShowImages} />
+          {this.state.ShowImages && this.state.ModalVisible && <ExtraCardImage Images={this.state.ShowImages} />}
         </Modal>
         <Row className="ContentContainerRow">
           <Col xs={10} className="ExtraCGList">

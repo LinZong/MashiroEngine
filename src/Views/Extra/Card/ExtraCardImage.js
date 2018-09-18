@@ -15,7 +15,7 @@ class ExtraCardImage extends React.Component{
         this.setState({CurrentShowImage:(this.state.CurrentShowImage+1)%this.props.Images.length});
     }
     render(){
-        return this.props.Images&&<CrossFade onClick={this.handleImageSwitch} src={this.props.Images[this.state.CurrentShowImage]} />;
+        return <CrossFade onClick={this.handleImageSwitch} src={this.props.Images[this.state.CurrentShowImage]} />;
     }
 }
 

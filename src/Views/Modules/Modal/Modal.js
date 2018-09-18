@@ -4,6 +4,10 @@ import "./Modal.less";
 import classnamez from "classnames";
 //2个array，Background和Foreground,2个数，需要生成多少个Background和Foreground.
 class Modal extends React.Component {
+    constructor(){
+        super(...arguments);
+        this.MountStatus = this.props.visible;
+    }
     componentDidMount() {
         if (this.props.showClose && !this.props.CloseHandler) {
             console.warn(
@@ -11,17 +15,18 @@ class Modal extends React.Component {
             );
         }
     }
+    componentWillReceiveProps(nextProps){
+        if(nextProps.visible){
+            this.MountStatus = true;
+        }
+    }
     render() {
-
-        return this.props.visible && ReactDOM.createPortal(
+        return this.MountStatus&&ReactDOM.createPortal(
             <div
-                className="ModalContainer"
-                style={{
-                    display: classnamez({
-                        flex: this.props.visible,
-                        none: !this.props.visible
-                    })
-                }}
+                className={classnamez("ModalContainer", {
+                    ModalContainerEnable: this.props.visible,
+                    ModalContainerDisable: !this.props.visible
+                })}
             >
                 <div className="ModalMaskOn" />
                 <div className="ModalChildren">

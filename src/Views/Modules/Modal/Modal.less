@@ -4,10 +4,7 @@
   height: 100vh;
   left:0;
   top:0;
-  animation-name: ModalFadeIn;
-  animation-timing-function: linear;
-  animation-duration: 0.3s;
-  animation-direction: alternate;
+  display: none;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -36,7 +33,31 @@
     opacity: 1;
   }
 }
-
+.ModalContainerEnable {
+  display: flex;
+  animation-name: ModalFadeIn;
+  animation-timing-function: linear;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+}
+.ModalContainerDisable {
+  display: flex;
+  pointer-events: none;
+  animation-name: ModalFadeOut;
+  animation-timing-function: linear;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+}
   .SelectionButton{
     margin: 0 2px;
   }
+
+  @keyframes ModalFadeOut {
+    0% {
+      opacity: 1;
+    }
+    100%{
+      opacity: 0;
+    }
+  }
+  

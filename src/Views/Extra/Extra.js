@@ -14,12 +14,13 @@ class Extra extends React.Component {
     return (
       <div className="ExtraContainer" style={{ backgroundImage: "url('file:///../../res/Resources/Theme/UIResources/Framework/44975852_p0.jpg')" }}>
         <NavBar
+          defaultSelectedIndex={0}
           end={<NavLink to="/" >返回标题</NavLink>}
           brand={[<span style={{ fontSize: "2rem" }}>特典 Extra</span>]}
         >
           {
             this.CharacterList.map((it, idx) => {
-              return <NavLink key={idx} to={`/extra/${idx}`}>{it.DisplayName}</NavLink>
+              return <NavLink index={idx} key={idx} to={`/extra/${idx}`}>{it.DisplayName}</NavLink>
             })
           }
         </NavBar>

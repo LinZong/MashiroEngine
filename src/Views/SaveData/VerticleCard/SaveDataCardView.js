@@ -14,8 +14,8 @@ class SaveDataCardView extends React.Component {
         return (
             <div>
                 <Modal visible={this.props.visible}>
-                    <MessageBox title="退出游戏" clickfunc={this.props.clickfunc}>
-                        真的要退出游戏吗
+                    <MessageBox title="确认框" clickfunc={this.props.clickfunc}>
+                        {this.props.AlertText}
                     </MessageBox>
                 </Modal>
                 <div className="SaveDataContainer" onClick={this.props.onClick}>
