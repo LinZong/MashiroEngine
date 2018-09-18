@@ -17,6 +17,7 @@ function MessageBox(props) {
         {(props.buttons || defaultButtons).map((it, idx) => {
           return (
             <button
+              key={idx}
               className={`button is-${it.ExtraClassName}`}
               onClick={() => props.clickfunc && props.clickfunc(it.Value)}
             >

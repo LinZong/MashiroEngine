@@ -5,6 +5,7 @@ import store from '../../../Store';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import SaveDataCardView from './SaveDataCardView';
+import {Modal,MessageBox} from '../../Modules/Modal/index';
 const PlaceHolder = window.electron.remote.getGlobal('Environment').UI.SaveDataPlaceHolder;
 const { CreateSaveData, DeleteSaveData } = require('../../../Engine/LoadSaveData');
 class SaveDataCard extends React.Component {
@@ -100,15 +101,15 @@ class SaveDataCard extends React.Component {
 
 	render() {
 		return (
-			<SaveDataCardView onClick={this.onClickSlot}
-				visible={this.state.visible}
-				clickfunc={this.handleButton}
-				AlertText={this.AlertText}
-				SaveTimeStamp={this.state.SaveTimeStamp}
-				Title={this.state.Title}
-				Exist={this.state.Exist}
-				Cover={this.state.Cover}
-				Index={this.props.Index} />
+				<SaveDataCardView onClick={this.onClickSlot}
+					visible={this.state.visible}
+					clickfunc={this.handleButton}
+					AlertText={this.AlertText}
+					SaveTimeStamp={this.state.SaveTimeStamp}
+					Title={this.state.Title}
+					Exist={this.state.Exist}
+					Cover={this.state.Cover}
+					Index={this.props.Index} />
 		);
 	}
 }

@@ -53,4 +53,7 @@ div.CardContainer{
   .SaveDataContainer:hover {
 	box-shadow: 2px 4px 4px#e8e8e8;
   }
+  .SaveDataInfo{
+	  height: 1px;
+  }
   
