@@ -575,7 +575,8 @@ class GameView extends Component {
 											{/* {
 												//这里可以放一下自定义显示插件的内容
 												<CustomView zIndex={20} custom={[{type:"div",props:{className:"testDiv",style:{zIndex:20}},children:{type:"button",props:{className:"testPElement",onClick:function(){console.log("Clicked")}},children:"这是测试文本"}}]} />
-											} */}
+											} */
+											}
 											{
 												//这里放Character
 												this.state.Character.top() ? <Character CharacterList={this.state.Character.top()} /> : null

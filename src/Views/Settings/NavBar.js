@@ -14,9 +14,7 @@ class NavBar extends React.Component {
 		this.showModal = this.showModal.bind(this);
 		this.handleCancel = this.handleCancel.bind(this);
 		this.handleOk = this.handleOk.bind(this);
-
 		this.state = { PanelPath: IMAGE_SETTING };
-		
 	}
 	showModal() {
 		if (!this.state.visible)

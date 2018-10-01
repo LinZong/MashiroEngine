@@ -5,7 +5,6 @@ import store from '../../../Store';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import SaveDataCardView from './SaveDataCardView';
-import {Modal,MessageBox} from '../../Modules/Modal/index';
 const PlaceHolder = window.electron.remote.getGlobal('Environment').UI.SaveDataPlaceHolder;
 const { CreateSaveData, DeleteSaveData } = require('../../../Engine/LoadSaveData');
 class SaveDataCard extends React.Component {

@@ -15,7 +15,7 @@ class Character extends React.Component {
 		this.LastRenderCharacter = [];
 		this.BuildRenderArray = this.BuildRenderArray.bind(this);
 		this.CharacterViewAdapter = this.CharacterViewAdapter.bind(this);
-		this.AnimationEffect = GetSettingValue("ANIMATIONEFFECTS");
+		//this.AnimationEffect = GetSettingValue("ANIMATIONEFFECTS");
 	}
 	BuildRenderArray(arraySource) {
 		this.LastRenderCharacter = this.ShouldRenderCharacter;

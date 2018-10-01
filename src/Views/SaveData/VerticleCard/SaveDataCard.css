@@ -38,17 +38,20 @@ div.CardContainer{
 	overflow: hidden;
 	position: relative;
 	border-color: #e8e8e8;
-	height:auto;
+	height:15vh;
 	width:100%;
   }
   .ScreenShot {
 	width: 100%;
 	overflow: hidden;
-	background-position: center center;
+	/* background-position: center center;
 	background-repeat: no-repeat;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
-	background-size: cover;
+	background-size: cover; */
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
   }
   .SaveDataContainer:hover {
 	box-shadow: 2px 4px 4px#e8e8e8;

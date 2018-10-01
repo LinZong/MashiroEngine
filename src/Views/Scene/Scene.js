@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import TransitionGroup from 'react-addons-css-transition-group';
 import './SceneView.css';
 const Scene = (props) => {
-    var MaskClass = classNames({
+    let MaskClass = classNames({
         'SelectionMask': !props.EnableMask,
         'SelectionMaskOn': props.EnableMask
     });
@@ -21,7 +21,6 @@ const Scene = (props) => {
                     <div className="SceneBackground" key={props.BG} style={{backgroundImage: props.BG}} />
                 }
             </TransitionGroup>
-
             <div className="ChildElement">{props.children}</div>
         </div >
     );

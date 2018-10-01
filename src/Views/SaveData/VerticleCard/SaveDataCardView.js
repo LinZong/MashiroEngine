@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { Modal, MessageBox } from '../../Modules/Modal/index';
 import { Row, Col } from 'react-flexbox-grid';
 import './SaveDataCard.css';
@@ -37,5 +36,4 @@ class SaveDataCardView extends React.Component {
         )
     }
 }
-
 export default SaveDataCardView;
