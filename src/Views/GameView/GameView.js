@@ -11,12 +11,12 @@ import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
 import './GameView.css';
 import { message } from 'antd';
-import {GetStoryLine} from '../../Engine/storyline/storyline';
+import {GetStoryLine,GetFlowChartNodeData} from '../../Engine/storyline/storyline';
 const { GetSettingValue } = require('../../Engine/LoadConfig');
 const { GetGlobalVar } = require('../../Engine/StatusMachine');
 var ControlFunctionContext = React.createContext();
-
 const StoryLine = GetStoryLine();
+const flow = GetFlowChartNodeData();
 class GameView extends Component {
 	constructor() {
 		super(...arguments);
@@ -52,6 +52,7 @@ class GameView extends Component {
 
 		this.SaveState = this.SaveState.bind(this);
 		this.ToggleTextBoxVisible = this.ToggleTextBoxVisible.bind(this);
+		this.ClearAutoMode = this.ClearAutoMode.bind(this);
 		this.SetTextBoxVisible = this.SetTextBoxVisible.bind(this);
 		this.LoadSaveData = this.LoadSaveData.bind(this);
 		this.VoiceEnd = this.VoiceEnd.bind(this);
@@ -79,7 +80,12 @@ class GameView extends Component {
 			VoiceEnd: this.VoiceEnd,
 			TextEnd: this.TextEnd,
 			OpenBacklog: () => { this.setState({ NowMode: 'backlog' }) },
-			SetAutoModeStatus: (AutoModeBoolean) => this.setState({ AutoMode: AutoModeBoolean }),
+			SetAutoModeStatus: (AutoModeBoolean) => {
+				if(!AutoModeBoolean){
+					this.ClearAutoMode();
+				}
+				this.setState({ AutoMode: AutoModeBoolean })
+			},
 			GetNextSection: (skip) => { this.props.match.params.load = 'next'; this.MoveSectionChecker('next', skip) },
 			GetPrevSection: (skip) => { this.props.match.params.load = 'next'; this.MoveSectionChecker('prev', skip) },
 			GetNextSelection: (skip) => { this.props.match.params.load = 'next'; this.MoveSelectionChecker('next', skip) },
@@ -94,13 +100,16 @@ class GameView extends Component {
 		}
 		this.NodeIndex = StatusObj.Index;
 	}
+	ClearAutoMode(){
+		this.AutoModeCancelation && clearTimeout(this.AutoModeCancelation) && (this.AutoModeCancelation = null);
+	}
 	ChangeNode(event) {
 		if (this.IsBlockKey) return;
 		else if (this.TypingController.IsTyping === 1) {
 			this.TypingController.Stopper();
 			return;
 		}
-		this.AutoModeCancelation && clearTimeout(this.AutoModeCancelation) && (this.AutoModeCancelation = null);
+		this.ClearAutoMode();
 		if (event.Mouse) {
 			this.GetNewTextNode(1);
 		}
@@ -448,8 +457,8 @@ class GameView extends Component {
 	}
 	componentDidMount() {
 		// let state = safetouch(this.props.location.state);
-		
-		console.log("已成功读入矩阵", StoryLine);
+		console.log("已成功读入矩阵", StoryLine,flow);
+
 		let LoadType = this.props.match.params.load;
 		switch (LoadType) {
 			case 'next':
@@ -531,6 +540,8 @@ class GameView extends Component {
 	ToggleTextBoxVisible() {
 		if (!this.state.TextBoxVisible) {
 			this.setState({ TextBoxVisible: true });
+		}else{
+			this.ChangeNode({Mouse:true});
 		}
 	}
 	SetTextBoxVisible(visible) {
@@ -588,7 +599,7 @@ class GameView extends Component {
 															return <NewTextBox
 																CharacterName={this.state.CharacterName}
 																TextContent={this.state.Text}
-																MouseEventTrigger={this.ChangeNode}
+																//MouseEventTrigger={this.ChangeNode}
 																visible={this.state.TextBoxVisible}
 																GetStopTyping={this.SetStopTypingController}
 																AutoMode={this.state.AutoMode}

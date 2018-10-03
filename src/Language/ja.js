@@ -30,14 +30,10 @@ const ja = {
     AUTOPLAYSPEED:'オートプレイスピード',
     AUTOPLAYMODE:'オートプレイ',
     AUTOPLAYNORMAL:'ノーマルモード',
-
     AUTOPLAYTEXTFIRST:'テキスト優先',
     AUTOPLAYSOUNDFIRST:'サウンド優先',
-
     AUTOPLAYSWITCHTEXTDELAY:'オートプレイ時にテキスト切り替え遅延',
-
     SKIPSTATUSAFTERSELECTION:'選択後スキップモード状態',
-
     KEEPSKIPMODE:'スキップモードを続く',
     EXITSKIPMODE:'スキップモードを離れ',
     AUTOPLAYMODEAFTERSELECTION:'選択後オートプレイモード状態',

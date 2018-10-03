@@ -29,7 +29,7 @@ class TextBox extends React.Component {
         return nextProps.TextContent !== this.props.TextContent || nextProps.visible !== this.props.visible || nextProps.AutoMode !== this.props.AutoMode;
     }
     render() {
-        return (<div className="CardContainer" style={{ display: this.props.visible ? 'block' : 'none' }} onClick={() => this.props.MouseEventTrigger({ Mouse: true })}>
+        return (<div className="CardContainer" style={{ display: this.props.visible ? 'block' : 'none' }}>
             <div className="CharacterInfo">
                 <p className="CharacterName">{this.props.CharacterName}</p>
             </div>
