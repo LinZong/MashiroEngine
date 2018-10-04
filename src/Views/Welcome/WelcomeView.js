@@ -35,7 +35,7 @@ class WelcomeView extends React.Component {
     }
     render() {
         return (
-            <WelcomeScreen on={false} last={2500} ScreenArray={this.state.WelcomePicsArr}>
+            <WelcomeScreen on={this.state.Fr} last={2500} ScreenArray={this.state.WelcomePicsArr}>
                 <div className="WelcomeContainer">
                     <Modal visible={this.state.ModalVisible}>
                         <MessageBox title="退出游戏" clickfunc={this.handleClose}>
