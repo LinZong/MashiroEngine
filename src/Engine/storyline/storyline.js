@@ -17,7 +17,7 @@ function GetSectionName(chNum, br, secBegin = 0) {
     for (let i = secBegin; i < sections.length; ++i) {
         let sec = LoadSectionRes(ch, i);
         StoryLineMap.get(br)[chNum].place(i, i, sec.Header.SectionName);//原来构造Map
-        StoryLineNode.push({ key: chNum.toString()+" "+br.toString()+" "+i.toString(), text: sec.Header.SectionName });
+        StoryLineNode.push({ key: chNum.toString() + " " + br.toString() + " " + i.toString(), text: sec.Header.SectionName });
 
         if (sec.Header.Special.HaveSelection) {
             let selection = null;
@@ -36,7 +36,7 @@ function GetSectionName(chNum, br, secBegin = 0) {
                     if (Chapter === chNum) {
                         StoryLineMap.get(br)[chNum].place(i, Section, 1);
                     }
-                    StoryLineLinkData.push({ from: chNum.toString()+" "+br.toString()+" "+i.toString(), to: Chapter.toString()+" "+Branch.toString()+" "+Section.toString() });
+                    StoryLineLinkData.push({ from: chNum.toString() + " " + br.toString() + " " + i.toString(), to: Chapter.toString() + " " + Branch.toString() + " " + Section.toString() });
                     GetSectionName(Chapter, Branch, Section);
                 }
             }
@@ -44,7 +44,7 @@ function GetSectionName(chNum, br, secBegin = 0) {
         else {
             if (i < sections.length - 1) {
                 StoryLineMap.get(br)[chNum].place(i, i + 1, 1);//表明连通边
-                StoryLineLinkData.push({ from: chNum.toString()+" "+br.toString()+" "+i.toString(), to: chNum.toString()+" "+br.toString()+" "+(i+1).toString()});
+                StoryLineLinkData.push({ from: chNum.toString() + " " + br.toString() + " " + i.toString(), to: chNum.toString() + " " + br.toString() + " " + (i + 1).toString() });
             }
         }
     }
@@ -52,15 +52,15 @@ function GetSectionName(chNum, br, secBegin = 0) {
 
 function BuildStoryMap() {
     //for (let brVal of BranchSet.values()) {
-        // for (let i = 0; i < AllChapter.length; ++i) {
-        //     if (StoryLineMap.get(brVal)[i]) {
-        //         GetSectionName(i, brVal);
-        //     }
-        // }
-        let chNumArr = StoryLineList.get(1);
-        //for (let i = 0; i < chNumArr.length; ++i) {
-        GetSectionName(chNumArr[0], 1);
-       //}
+    // for (let i = 0; i < AllChapter.length; ++i) {
+    //     if (StoryLineMap.get(brVal)[i]) {
+    //         GetSectionName(i, brVal);
+    //     }
+    // }
+    let chNumArr = StoryLineList.get(1);
+    //for (let i = 0; i < chNumArr.length; ++i) {
+    GetSectionName(chNumArr[0], 1);
+    //}
     //}
 
     //对于一个文字游戏来说，从最开始往下进行dfs一定能够到达全部节点，不然就是设计问题。所以不需要重复循环遍历。
@@ -101,8 +101,43 @@ function GetFlowChartNodeData() {
         GetStoryLine();
     }
     let writeHelper = { StoryLineNode, StoryLineLinkData };
-    let fs = window.electron.remote.require('fs');
-    fs.writeFileSync("Relax.json",JSON.stringify(writeHelper));
+    //let fs = window.electron.remote.require('fs');
+    //fs.writeFileSync("Relax.json",JSON.stringify(StoryLineMap));
     return writeHelper;
 }
-module.exports = { GetStoryLine, GetFlowChartNodeData };
+function ArrayifyMatrix() {
+    //这个操作将会把整个Matrix变得可以持久化，可以使用JSON.stringify转化成文本
+    let ArrayLikeMatrix = [];
+    if (!StoryLineMap) {
+        GetStoryLine();
+    }
+    for (let [k, v] of StoryLineMap) {
+        let arrtmp = [];
+        for(let i=0;i<v.length;++i)
+        {
+            arrtmp.push(v[i]?v[i].stringify():v[i]);
+        }
+        ArrayLikeMatrix.push([k,arrtmp]);
+    }
+    console.log(ArrayLikeMatrix);
+    let relax = ParseMatrix(ArrayLikeMatrix);
+    console.log(relax);
+    return ArrayLikeMatrix;
+}
+function ParseMatrix() {
+    //看看传的是string还是array
+    if (arguments.length > 1) {
+        throw Error("Cannot parse more than one argument.")
+    }
+    //如果都不是还得抛错
+    let ArrayLikeMatrix = arguments[0] instanceof Array ? arguments[0] : JSON.parse(arguments[0]);
+    for(let i of ArrayLikeMatrix){
+        // i[1] = new StoryMatrix(i[1]);//把string转化成真实矩阵
+        for(let k=0;k<i[1].length;++k){
+            i[1][k] = i[1][k]?new StoryMatrix(i[1][k]):i[1][k];
+        }
+    }
+    StoryLineMap = new Map(ArrayLikeMatrix);
+    return StoryLineMap;
+}
+module.exports = { GetStoryLine, GetFlowChartNodeData,ArrayifyMatrix,ParseMatrix };

@@ -59,7 +59,7 @@ class PlainText extends React.Component {
 			<ControlFunctionContext.Consumer>
 				{Func =>
 					<div id="ScrollWrapper">
-						<div className="PlainText" onClick={() => this.props.MouseEventTrigger({ Mouse: true })}>
+						<div className="PlainText">
 							{
 								this.state.TextArray.map((it, idx) => {
 									return idx < this.state.TextArray.length - 1 || (this.props.Rollback || this.props.DisableTypeEffect) ? (<p key={idx} className="OriginalText">{it}</p>) : (

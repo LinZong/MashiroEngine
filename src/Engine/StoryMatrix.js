@@ -1,9 +1,14 @@
-
-function StoryMatrix(Length, initElement) {
-	this._Array = [];
-	if (Length) {
-		this.build(Length, initElement);
+function StoryMatrix() {
+	if (typeof (arguments[0]) === 'number') {
+		this._Array = [];
+		this.build(arguments[0], arguments[1]);
 	}
+	else if(typeof(arguments[0])==='string'){
+		this._Array = JSON.parse(arguments[0]);
+	}
+	else if(typeof(arguments[0])==='object'){
+		this._Array = arguments[0];
+	}		
 	return this;
 }
 function CreateElement(element) {
@@ -37,22 +42,22 @@ StoryMatrix.prototype = {
 			}
 		}
 	},
-	place:function(x,y,element){
+	place: function (x, y, element) {
 		this._Array[x][y] = CreateElement(element);
 	},
-	touch:function(x,y){
+	touch: function (x, y) {
 		return this._Array[x][y];
 	},
 	remove: function (removeLength) {
-		if(removeLength>this._Array.length) throw new Error("Cannot remove the number of elements that larger than array length.");
+		if (removeLength > this._Array.length) throw new Error("Cannot remove the number of elements that larger than array length.");
 		this._Array.splice(this._Array.length - removeLength, removeLength);
 		let newLength = this._Array.length;
 		for (let i = 0; i < newLength; ++i) {
-			this._Array[i].splice(newLength,removeLength);
+			this._Array[i].splice(newLength, removeLength);
 		}
 	},
-	Array: function () { return this._Array }
+	Array: function () { return this._Array },
+	stringify: function () { return JSON.stringify(this._Array); }
 }
-
 
 module.exports = { StoryMatrix };

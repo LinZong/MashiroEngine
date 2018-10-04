@@ -2,7 +2,7 @@ import React from "react";
 import "./FlowChart.less";
 import * as go from "gojs";
 import {NavLink} from 'react-router-dom';
-import { GetFlowChartNodeData } from '../../Engine/storyline/storyline';
+import { GetFlowChartNodeData,ArrayifyMatrix } from '../../Engine/storyline/storyline';
 var $ = go.GraphObject.make;
 var myDiagram = null;
 class FlowChart extends React.Component {
@@ -10,6 +10,7 @@ class FlowChart extends React.Component {
 		super(...arguments);
 		this.BindGoJs = this.BindGoJs.bind(this);
 		this.NodeData = GetFlowChartNodeData();
+		//ArrayifyMatrix();
 	}
 	componentDidMount() {
 		this.BindGoJs();
