@@ -17,7 +17,7 @@ function GetSectionName(chNum, br, secBegin = 0) {
     for (let i = secBegin; i < sections.length; ++i) {
         let sec = LoadSectionRes(ch, i);
         StoryLineMap.get(br)[chNum].place(i, i, sec.Header.SectionName);//原来构造Map
-        StoryLineNode.push({ key: { Chapter: chNum, Branch: br, Section: i }, text: sec.Header.SectionName });
+        StoryLineNode.push({ key: chNum.toString()+" "+br.toString()+" "+i.toString(), text: sec.Header.SectionName });
 
         if (sec.Header.Special.HaveSelection) {
             let selection = null;
@@ -28,6 +28,7 @@ function GetSectionName(chNum, br, secBegin = 0) {
                 }
             }
             if (selection) {
+
                 StoryLineMap.get(br)[chNum].place(i, i, { SectionName: sec.Header.SectionName, selection });
                 //StoryLineNode[StoryLineNode.length-1] = {key:{Chapter:chNum,Branch:br,Section:i},text:sec.Header.SectionName}
                 for (let k = 0; k < selection.length; ++k) {
@@ -35,7 +36,7 @@ function GetSectionName(chNum, br, secBegin = 0) {
                     if (Chapter === chNum) {
                         StoryLineMap.get(br)[chNum].place(i, Section, 1);
                     }
-                    StoryLineLinkData.push({ from: { Chapter: chNum, Branch: br, Section: i }, to: { Chapter: Chapter, Branch: Branch, Section: Section } });
+                    StoryLineLinkData.push({ from: chNum.toString()+" "+br.toString()+" "+i.toString(), to: Chapter.toString()+" "+Branch.toString()+" "+Section.toString() });
                     GetSectionName(Chapter, Branch, Section);
                 }
             }
@@ -43,7 +44,7 @@ function GetSectionName(chNum, br, secBegin = 0) {
         else {
             if (i < sections.length - 1) {
                 StoryLineMap.get(br)[chNum].place(i, i + 1, 1);//表明连通边
-                StoryLineLinkData.push({ from: { Chapter: chNum, Branch: br, Section: i }, to: { Chapter: chNum, Branch: br, Section: i + 1 } });
+                StoryLineLinkData.push({ from: chNum.toString()+" "+br.toString()+" "+i.toString(), to: chNum.toString()+" "+br.toString()+" "+(i+1).toString()});
             }
         }
     }
@@ -99,6 +100,9 @@ function GetFlowChartNodeData() {
     if (!StoryLineLinkData || !StoryLineNode) {
         GetStoryLine();
     }
-    return { StoryLineNode, StoryLineLinkData };
+    let writeHelper = { StoryLineNode, StoryLineLinkData };
+    let fs = window.electron.remote.require('fs');
+    fs.writeFileSync("Relax.json",JSON.stringify(writeHelper));
+    return writeHelper;
 }
 module.exports = { GetStoryLine, GetFlowChartNodeData };

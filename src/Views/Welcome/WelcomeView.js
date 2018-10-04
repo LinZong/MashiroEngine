@@ -52,7 +52,7 @@ class WelcomeView extends React.Component {
                                 <NavLink to='/savedata/load' id='LOADSAVEDATA'><FormattedMessage id='LOADSAVEDATA' /></NavLink>
                             </li>
                             <li>
-                                <a id='FLOWCHART'><FormattedMessage id='FLOWCHART' /></a>
+                            <NavLink to='/flowchart' id='SETTING'><FormattedMessage id='FLOWCHART' /></NavLink>
                             </li>
                             <li>
                                 <NavLink to='/extra' id='EXTRA'><FormattedMessage id='EXTRA' /></NavLink>

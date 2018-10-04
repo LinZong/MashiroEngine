@@ -11,12 +11,11 @@ import safetouch from 'safe-touch';
 import Audio from '../Audio/Audio';
 import './GameView.css';
 import { message } from 'antd';
-import {GetStoryLine,GetFlowChartNodeData} from '../../Engine/storyline/storyline';
+import {GetStoryLine} from '../../Engine/storyline/storyline';
 const { GetSettingValue } = require('../../Engine/LoadConfig');
 const { GetGlobalVar } = require('../../Engine/StatusMachine');
 var ControlFunctionContext = React.createContext();
 const StoryLine = GetStoryLine();
-const flow = GetFlowChartNodeData();
 class GameView extends Component {
 	constructor() {
 		super(...arguments);
@@ -457,7 +456,7 @@ class GameView extends Component {
 	}
 	componentDidMount() {
 		// let state = safetouch(this.props.location.state);
-		console.log("已成功读入矩阵", StoryLine,flow);
+		console.log("已成功读入矩阵", StoryLine);
 
 		let LoadType = this.props.match.params.load;
 		switch (LoadType) {
