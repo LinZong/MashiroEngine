@@ -1,5 +1,5 @@
 # ましろ　エンジン (純白 Engine)
-## An AVG game engine(interpreter) made by Electron and React.
+## An AVG game engine(interpreter) made with Electron and React.
 This engine is still in dev status, and Game Maker(Editor) is still under the schedule.
 
 ## Introduction
